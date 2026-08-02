@@ -10,6 +10,29 @@ import { useState } from "react";
   const [rebsorte, setRebsorte] = useState("");
   const [anzahl, setAnzahl] = useState("");
   const [preis, setPreis] = useState("");
+  const [bild, setBild] = useState("");
+  function bildAuswaehlen(event: React.ChangeEvent<HTMLInputElement>) {
+  const datei = event.target.files?.[0];
+
+  if (!datei) {
+    return;
+  }
+
+  if (!datei.type.startsWith("image/")) {
+    alert("Bitte eine Bilddatei auswählen.");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onloadend = () => {
+    if (typeof reader.result === "string") {
+      setBild(reader.result);
+    }
+  };
+
+  reader.readAsDataURL(datei);
+}
  
   function handleSubmit(event: any) {
     event.preventDefault();
@@ -30,6 +53,7 @@ import { useState } from "react";
       anzahl: Number(anzahl),
       preis: Number(preis),
       bewertung: 0,
+      bild,
     };
 
     const gespeicherteWeine = JSON.parse(
@@ -53,6 +77,7 @@ import { useState } from "react";
     setRebsorte("");
     setAnzahl("");
     setPreis("");
+    setBild("");
   }
   return (
     <main
@@ -120,6 +145,37 @@ import { useState } from "react";
   onChange={(e) => setPreis(e.target.value)}
 />
 
+  <label
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    fontWeight: "bold",
+  }}
+>
+  Foto der Flasche
+
+  <input
+    type="file"
+    accept="image/*"
+    capture="environment"
+    onChange={bildAuswaehlen}
+  />
+</label>
+
+{bild && (
+  <img
+     src={bild}
+  alt="Vorschau"
+  style={{
+    width: "140px",
+    display: "block",
+    margin: "0 auto 15px auto",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    }}
+  />
+)}
 <button
   type="submit"
   style={{
