@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import InfoBox from "./InfoBox";
 type Wein = {
   id: number;
@@ -11,7 +12,7 @@ type Wein = {
   anzahl: number;
   preis: number;
   bewertung?: number;
-  bild?: string;
+   bild?: string;
 };
 
 type Props = {
@@ -71,22 +72,48 @@ export default function WeinKarte({
     </span>
   ))}
 </div>
-      {wein.bild && (
-  <img
-    src={wein.bild}
-    alt={wein.weinname}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "8px",
+    marginTop: "15px",
+  }}
+>
+  <Link
+    href={`/wein-bearbeiten/${wein.id}`}
+    style={{ textDecoration: "none" }}
+  >
+    <button
+      type="button"
+      style={{
+        border: "none",
+        backgroundColor: "#ece7f8",
+        color: "#4b2c83",
+        padding: "9px 12px",
+        borderRadius: "9px",
+        cursor: "pointer",
+      }}
+    >
+      Bearbeiten
+    </button>
+  </Link>
+
+  <button
+    type="button"
+    onClick={() => weinLoeschen(wein.id)}
     style={{
-      width: "120px",
-      height: "180px",
-      objectFit: "contain",
-      display: "block",
-      margin: "15px auto",
-      borderRadius: "10px",
-      border: "1px solid #ddd",
-      backgroundColor: "white",
+      border: "none",
+      backgroundColor: "#f4e7e9",
+      color: "#7b1026",
+      padding: "9px 12px",
+      borderRadius: "9px",
+      cursor: "pointer",
     }}
-  />
-)}
+  >
+    Löschen
+  </button>
+</div>
 <div
   style={{
     display: "grid",
@@ -95,14 +122,14 @@ export default function WeinKarte({
     marginTop: "20px",
   }}
 >
-  
   <InfoBox
-  title="Preis pro Flasche"
-  value={`CHF ${wein.preis.toFixed(2)}`}
-  
-/> <InfoBox
-  title="Gesamtwert"
-  value={`CHF ${gesamtwert.toFixed(2)}`}
+    title="Preis pro Flasche"
+    value={`CHF ${wein.preis.toFixed(2)}`}
+  />
+
+  <InfoBox
+    title="Gesamtwert"
+    value={`CHF ${gesamtwert.toFixed(2)}`}
   />
 </div>
  
