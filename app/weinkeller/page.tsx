@@ -14,6 +14,7 @@ type Wein = {
   anzahl: number;
   preis: number;
   bewertung: number;
+  bild?: string;
 };
 
 export default function Weinkeller() {
@@ -213,6 +214,33 @@ function bewertungAendern(id: number, sterne: number) {
                     }}
                   >
                     <div>
+ 
+  {wein.bild && (
+    <img
+      src={wein.bild}
+      alt={wein.weinname}
+      style={{
+        width: "120px",
+        height: "180px",
+        objectFit: "contain",
+        display: "block",
+        margin: "0 auto 15px auto",
+        borderRadius: "10px",
+        border: "1px solid #ddd",
+        backgroundColor: "white",
+      }}
+    />
+  )}
+
+  <p
+    style={{
+      margin: 0,
+      color: "#7b1026",
+      fontWeight: "bold",
+    }}
+  >
+    {wein.produzent}
+  </p>
                       <p
                         style={{
                           margin: 0,
