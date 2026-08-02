@@ -1,4 +1,5 @@
 "use client";
+import InfoBox from "./InfoBox";
 type Wein = {
   id: number;
   produzent: string;
@@ -94,46 +95,17 @@ export default function WeinKarte({
     marginTop: "20px",
   }}
 >
-  <div
-    style={{
-      backgroundColor: "#f6f2ec",
-      padding: "14px",
-      borderRadius: "10px",
-    }}
-  >
-    <p
-      style={{
-        margin: "0 0 6px",
-        color: "#7b6f68",
-        fontSize: "13px",
-      }}
-    >
-      Preis pro Flasche
-    </p>
-
-    <strong>CHF {wein.preis.toFixed(2)}</strong>
-  </div>
-
-  <div
-    style={{
-      backgroundColor: "#f6f2ec",
-      padding: "14px",
-      borderRadius: "10px",
-    }}
-  >
-    <p
-      style={{
-        margin: "0 0 6px",
-        color: "#7b6f68",
-        fontSize: "13px",
-      }}
-    >
-      Gesamtwert
-    </p>
-
-    <strong>CHF {gesamtwert.toFixed(2)}</strong>
-  </div>
+  
+  <InfoBox
+  title="Preis pro Flasche"
+  value={`CHF ${wein.preis.toFixed(2)}`}
+  
+/> <InfoBox
+  title="Gesamtwert"
+  value={`CHF ${gesamtwert.toFixed(2)}`}
+  />
 </div>
+ 
     </article>
   );
 }
