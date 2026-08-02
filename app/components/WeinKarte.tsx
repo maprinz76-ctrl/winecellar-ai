@@ -38,7 +38,38 @@ export default function WeinKarte({
   }}
 >
       <h2>{wein.weinname}</h2>
-      <p>{wein.produzent}</p>
+      <p
+  style={{
+    margin: 0,
+    color: "#7b1026",
+    fontWeight: "bold",
+  }}
+>
+  {wein.produzent}
+</p>
+
+<div
+  style={{
+    margin: "10px 0",
+    fontSize: "24px",
+  }}
+>
+  {[1, 2, 3, 4, 5].map((stern) => (
+    <span
+      key={stern}
+      onClick={() => bewertungAendern(wein.id, stern)}
+      style={{
+        cursor: "pointer",
+        color:
+          stern <= (wein.bewertung || 0)
+            ? "#d4a017"
+            : "#cccccc",
+      }}
+    >
+      ★
+    </span>
+  ))}
+</div>
       {wein.bild && (
   <img
     src={wein.bild}
