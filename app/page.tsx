@@ -13,6 +13,7 @@ type Wein = {
   rebsorte: string;
   anzahl: number;
   preis: number;
+  bewertung?: number;
 };
 
 export default function Home() {
@@ -42,11 +43,20 @@ export default function Home() {
     const durchschnittspreis =
       anzahlFlaschen > 0 ? gesamtwert / anzahlFlaschen : 0;
 
+      const durchschnittBewertung =
+        anzahlWeine > 0
+          ? weine.reduce(
+              (summe, wein) => summe + (wein.bewertung || 0),
+              0
+            ) / anzahlWeine
+          : 0;
+
     return {
       anzahlWeine,
       anzahlFlaschen,
       gesamtwert,
       durchschnittspreis,
+      durchschnittBewertung,
     };
   }, [weine]);
 
@@ -100,25 +110,23 @@ export default function Home() {
             title="Weine"
             value={String(kennzahlen.anzahlWeine)}
           />
-
           <DashboardCard
             icon="🍾"
             title="Flaschen"
             value={String(kennzahlen.anzahlFlaschen)}
           />
-
           <DashboardCard
             icon="💰"
             title="Gesamtwert"
             value={`CHF ${kennzahlen.gesamtwert.toFixed(2)}`}
           />
-
           <DashboardCard
-            icon="📊"
-            title="Ø Preis pro Flasche"
-            value={`CHF ${kennzahlen.durchschnittspreis.toFixed(2)}`}
+          icon="⭐"
+            title="Ø Bewertung"
+            value={`${kennzahlen.durchschnittBewertung.toFixed(1)} / 5`}
           />
         </section>
+
 
         <Link
           href="/wein-hinzufuegen"

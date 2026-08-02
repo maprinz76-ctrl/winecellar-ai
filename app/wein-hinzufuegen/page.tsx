@@ -10,6 +10,7 @@ import { useState } from "react";
   const [rebsorte, setRebsorte] = useState("");
   const [anzahl, setAnzahl] = useState("");
   const [preis, setPreis] = useState("");
+ 
   function handleSubmit(event: any) {
     event.preventDefault();
 
@@ -28,6 +29,7 @@ import { useState } from "react";
       rebsorte,
       anzahl: Number(anzahl),
       preis: Number(preis),
+      bewertung: 0,
     };
 
     const gespeicherteWeine = JSON.parse(

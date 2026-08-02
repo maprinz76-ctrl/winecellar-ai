@@ -13,6 +13,7 @@ type Wein = {
   rebsorte: string;
   anzahl: number;
   preis: number;
+  bewertung: number;
 };
 
 export default function Weinkeller() {
@@ -38,6 +39,36 @@ const gefilterteWeine = weine.filter((wein: Wein) => {
 
   return text.includes(suche.toLowerCase());
 });
+function bestandAendern(id: number, veraenderung: number) {
+  const neueListe = weine.map((wein) => {
+    if (wein.id !== id) {
+      return wein;
+    }
+
+    return {
+      ...wein,
+      anzahl: Math.max(0, wein.anzahl + veraenderung),
+    };
+  });
+
+  setWeine(neueListe);
+  localStorage.setItem("weine", JSON.stringify(neueListe));
+}
+function bewertungAendern(id: number, sterne: number) {
+  const neueListe = weine.map((wein) => {
+    if (wein.id !== id) {
+      return wein;
+    }
+
+    return {
+      ...wein,
+      bewertung: sterne,
+    };
+  });
+
+  setWeine(neueListe);
+  localStorage.setItem("weine", JSON.stringify(neueListe));
+}
   function weinLoeschen(id: number) {
     const bestaetigt = window.confirm(
       "Möchtest du diesen Wein wirklich löschen?"
@@ -193,32 +224,51 @@ const gefilterteWeine = weine.filter((wein: Wein) => {
                       </p>
 
                       <h2
-                        style={{
+                         style={{
                           margin: "5px 0 10px",
                           fontSize: "25px",
                         }}
                       >
                         {wein.weinname}
                       </h2>
-
-                      <p
-                        style={{
-                          margin: 0,
-                          color: "#6e6560",
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        Jahrgang: {wein.jahrgang || "nicht angegeben"}
-                        <br />
-                        Herkunft:{" "}
-                        {[wein.region, wein.land]
-                          .filter(Boolean)
-                          .join(", ") || "nicht angegeben"}
-                        <br />
-                        Rebsorte: {wein.rebsorte || "nicht angegeben"}
-                      </p>
-                    </div>
-
+<div
+  style={{
+    margin: "5px 0 10px",
+    fontSize: "24px",
+  }}
+>
+  {[1, 2, 3, 4, 5].map((stern) => (
+    <span
+      key={stern}
+      onClick={() => bewertungAendern(wein.id, stern)}
+      style={{
+        cursor: "pointer",
+        color:
+          stern <= (wein.bewertung || 0)
+            ? "#d4a017"
+            : "#cccccc",
+      }}
+    >
+      ★
+    </span>
+  ))}
+</div>
+</div>
+                    <button
+  type="button"
+  onClick={() => alert("Bearbeiten kommt gleich 😊")}
+  style={{
+    border: "none",
+    backgroundColor: "#ece7f8",
+    color: "#4b2c83",
+    padding: "9px 12px",
+    borderRadius: "9px",
+    cursor: "pointer",
+    marginRight: "8px",
+  }}
+>
+  Bearbeiten
+</button>
                     <button
                       type="button"
                       onClick={() => weinLoeschen(wein.id)}
@@ -244,10 +294,69 @@ const gefilterteWeine = weine.filter((wein: Wein) => {
                       marginTop: "20px",
                     }}
                   >
-                    <InfoBox
-                      title="Flaschen"
-                      value={String(wein.anzahl)}
-                    />
+                    <div
+  style={{
+    backgroundColor: "#f6f2ec",
+    padding: "14px",
+    borderRadius: "10px",
+  }}
+>
+  <p
+    style={{
+      margin: "0 0 10px",
+      color: "#7b6f68",
+      fontSize: "13px",
+    }}
+  >
+    Flaschen
+  </p>
+
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "10px",
+    }}
+  >
+    <button
+      type="button"
+      onClick={() => bestandAendern(wein.id, -1)}
+      disabled={wein.anzahl === 0}
+      style={{
+        width: "34px",
+        height: "34px",
+        border: "none",
+        borderRadius: "8px",
+        backgroundColor: "#eadcdf",
+        color: "#7b1026",
+        fontSize: "20px",
+        cursor: wein.anzahl === 0 ? "not-allowed" : "pointer",
+      }}
+    >
+      −
+    </button>
+
+    <strong style={{ fontSize: "18px" }}>{wein.anzahl}</strong>
+
+    <button
+      type="button"
+      onClick={() => bestandAendern(wein.id, 1)}
+      style={{
+        width: "34px",
+        height: "34px",
+        border: "none",
+        borderRadius: "8px",
+        backgroundColor: "#7b1026",
+        color: "white",
+        fontSize: "20px",
+        cursor: "pointer",
+      }}
+    >
+      +
+    </button>
+  </div>
+</div>
 
                     <InfoBox
                       title="Preis pro Flasche"
