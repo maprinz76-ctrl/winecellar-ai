@@ -1,6 +1,55 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+
+type Wein = {
+  id: number;
+  produzent: string;
+  weinname: string;
+  jahrgang: string;
+  land: string;
+  region: string;
+  rebsorte: string;
+  anzahl: number;
+  preis: number;
+};
 
 export default function Home() {
+  const [weine, setWeine] = useState<Wein[]>([]);
+
+  useEffect(() => {
+    const daten = localStorage.getItem("weine");
+
+    if (daten) {
+      setWeine(JSON.parse(daten));
+    }
+  }, []);
+
+  const kennzahlen = useMemo(() => {
+    const anzahlWeine = weine.length;
+
+    const anzahlFlaschen = weine.reduce(
+      (summe, wein) => summe + wein.anzahl,
+      0
+    );
+
+    const gesamtwert = weine.reduce(
+      (summe, wein) => summe + wein.anzahl * wein.preis,
+      0
+    );
+
+    const durchschnittspreis =
+      anzahlFlaschen > 0 ? gesamtwert / anzahlFlaschen : 0;
+
+    return {
+      anzahlWeine,
+      anzahlFlaschen,
+      gesamtwert,
+      durchschnittspreis,
+    };
+  }, [weine]);
+
   return (
     <main
       style={{
@@ -8,13 +57,13 @@ export default function Home() {
         backgroundColor: "#f4f1ec",
         color: "#231f20",
         fontFamily: "Arial, sans-serif",
-        padding: "24px 20px 110px",
+        padding: "28px 20px 110px",
       }}
     >
       <div
         style={{
           width: "100%",
-          maxWidth: "720px",
+          maxWidth: "820px",
           margin: "0 auto",
         }}
       >
@@ -26,13 +75,13 @@ export default function Home() {
               fontSize: "16px",
             }}
           >
-            Guten Abend, Marco
+            Willkommen zurück, Marco
           </p>
 
           <h1
             style={{
               margin: "8px 0 0",
-              fontSize: "36px",
+              fontSize: "38px",
             }}
           >
             🍷 WineCellar AI
@@ -47,27 +96,27 @@ export default function Home() {
           }}
         >
           <DashboardCard
+            icon="🍷"
+            title="Weine"
+            value={String(kennzahlen.anzahlWeine)}
+          />
+
+          <DashboardCard
             icon="🍾"
             title="Flaschen"
-            value="0"
+            value={String(kennzahlen.anzahlFlaschen)}
           />
 
           <DashboardCard
             icon="💰"
             title="Gesamtwert"
-            value="CHF 0"
+            value={`CHF ${kennzahlen.gesamtwert.toFixed(2)}`}
           />
 
           <DashboardCard
-            icon="⭐"
-            title="Trinkreif"
-            value="0 Weine"
-          />
-
-          <DashboardCard
-            icon="🆕"
-            title="Neu erfasst"
-            value="0"
+            icon="📊"
+            title="Ø Preis pro Flasche"
+            value={`CHF ${kennzahlen.durchschnittspreis.toFixed(2)}`}
           />
         </section>
 
@@ -88,6 +137,25 @@ export default function Home() {
         >
           + Wein hinzufügen
         </Link>
+
+        <Link
+          href="/weinkeller"
+          style={{
+            display: "block",
+            marginTop: "14px",
+            padding: "17px",
+            backgroundColor: "white",
+            color: "#7b1026",
+            textAlign: "center",
+            textDecoration: "none",
+            borderRadius: "14px",
+            fontSize: "18px",
+            fontWeight: "bold",
+            border: "1px solid #ded8d2",
+          }}
+        >
+          Mein Weinkeller öffnen
+        </Link>
       </div>
 
       <nav
@@ -103,22 +171,29 @@ export default function Home() {
       >
         <div
           style={{
-            maxWidth: "720px",
+            maxWidth: "820px",
             margin: "0 auto",
             display: "flex",
             justifyContent: "space-around",
             fontSize: "24px",
           }}
         >
-          <span>🏠</span>
-          <span>🍷</span>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            🏠
+          </Link>
+
+          <Link href="/weinkeller" style={{ textDecoration: "none" }}>
+            🍷
+          </Link>
+
           <Link
             href="/wein-hinzufuegen"
             style={{ textDecoration: "none" }}
           >
             ➕
           </Link>
-          <span>🤖</span>
+
+          <span>🔍</span>
           <span>👤</span>
         </div>
       </nav>
@@ -139,12 +214,12 @@ function DashboardCard({
     <div
       style={{
         backgroundColor: "white",
-        padding: "20px",
+        padding: "22px",
         borderRadius: "16px",
         boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
       }}
     >
-      <div style={{ fontSize: "26px" }}>{icon}</div>
+      <div style={{ fontSize: "28px" }}>{icon}</div>
 
       <p
         style={{

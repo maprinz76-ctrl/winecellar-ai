@@ -17,15 +17,27 @@ type Wein = {
 
 export default function Weinkeller() {
   const [weine, setWeine] = useState<Wein[]>([]);
-
+const [suche, setSuche] = useState("");
   useEffect(() => {
-    const daten = localStorage.getItem("weine");
+    
+        const daten = localStorage.getItem("weine");
 
     if (daten) {
       setWeine(JSON.parse(daten));
     }
   }, []);
+const gefilterteWeine = weine.filter((wein: Wein) => {
+  const text = `
+    ${wein.produzent}
+    ${wein.weinname}
+    ${wein.land}
+    ${wein.region}
+    ${wein.rebsorte}
+    ${wein.jahrgang}
+  `.toLowerCase();
 
+  return text.includes(suche.toLowerCase());
+});
   function weinLoeschen(id: number) {
     const bestaetigt = window.confirm(
       "Möchtest du diesen Wein wirklich löschen?"
@@ -88,7 +100,21 @@ export default function Weinkeller() {
             🍷 Mein Weinkeller
           </h1>
         </div>
-
+<input
+  type="text"
+  placeholder="🔍 Wein, Produzent, Land oder Rebsorte suchen..."
+  value={suche}
+  onChange={(e) => setSuche(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "14px",
+    marginBottom: "24px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    fontSize: "16px",
+    boxSizing: "border-box",
+  }}
+/>
         {weine.length === 0 ? (
           <div
             style={{
@@ -116,14 +142,25 @@ export default function Weinkeller() {
               + Ersten Wein hinzufügen
             </Link>
           </div>
-        ) : (
+        ) : gefilterteWeine.length === 0 ? (
+  <div
+    style={{
+      backgroundColor: "white",
+      padding: "30px",
+      borderRadius: "16px",
+      textAlign: "center",
+    }}
+  >
+    <p>Keine passenden Weine gefunden.</p>
+  </div>
+) : (
           <div
             style={{
               display: "grid",
               gap: "18px",
             }}
           >
-            {weine.map((wein) => {
+            {gefilterteWeine.map((wein) => {
               const gesamtwert = wein.anzahl * wein.preis;
 
               return (
