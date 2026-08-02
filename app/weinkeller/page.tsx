@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import WeinKarte from "../components/WeinKarte";
 
 type Wein = {
   id: number;
@@ -192,213 +193,15 @@ function bewertungAendern(id: number, sterne: number) {
               gap: "18px",
             }}
           >
-            {gefilterteWeine.map((wein) => {
-              const gesamtwert = wein.anzahl * wein.preis;
-
-              return (
-                <article
-                  key={wein.id}
-                  style={{
-                    backgroundColor: "white",
-                    padding: "22px",
-                    borderRadius: "16px",
-                    boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "20px",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <div>
- 
-  {wein.bild && (
-    <img
-      src={wein.bild}
-      alt={wein.weinname}
-      style={{
-        width: "120px",
-        height: "180px",
-        objectFit: "contain",
-        display: "block",
-        margin: "0 auto 15px auto",
-        borderRadius: "10px",
-        border: "1px solid #ddd",
-        backgroundColor: "white",
-      }}
-    />
-  )}
-
-  <p
-    style={{
-      margin: 0,
-      color: "#7b1026",
-      fontWeight: "bold",
-    }}
-  >
-    {wein.produzent}
-  </p>
-                      <p
-                        style={{
-                          margin: 0,
-                          color: "#7b1026",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {wein.produzent}
-                      </p>
-
-                      <h2
-                         style={{
-                          margin: "5px 0 10px",
-                          fontSize: "25px",
-                        }}
-                      >
-                        {wein.weinname}
-                      </h2>
-<div
-  style={{
-    margin: "5px 0 10px",
-    fontSize: "24px",
-  }}
->
-  {[1, 2, 3, 4, 5].map((stern) => (
-    <span
-      key={stern}
-      onClick={() => bewertungAendern(wein.id, stern)}
-      style={{
-        cursor: "pointer",
-        color:
-          stern <= (wein.bewertung || 0)
-            ? "#d4a017"
-            : "#cccccc",
-      }}
-    >
-      ★
-    </span>
-  ))}
-</div>
-</div>
-                    <button
-  type="button"
-  onClick={() => alert("Bearbeiten kommt gleich 😊")}
-  style={{
-    border: "none",
-    backgroundColor: "#ece7f8",
-    color: "#4b2c83",
-    padding: "9px 12px",
-    borderRadius: "9px",
-    cursor: "pointer",
-    marginRight: "8px",
-  }}
->
-  Bearbeiten
-</button>
-                    <button
-                      type="button"
-                      onClick={() => weinLoeschen(wein.id)}
-                      style={{
-                        border: "none",
-                        backgroundColor: "#f4e7e9",
-                        color: "#7b1026",
-                        padding: "9px 12px",
-                        borderRadius: "9px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Löschen
-                    </button>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(3, minmax(0, 1fr))",
-                      gap: "12px",
-                      marginTop: "20px",
-                    }}
-                  >
-                    <div
-  style={{
-    backgroundColor: "#f6f2ec",
-    padding: "14px",
-    borderRadius: "10px",
-  }}
->
-  <p
-    style={{
-      margin: "0 0 10px",
-      color: "#7b6f68",
-      fontSize: "13px",
-    }}
-  >
-    Flaschen
-  </p>
-
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: "10px",
-    }}
-  >
-    <button
-      type="button"
-      onClick={() => bestandAendern(wein.id, -1)}
-      disabled={wein.anzahl === 0}
-      style={{
-        width: "34px",
-        height: "34px",
-        border: "none",
-        borderRadius: "8px",
-        backgroundColor: "#eadcdf",
-        color: "#7b1026",
-        fontSize: "20px",
-        cursor: wein.anzahl === 0 ? "not-allowed" : "pointer",
-      }}
-    >
-      −
-    </button>
-
-    <strong style={{ fontSize: "18px" }}>{wein.anzahl}</strong>
-
-    <button
-      type="button"
-      onClick={() => bestandAendern(wein.id, 1)}
-      style={{
-        width: "34px",
-        height: "34px",
-        border: "none",
-        borderRadius: "8px",
-        backgroundColor: "#7b1026",
-        color: "white",
-        fontSize: "20px",
-        cursor: "pointer",
-      }}
-    >
-      +
-    </button>
-  </div>
-</div>
-
-                    <InfoBox
-                      title="Preis pro Flasche"
-                      value={`CHF ${wein.preis.toFixed(2)}`}
-                    />
-
-                    <InfoBox
-                      title="Gesamtwert"
-                      value={`CHF ${gesamtwert.toFixed(2)}`}
-                    />
-                  </div>
-                </article>
-              );
-            })}
+{gefilterteWeine.map((wein) => (
+  <WeinKarte
+    key={wein.id}
+    wein={wein}
+    bestandAendern={bestandAendern}
+    bewertungAendern={bewertungAendern}
+    weinLoeschen={weinLoeschen}
+  />
+))}
           </div>
         )}
 

@@ -86,6 +86,54 @@ export default function WeinKarte({
     }}
   />
 )}
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "12px",
+    marginTop: "20px",
+  }}
+>
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "14px",
+      borderRadius: "10px",
+    }}
+  >
+    <p
+      style={{
+        margin: "0 0 6px",
+        color: "#7b6f68",
+        fontSize: "13px",
+      }}
+    >
+      Preis pro Flasche
+    </p>
+
+    <strong>CHF {wein.preis.toFixed(2)}</strong>
+  </div>
+
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "14px",
+      borderRadius: "10px",
+    }}
+  >
+    <p
+      style={{
+        margin: "0 0 6px",
+        color: "#7b6f68",
+        fontSize: "13px",
+      }}
+    >
+      Gesamtwert
+    </p>
+
+    <strong>CHF {gesamtwert.toFixed(2)}</strong>
+  </div>
+</div>
     </article>
   );
 }
