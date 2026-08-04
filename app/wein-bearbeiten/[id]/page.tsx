@@ -1,9 +1,9 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 export default function WeinBearbeiten() {  
     const params = useParams();
-
+const router = useRouter();
 const id = Number(params.id);
 
 const [wein, setWein] = useState({
@@ -23,6 +23,17 @@ useEffect(() => {
     setWein(gefundenerWein);
   }
 }, [id]);
+function speichern() {
+  const weine = JSON.parse(localStorage.getItem("weine") || "[]");
+
+  const neueWeine = weine.map((w: any) =>
+    w.id === id ? wein : w
+  );
+
+  localStorage.setItem("weine", JSON.stringify(neueWeine));
+
+  router.push("/weinkeller");
+}
   return (
     <main
       style={{
@@ -78,6 +89,7 @@ useEffect(() => {
 />
 
       <button
+      onClick={speichern}
         style={{
           padding: "12px 24px",
           backgroundColor: "#7b1026",
