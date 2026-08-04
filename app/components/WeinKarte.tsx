@@ -45,8 +45,8 @@ export default function WeinKarte({
     alt={wein.weinname}
     style={{
   
-  width: "220px",
-  height: "220px",
+  width: "170px",
+  height: "170px",
   objectFit: "contain",
   display: "block",
   margin: "0 auto 20px",
