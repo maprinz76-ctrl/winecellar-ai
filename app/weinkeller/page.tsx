@@ -21,6 +21,7 @@ type Wein = {
 export default function Weinkeller() {
   const [weine, setWeine] = useState<Wein[]>([]);
 const [suche, setSuche] = useState("");
+const [sortierung, setSortierung] = useState("name");
   useEffect(() => {
     
         const daten = localStorage.getItem("weine");
@@ -29,18 +30,43 @@ const [suche, setSuche] = useState("");
       setWeine(JSON.parse(daten));
     }
   }, []);
-const gefilterteWeine = weine.filter((wein: Wein) => {
-  const text = `
-    ${wein.produzent}
-    ${wein.weinname}
-    ${wein.land}
-    ${wein.region}
-    ${wein.rebsorte}
-    ${wein.jahrgang}
-  `.toLowerCase();
+const gefilterteWeine = weine
+  .filter((wein: Wein) => {
+    const text = `
+      ${wein.produzent}
+      ${wein.weinname}
+      ${wein.land}
+      ${wein.region}
+      ${wein.rebsorte}
+      ${wein.jahrgang}
+    `.toLowerCase();
 
-  return text.includes(suche.toLowerCase());
-});
+    return text.includes(suche.toLowerCase());
+  })
+  .sort((a, b) => {
+    switch (sortierung) {
+      case "name":
+        return a.weinname.localeCompare(b.weinname);
+
+      case "produzent":
+        return a.produzent.localeCompare(b.produzent);
+
+      case "bewertung":
+        return b.bewertung - a.bewertung;
+
+      case "preisAuf":
+        return a.preis - b.preis;
+
+      case "preisAb":
+        return b.preis - a.preis;
+
+      case "jahrgang":
+        return Number(b.jahrgang) - Number(a.jahrgang);
+
+      default:
+        return 0;
+    }
+  });
 function bestandAendern(id: number, veraenderung: number) {
   const neueListe = weine.map((wein) => {
     if (wein.id !== id) {
@@ -133,6 +159,31 @@ function bewertungAendern(id: number, sterne: number) {
             🍷 Mein Weinkeller
           </h1>
         </div>
+        <div
+  style={{
+    marginBottom: "15px",
+    display: "flex",
+    justifyContent: "flex-end",
+  }}
+>
+  <select
+    value={sortierung}
+    onChange={(e) => setSortierung(e.target.value)}
+    style={{
+      padding: "10px",
+      borderRadius: "8px",
+      border: "1px solid #ddd",
+      fontSize: "15px",
+    }}
+  >
+    <option value="name">Name A–Z</option>
+    <option value="produzent">Produzent</option>
+    <option value="bewertung">Bewertung</option>
+    <option value="preisAuf">Preis ↑</option>
+    <option value="preisAb">Preis ↓</option>
+    <option value="jahrgang">Jahrgang</option>
+  </select>
+</div>
 <input
   type="text"
   placeholder="🔍 Wein, Produzent, Land oder Rebsorte suchen..."
