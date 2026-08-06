@@ -14,6 +14,7 @@ type Wein = {
   anzahl: number;
   preis: number;
   bewertung?: number;
+  bild?: string;
 };
 
 export default function Home() {
@@ -50,13 +51,21 @@ export default function Home() {
               0
             ) / anzahlWeine
           : 0;
-
+const lieblingswein =
+  weine.length > 0
+    ? [...weine].sort(
+        (a, b) =>
+          (b.bewertung || 0) - (a.bewertung || 0) ||
+          b.preis - a.preis
+      )[0]
+    : null;
     return {
       anzahlWeine,
       anzahlFlaschen,
       gesamtwert,
       durchschnittspreis,
       durchschnittBewertung,
+      lieblingswein,
     };
   }, [weine]);
 
@@ -125,6 +134,81 @@ export default function Home() {
             title="Ø Bewertung"
             value={`${kennzahlen.durchschnittBewertung.toFixed(1)} / 5`}
           />
+          {kennzahlen.lieblingswein && (
+  <div
+    style={{
+      gridColumn: "1 / -1",
+      backgroundColor: "white",
+      padding: "22px",
+      borderRadius: "16px",
+      boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
+    }}
+  >
+    <div style={{ fontSize: "28px" }}>🏆</div>
+
+    <p
+      style={{
+        margin: "14px 0 6px",
+        color: "#7b6f68",
+        fontSize: "14px",
+      }}
+    >
+      Höchst bewerteter Wein
+    </p>
+
+    <strong
+      style={{
+        display: "block",
+        fontSize: "22px",
+        color: "#7b1026",
+      }}
+    >
+      {kennzahlen.lieblingswein.produzent}
+    </strong>
+{kennzahlen.lieblingswein.bild && (
+  <img
+    src={kennzahlen.lieblingswein.bild}
+    alt={kennzahlen.lieblingswein.weinname}
+    style={{
+      width: "90px",
+      height: "90px",
+      objectFit: "contain",
+      marginTop: "10px",
+      borderRadius: "10px",
+    }}
+  />
+)}
+    <span
+      style={{
+        display: "block",
+        marginTop: "4px",
+        fontSize: "18px",
+      }}
+    >
+      {kennzahlen.lieblingswein.weinname}
+    </span>
+
+    <div
+      style={{
+        marginTop: "12px",
+        color: "#d4a017",
+        fontSize: "22px",
+      }}
+    >
+      {"★".repeat(kennzahlen.lieblingswein.bewertung || 0)}
+      {"☆".repeat(5 - (kennzahlen.lieblingswein.bewertung || 0))}
+    </div>
+
+    <p
+      style={{
+        margin: "10px 0 0",
+        color: "#7b6f68",
+      }}
+    >
+      CHF {kennzahlen.lieblingswein.preis.toFixed(2)}
+    </p>
+  </div>
+)}
         </section>
 
 

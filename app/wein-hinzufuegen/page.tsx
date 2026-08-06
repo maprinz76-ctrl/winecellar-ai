@@ -34,7 +34,7 @@ import { useState } from "react";
   reader.readAsDataURL(datei);
 }
  
-  function handleSubmit(event: any) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!produzent.trim() || !weinname.trim()) {
@@ -89,14 +89,40 @@ import { useState } from "react";
       }}
     >
       <h1>🍷 Wein hinzufügen</h1>
-
+<button
+  type="button"
+  style={{
+    width: "100%",
+    marginTop: "20px",
+    marginBottom: "10px",
+    padding: "14px",
+    backgroundColor: "#ece7f8",
+    color: "#4b2c83",
+    border: "none",
+    borderRadius: "12px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  📷 Etikett fotografieren (demnächst)
+</button>
+<div
+  style={{
+    background: "white",
+    padding: "28px",
+    borderRadius: "18px",
+    boxShadow: "0 6px 20px rgba(40,30,30,0.08)",
+    marginTop: "25px",
+  }}
+>
 <form
   onSubmit={handleSubmit}
   style={{
     display: "flex",
     flexDirection: "column",
     gap: "15px",
-    marginTop: "30px",
+    marginTop: "0",
   }}
 >
         <input
@@ -134,6 +160,7 @@ import { useState } from "react";
         <input
   placeholder="Anzahl Flaschen"
   type="number"
+  min="0"
   value={anzahl}
   onChange={(e) => setAnzahl(e.target.value)}
 />
@@ -190,7 +217,8 @@ import { useState } from "react";
         >
           Speichern
         </button>
-      </form>
+            </form>
+    </div>
     </main>
   );
 }
