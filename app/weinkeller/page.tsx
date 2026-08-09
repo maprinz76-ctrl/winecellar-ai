@@ -136,6 +136,42 @@ function bewertungAendern(id: number, sterne: number) {
     link.click();
     URL.revokeObjectURL(url);
   }
+    function backupImportieren(datei: File) {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      try {
+        const inhalt = event.target?.result;
+
+        if (typeof inhalt !== "string") {
+          alert("Die Backup-Datei konnte nicht gelesen werden.");
+          return;
+        }
+
+        const importierteWeine = JSON.parse(inhalt);
+
+        if (!Array.isArray(importierteWeine)) {
+          alert("Diese Datei ist kein gültiges Weinkeller-Backup.");
+          return;
+        }
+
+        const bestaetigt = window.confirm(
+          "Möchtest du das Backup wirklich wiederherstellen? Die aktuell gespeicherten Weine werden ersetzt."
+        );
+
+        if (!bestaetigt) return;
+
+        localStorage.setItem("weine", JSON.stringify(importierteWeine));
+        setWeine(importierteWeine);
+
+        alert("Backup wurde erfolgreich wiederhergestellt.");
+      } catch {
+        alert("Die Backup-Datei ist ungültig oder beschädigt.");
+      }
+    };
+
+    reader.readAsText(datei);
+  }
   return (
     <main
       style={{
@@ -258,6 +294,32 @@ function bewertungAendern(id: number, sterne: number) {
 >
   💾 Backup erstellen
 </button>
+<label
+  style={{
+    marginLeft: "12px",
+    padding: "12px 18px",
+    backgroundColor: "#f4f1ec",
+    color: "#7b1026",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    display: "inline-block",
+  }}
+>
+  📥 Backup wiederherstellen
+  <input
+    type="file"
+    accept=".json,application/json"
+    style={{ display: "none" }}
+    onChange={(e) => {
+      const datei = e.target.files?.[0];
+      if (datei) {
+        backupImportieren(datei);
+      }
+      e.target.value = "";
+    }}
+  />
+</label>
         {weine.length === 0 ? (
           <div
             style={{
