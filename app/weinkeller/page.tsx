@@ -19,7 +19,16 @@ type Wein = {
   favorit?: boolean;
   archiviert?: boolean;
 };
-
+type Verbrauch = {
+  id: number;
+  weinId: number;
+  produzent: string;
+  weinname: string;
+  jahrgang: string;
+  datum: string;
+  anzahl: number;
+  preis: number;
+};
 export default function Weinkeller() {
   const [weine, setWeine] = useState<Wein[]>([]);
 const [suche, setSuche] = useState("");
@@ -78,6 +87,36 @@ return passtZurSuche && passtZuFavoriten && passtZumArchiv;
     }
   });
 function bestandAendern(id: number, veraenderung: number) {
+  const aktuellerWein = weine.find((wein) => wein.id === id);
+
+  if (!aktuellerWein) {
+    return;
+  }
+
+  // Verbrauch speichern, wenn eine Flasche entnommen wird
+  if (veraenderung === -1 && aktuellerWein.anzahl > 0) {
+    const gespeicherteVerbraeuche = localStorage.getItem("verbraeuche");
+    const verbraeuche: Verbrauch[] = gespeicherteVerbraeuche
+      ? JSON.parse(gespeicherteVerbraeuche)
+      : [];
+
+    const neuerVerbrauch: Verbrauch = {
+      id: Date.now(),
+      weinId: aktuellerWein.id,
+      produzent: aktuellerWein.produzent,
+      weinname: aktuellerWein.weinname,
+      jahrgang: aktuellerWein.jahrgang,
+      datum: new Date().toISOString(),
+      anzahl: 1,
+      preis: aktuellerWein.preis,
+    };
+
+    localStorage.setItem(
+      "verbraeuche",
+      JSON.stringify([...verbraeuche, neuerVerbrauch])
+    );
+  }
+
   const neueListe = weine.map((wein) => {
     if (wein.id !== id) {
       return wein;
@@ -377,6 +416,21 @@ function bewertungAendern(id: number, sterne: number) {
 >
   💾 Backup erstellen
 </button>
+<Link
+  href="/verbrauch"
+  style={{
+    marginLeft: "12px",
+    padding: "12px 18px",
+    backgroundColor: "#f4f1ec",
+    color: "#7b1026",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    textDecoration: "none",
+    display: "inline-block",
+  }}
+>
+  🍷 Verbrauch
+</Link>
 <label
   style={{
     marginLeft: "12px",
