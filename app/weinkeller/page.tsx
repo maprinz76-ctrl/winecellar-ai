@@ -17,6 +17,7 @@ type Wein = {
   bewertung: number;
   bild?: string;
   favorit?: boolean;
+  archiviert?: boolean;
 };
 
 export default function Weinkeller() {
@@ -24,6 +25,7 @@ export default function Weinkeller() {
 const [suche, setSuche] = useState("");
 const [sortierung, setSortierung] = useState("name");
 const [nurFavoriten, setNurFavoriten] = useState(false);
+const [archivAnzeigen, setArchivAnzeigen] = useState(false);
   useEffect(() => {
     
         const daten = localStorage.getItem("weine");
@@ -43,10 +45,13 @@ const gefilterteWeine = weine
       ${wein.jahrgang}
     `.toLowerCase();
 
-    const passtZurSuche = text.includes(suche.toLowerCase());
+   const passtZurSuche = text.includes(suche.toLowerCase());
 const passtZuFavoriten = !nurFavoriten || wein.favorit === true;
+const passtZumArchiv = archivAnzeigen
+  ? wein.archiviert === true
+  : wein.archiviert !== true;
 
-return passtZurSuche && passtZuFavoriten;
+return passtZurSuche && passtZuFavoriten && passtZumArchiv;
   })
   .sort((a, b) => {
     switch (sortierung) {
@@ -116,6 +121,28 @@ function bewertungAendern(id: number, sterne: number) {
     setWeine(neueListe);
     localStorage.setItem("weine", JSON.stringify(neueListe));
   }
+  function weinArchivieren(id: number) {
+ const aktuellerWein = weine.find((wein) => wein.id === id);
+
+const bestaetigt = window.confirm(
+  aktuellerWein?.archiviert
+    ? "Möchtest du diesen Wein zurück in den Weinkeller legen?"
+    : "Möchtest du diesen Wein wirklich archivieren?"
+);
+
+  if (!bestaetigt) {
+    return;
+  }
+
+ const neueListe = weine.map((wein) =>
+  wein.id === id
+    ? { ...wein, archiviert: !wein.archiviert }
+    : wein
+);
+
+  setWeine(neueListe);
+  localStorage.setItem("weine", JSON.stringify(neueListe));
+}
   function backupExportieren() {
     const daten = localStorage.getItem("weine");
 
@@ -278,6 +305,24 @@ function bewertungAendern(id: number, sterne: number) {
 </button>
 <button
   type="button"
+  onClick={() => setArchivAnzeigen(!archivAnzeigen)}
+  style={{
+    marginLeft: "10px",
+    marginBottom: "24px",
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: "10px",
+    backgroundColor: archivAnzeigen ? "#7b1026" : "#f3eee8",
+    color: archivAnzeigen ? "white" : "#7b1026",
+    fontSize: "15px",
+    fontWeight: "600",
+    cursor: "pointer",
+  }}
+>
+  📦 {archivAnzeigen ? "Aktive Weine anzeigen" : "Archiv anzeigen"}
+</button>
+<button
+  type="button"
   onClick={backupExportieren}
   style={{
     marginLeft: "10px",
@@ -372,6 +417,7 @@ function bewertungAendern(id: number, sterne: number) {
     bestandAendern={bestandAendern}
     bewertungAendern={bewertungAendern}
     weinLoeschen={weinLoeschen}
+    weinArchivieren={weinArchivieren}
   />
 ))}
           </div>

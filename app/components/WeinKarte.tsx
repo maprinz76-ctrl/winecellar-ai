@@ -14,6 +14,7 @@ type Wein = {
   bewertung?: number;
    bild?: string;
    favorit?: boolean;
+   archiviert?: boolean;
 };
 
 type Props = {
@@ -21,6 +22,7 @@ type Props = {
   bestandAendern: (id: number, veraenderung: number) => void;
   bewertungAendern: (id: number, sterne: number) => void;
   weinLoeschen: (id: number) => void;
+  weinArchivieren: (id: number) => void;
 };
 
 export default function WeinKarte({
@@ -28,6 +30,7 @@ export default function WeinKarte({
   bestandAendern,
   bewertungAendern,
   weinLoeschen,
+  weinArchivieren,
 }: Props) {
   const gesamtwert = wein.anzahl * wein.preis;
   return (
@@ -334,7 +337,20 @@ export default function WeinKarte({
       ✏️ Bearbeiten
     </button>
   </Link>
-
+<button
+  type="button"
+  onClick={() => weinArchivieren(wein.id)}
+  style={{
+    border: "none",
+    backgroundColor: wein.archiviert ? "#e8f3e8" : "#f4f1ec",
+    color: wein.archiviert ? "#2f6b3c" : "#7b1026",
+    padding: "10px 14px",
+    borderRadius: "9px",
+    cursor: "pointer",
+  }}
+>
+  {wein.archiviert ? "↩️ Zurück in den Weinkeller" : "📦 Archivieren"}
+</button>
   <button
     type="button"
     onClick={() => weinLoeschen(wein.id)}
