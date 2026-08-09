@@ -46,200 +46,303 @@ const verbrauchDieserMonat = verbraeuche
     );
   })
   .reduce((summe, eintrag) => summe + eintrag.anzahl, 0);
-  return (
-    <main
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#f4f1ec",
-        padding: "30px 20px",
-        fontFamily: "Arial, sans-serif",
-        color: "#231f20",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "850px",
-          margin: "0 auto",
-        }}
-      >
-        <Link
-          href="/weinkeller"
-          style={{
-            color: "#7b1026",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
-          ← Zurück zum Weinkeller
-        </Link>
+  const monatsAuswertung = Object.values(
+  verbraeuche.reduce((monate, eintrag) => {
+    const datum = new Date(eintrag.datum);
 
-        <h1 style={{ marginTop: "30px" }}>🍷 Verbrauchshistorie</h1>
-<div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "14px",
-    marginTop: "20px",
-    marginBottom: "28px",
-  }}
->
-  <div
-    style={{
-      backgroundColor: "white",
-      padding: "18px",
-      borderRadius: "14px",
-      boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
-    }}
-  >
-    <div style={{ fontSize: "24px" }}>🍷</div>
-    <p
-      style={{
-        margin: "10px 0 5px",
-        color: "#7b6f68",
-        fontSize: "13px",
-      }}
-    >
-      Getrunkene Flaschen
-    </p>
-    <strong style={{ fontSize: "22px" }}>
-      {getrunkeneFlaschen}
-    </strong>
-  </div>
+    const schluessel = `${datum.getFullYear()}-${datum.getMonth()}`;
 
-  <div
-    style={{
-      backgroundColor: "white",
-      padding: "18px",
-      borderRadius: "14px",
-      boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
-    }}
-  >
-    <div style={{ fontSize: "24px" }}>💰</div>
-    <p
-      style={{
-        margin: "10px 0 5px",
-        color: "#7b6f68",
-        fontSize: "13px",
-      }}
-    >
-      Verbrauchswert
-    </p>
-    <strong style={{ fontSize: "22px" }}>
-      CHF {verbrauchswert.toFixed(2)}
-    </strong>
-  </div>
+    const monatName = datum.toLocaleDateString("de-CH", {
+      month: "long",
+      year: "numeric",
+    });
 
-  <div
+    if (!monate[schluessel]) {
+      monate[schluessel] = {
+        monat: monatName,
+        flaschen: 0,
+        wert: 0,
+        datum: datum.getTime(),
+      };
+    }
+
+    monate[schluessel].flaschen += eintrag.anzahl;
+    monate[schluessel].wert += eintrag.anzahl * eintrag.preis;
+
+    return monate;
+  }, {} as Record<string, {
+    monat: string;
+    flaschen: number;
+    wert: number;
+    datum: number;
+  }>)
+).sort((a, b) => b.datum - a.datum);
+ return (
+  <main
     style={{
-      backgroundColor: "white",
-      padding: "18px",
-      borderRadius: "14px",
-      boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
-    }}
-  >
-    <div style={{ fontSize: "24px" }}>📅</div>
-    <p
-      style={{
-        margin: "10px 0 5px",
-        color: "#7b6f68",
-        fontSize: "13px",
-      }}
-    >
-      Diesen Monat
-    </p>
-    <strong style={{ fontSize: "22px" }}>
-      {verbrauchDieserMonat}
-    </strong>
-  </div>
-</div>
-        {verbraeuche.length === 0 ? (
-          <p>Noch keine Entnahmen gespeichert.</p>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gap: "14px",
-              marginTop: "24px",
-            }}
-          >
-           {[...verbraeuche].reverse().map((eintrag) => (
-  <div
-    key={eintrag.id}
-    style={{
-      backgroundColor: "white",
-      padding: "18px 20px",
-      borderRadius: "14px",
-      boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
+      minHeight: "100vh",
+      backgroundColor: "#f4f1ec",
+      padding: "30px 20px",
+      fontFamily: "Arial, sans-serif",
+      color: "#231f20",
     }}
   >
     <div
       style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: "20px",
-        flexWrap: "wrap",
+        width: "100%",
+        maxWidth: "850px",
+        margin: "0 auto",
       }}
     >
-      <div>
-        <strong
+      <Link
+        href="/weinkeller"
+        style={{
+          color: "#7b1026",
+          textDecoration: "none",
+          fontWeight: "bold",
+        }}
+      >
+        ← Zurück zum Weinkeller
+      </Link>
+
+      <h1 style={{ marginTop: "30px" }}>🍷 Verbrauchshistorie</h1>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: "14px",
+          marginTop: "20px",
+          marginBottom: "28px",
+        }}
+      >
+        <div
           style={{
-            color: "#7b1026",
-            fontSize: "16px",
+            backgroundColor: "white",
+            padding: "18px",
+            borderRadius: "14px",
+            boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
           }}
         >
-          {eintrag.produzent} – {eintrag.weinname}
-        </strong>
+          <div style={{ fontSize: "24px" }}>🍷</div>
+
+          <p
+            style={{
+              margin: "10px 0 5px",
+              color: "#7b6f68",
+              fontSize: "13px",
+            }}
+          >
+            Getrunkene Flaschen
+          </p>
+
+          <strong style={{ fontSize: "22px" }}>
+            {getrunkeneFlaschen}
+          </strong>
+        </div>
 
         <div
           style={{
-            marginTop: "7px",
-            color: "#6f625c",
-            fontSize: "14px",
+            backgroundColor: "white",
+            padding: "18px",
+            borderRadius: "14px",
+            boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
           }}
         >
-          🍇 Jahrgang {eintrag.jahrgang || "–"}
-          {" · "}
-          📅 {new Date(eintrag.datum).toLocaleString("de-CH")}
+          <div style={{ fontSize: "24px" }}>💰</div>
+
+          <p
+            style={{
+              margin: "10px 0 5px",
+              color: "#7b6f68",
+              fontSize: "13px",
+            }}
+          >
+            Verbrauchswert
+          </p>
+
+          <strong style={{ fontSize: "22px" }}>
+            CHF {verbrauchswert.toFixed(2)}
+          </strong>
+        </div>
+
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "18px",
+            borderRadius: "14px",
+            boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
+          }}
+        >
+          <div style={{ fontSize: "24px" }}>📅</div>
+
+          <p
+            style={{
+              margin: "10px 0 5px",
+              color: "#7b6f68",
+              fontSize: "13px",
+            }}
+          >
+            Diesen Monat
+          </p>
+
+          <strong style={{ fontSize: "22px" }}>
+            {verbrauchDieserMonat}
+          </strong>
         </div>
       </div>
 
       <div
         style={{
-          display: "flex",
-          gap: "10px",
-          alignItems: "center",
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "14px",
+          boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
+          marginBottom: "28px",
         }}
       >
-        <span
+        <h2
           style={{
-            backgroundColor: "#f4f1ec",
-            padding: "8px 12px",
-            borderRadius: "10px",
-            fontWeight: "bold",
+            margin: "0 0 16px",
+            fontSize: "20px",
+            color: "#7b1026",
           }}
         >
-          🍷 {eintrag.anzahl} {eintrag.anzahl === 1 ? "Flasche" : "Flaschen"}
-        </span>
+          📊 Verbrauch nach Monaten
+        </h2>
 
-        <span
-          style={{
-            backgroundColor: "#f4f1ec",
-            padding: "8px 12px",
-            borderRadius: "10px",
-            fontWeight: "bold",
-          }}
-        >
-          💰 CHF {(eintrag.anzahl * eintrag.preis).toFixed(2)}
-        </span>
-      </div>
-    </div>
-  </div>
-))}
+        {monatsAuswertung.length === 0 ? (
+          <p style={{ margin: 0 }}>Noch keine Monatsdaten vorhanden.</p>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gap: "10px",
+            }}
+          >
+            {monatsAuswertung.map((monat) => (
+              <div
+                key={monat.monat}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "20px",
+                  padding: "12px 0",
+                  borderBottom: "1px solid #eee",
+                }}
+              >
+                <strong style={{ textTransform: "capitalize" }}>
+                  {monat.monat}
+                </strong>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "16px",
+                    fontWeight: "600",
+                  }}
+                >
+                  <span>
+                    🍷 {monat.flaschen}{" "}
+                    {monat.flaschen === 1 ? "Flasche" : "Flaschen"}
+                  </span>
+
+                  <span>💰 CHF {monat.wert.toFixed(2)}</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
-    </main>
-  );
+
+      {verbraeuche.length === 0 ? (
+        <p>Noch keine Entnahmen gespeichert.</p>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gap: "14px",
+          }}
+        >
+          {[...verbraeuche].reverse().map((eintrag) => (
+            <div
+              key={eintrag.id}
+              style={{
+                backgroundColor: "white",
+                padding: "18px 20px",
+                borderRadius: "14px",
+                boxShadow: "0 4px 14px rgba(40,30,30,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "20px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div>
+                  <strong
+                    style={{
+                      color: "#7b1026",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {eintrag.produzent} – {eintrag.weinname}
+                  </strong>
+
+                  <div
+                    style={{
+                      marginTop: "7px",
+                      color: "#6f625c",
+                      fontSize: "14px",
+                    }}
+                  >
+                    🍇 Jahrgang {eintrag.jahrgang || "–"}
+                    {" · "}
+                    📅 {new Date(eintrag.datum).toLocaleString("de-CH")}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center",
+                  }}
+                >
+                  <span
+                    style={{
+                      backgroundColor: "#f4f1ec",
+                      padding: "8px 12px",
+                      borderRadius: "10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    🍷 {eintrag.anzahl}{" "}
+                    {eintrag.anzahl === 1 ? "Flasche" : "Flaschen"}
+                  </span>
+
+                  <span
+                    style={{
+                      backgroundColor: "#f4f1ec",
+                      padding: "8px 12px",
+                      borderRadius: "10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    💰 CHF {(eintrag.anzahl * eintrag.preis).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </main>
+);
 }
