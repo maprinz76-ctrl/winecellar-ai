@@ -116,7 +116,26 @@ function bewertungAendern(id: number, sterne: number) {
     setWeine(neueListe);
     localStorage.setItem("weine", JSON.stringify(neueListe));
   }
+  function backupExportieren() {
+    const daten = localStorage.getItem("weine");
 
+    if (!daten) {
+      alert("Es sind keine Weine zum Sichern vorhanden.");
+      return;
+    }
+
+    const blob = new Blob([daten], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `weinkeller-backup-${new Date()
+      .toISOString()
+      .slice(0, 10)}.json`;
+
+    link.click();
+    URL.revokeObjectURL(url);
+  }
   return (
     <main
       style={{
@@ -220,6 +239,24 @@ function bewertungAendern(id: number, sterne: number) {
   }}
 >
   ❤️ {nurFavoriten ? "Alle Weine anzeigen" : "Nur Favoriten"}
+</button>
+<button
+  type="button"
+  onClick={backupExportieren}
+  style={{
+    marginLeft: "10px",
+    marginBottom: "24px",
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: "10px",
+    backgroundColor: "#f3eee8",
+    color: "#7b1026",
+    fontSize: "15px",
+    fontWeight: "600",
+    cursor: "pointer",
+  }}
+>
+  💾 Backup erstellen
 </button>
         {weine.length === 0 ? (
           <div
