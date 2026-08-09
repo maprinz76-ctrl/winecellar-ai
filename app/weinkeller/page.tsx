@@ -121,24 +121,62 @@ function bewertungAendern(id: number, sterne: number) {
     setWeine(neueListe);
     localStorage.setItem("weine", JSON.stringify(neueListe));
   }
-  function weinArchivieren(id: number) {
- const aktuellerWein = weine.find((wein) => wein.id === id);
+ function weinArchivieren(id: number) {
+  const aktuellerWein = weine.find((wein) => wein.id === id);
 
-const bestaetigt = window.confirm(
-  aktuellerWein?.archiviert
-    ? "Möchtest du diesen Wein zurück in den Weinkeller legen?"
-    : "Möchtest du diesen Wein wirklich archivieren?"
-);
+  if (!aktuellerWein) {
+    return;
+  }
+
+  if (aktuellerWein.archiviert) {
+    const eingabe = window.prompt(
+      "Wie viele Flaschen möchtest du zurück in den Weinkeller legen?",
+      "1"
+    );
+
+    if (eingabe === null) {
+      return;
+    }
+
+    const neueAnzahl = Number(eingabe);
+
+    if (!Number.isInteger(neueAnzahl) || neueAnzahl < 1) {
+      alert("Bitte eine ganze Zahl ab 1 eingeben.");
+      return;
+    }
+
+    const neueListe = weine.map((wein) =>
+      wein.id === id
+        ? {
+            ...wein,
+            archiviert: false,
+            anzahl: neueAnzahl,
+          }
+        : wein
+    );
+
+    setWeine(neueListe);
+    localStorage.setItem("weine", JSON.stringify(neueListe));
+    return;
+  }
+
+  const bestaetigt = window.confirm(
+    "Möchtest du diesen Wein wirklich archivieren? Der Bestand wird auf 0 gesetzt."
+  );
 
   if (!bestaetigt) {
     return;
   }
 
- const neueListe = weine.map((wein) =>
-  wein.id === id
-    ? { ...wein, archiviert: !wein.archiviert }
-    : wein
-);
+  const neueListe = weine.map((wein) =>
+    wein.id === id
+      ? {
+          ...wein,
+          archiviert: true,
+          anzahl: 0,
+        }
+      : wein
+  );
 
   setWeine(neueListe);
   localStorage.setItem("weine", JSON.stringify(neueListe));
