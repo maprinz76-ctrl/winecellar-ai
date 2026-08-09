@@ -13,6 +13,7 @@ type Wein = {
   preis: number;
   bewertung?: number;
    bild?: string;
+   favorit?: boolean;
 };
 
 type Props = {
@@ -32,12 +33,13 @@ export default function WeinKarte({
   return (
   <article
   style={{
-    backgroundColor: "white",
-    padding: "22px",
-    borderRadius: "16px",
-    boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
-    marginBottom: "20px",
-  }}
+  backgroundColor: "white",
+  padding: "22px",
+  borderRadius: "16px",
+  boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
+  marginBottom: "20px",
+  position: "relative",
+}}
 >
   {wein.bild && (
   <img
@@ -55,6 +57,35 @@ export default function WeinKarte({
 }}
   />
 )}
+
+<button
+  type="button"
+  onClick={() => {
+    const daten = JSON.parse(localStorage.getItem("weine") || "[]");
+
+    const neueWeine = daten.map((w: any) =>
+      w.id === wein.id
+        ? { ...w, favorit: !w.favorit }
+        : w
+    );
+
+    localStorage.setItem("weine", JSON.stringify(neueWeine));
+    window.location.reload();
+  }}
+  style={{
+  position: "absolute",
+  top: "18px",
+  right: "18px",
+  background: "none",
+  border: "none",
+  padding: "0",
+  fontSize: "26px",
+  cursor: "pointer",
+}}
+  title={wein.favorit ? "Favorit entfernen" : "Als Favorit markieren"}
+>
+  {wein.favorit ? "❤️" : "🤍"}
+</button>
  <h2
   style={{
     margin: 0,
@@ -267,7 +298,24 @@ export default function WeinKarte({
     paddingTop: "16px",
     borderTop: "1px solid #eee8e3",
   }}
+><Link
+  href={`/wein/${wein.id}`}
+  style={{ textDecoration: "none" }}
 >
+  <button
+    type="button"
+    style={{
+      border: "none",
+      backgroundColor: "#f3eee8",
+      color: "#7b1026",
+      padding: "10px 14px",
+      borderRadius: "9px",
+      cursor: "pointer",
+    }}
+  >
+    🍷 Details
+  </button>
+</Link>
   <Link
     href={`/wein-bearbeiten/${wein.id}`}
     style={{ textDecoration: "none" }}

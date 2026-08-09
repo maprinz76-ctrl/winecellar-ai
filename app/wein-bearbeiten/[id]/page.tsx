@@ -17,6 +17,7 @@ const [wein, setWein] = useState({
   anzahl: 1,
   bewertung: 0,
   bild: "",
+  notiz: "",
 });
 useEffect(() => {
   const gespeicherteWeine = JSON.parse(
@@ -270,7 +271,31 @@ function speichern() {
     </span>
   ))}
 </div>
+<label>Notiz</label>
 
+<textarea
+  value={wein.notiz}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      notiz: e.target.value,
+    })
+  }
+  placeholder="Eigene Notizen zum Wein..."
+  rows={5}
+  style={{
+    width: "100%",
+    padding: "12px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    fontFamily: "Arial",
+    fontSize: "15px",
+    resize: "vertical",
+    boxSizing: "border-box",
+  }}
+/>
 <button
   type="button"
   onClick={speichern}

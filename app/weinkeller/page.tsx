@@ -16,12 +16,14 @@ type Wein = {
   preis: number;
   bewertung: number;
   bild?: string;
+  favorit?: boolean;
 };
 
 export default function Weinkeller() {
   const [weine, setWeine] = useState<Wein[]>([]);
 const [suche, setSuche] = useState("");
 const [sortierung, setSortierung] = useState("name");
+const [nurFavoriten, setNurFavoriten] = useState(false);
   useEffect(() => {
     
         const daten = localStorage.getItem("weine");
@@ -41,7 +43,10 @@ const gefilterteWeine = weine
       ${wein.jahrgang}
     `.toLowerCase();
 
-    return text.includes(suche.toLowerCase());
+    const passtZurSuche = text.includes(suche.toLowerCase());
+const passtZuFavoriten = !nurFavoriten || wein.favorit === true;
+
+return passtZurSuche && passtZuFavoriten;
   })
   .sort((a, b) => {
     switch (sortierung) {
@@ -199,6 +204,23 @@ function bewertungAendern(id: number, sterne: number) {
     boxSizing: "border-box",
   }}
 />
+<button
+  type="button"
+  onClick={() => setNurFavoriten(!nurFavoriten)}
+  style={{
+    marginBottom: "24px",
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: "10px",
+    backgroundColor: nurFavoriten ? "#7b1026" : "#f3eee8",
+    color: nurFavoriten ? "white" : "#7b1026",
+    fontSize: "15px",
+    fontWeight: "600",
+    cursor: "pointer",
+  }}
+>
+  ❤️ {nurFavoriten ? "Alle Weine anzeigen" : "Nur Favoriten"}
+</button>
         {weine.length === 0 ? (
           <div
             style={{
