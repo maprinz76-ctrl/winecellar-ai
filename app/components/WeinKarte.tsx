@@ -261,7 +261,22 @@ export default function WeinKarte({
       >
         {wein.anzahl}
       </strong>
-
+{wein.anzahl <= 2 && (
+  <span
+    style={{
+      color: "#b45309",
+      fontSize: "13px",
+      fontWeight: "bold",
+      whiteSpace: "nowrap",
+    }}
+  >
+    {wein.anzahl === 0
+      ? "⚠️ Kein Bestand"
+      : wein.anzahl === 1
+      ? "⚠️ Letzte Flasche"
+      : "⚠️ Nur noch 2 Flaschen"}
+  </span>
+)}
       <button
         type="button"
         onClick={() => bestandAendern(wein.id, 1)}
@@ -349,7 +364,11 @@ export default function WeinKarte({
     cursor: "pointer",
   }}
 >
-  {wein.archiviert ? "↩️ Zurück in den Weinkeller" : "📦 Archivieren"}
+  {wein.archiviert
+  ? "↩️ Zurück in den Weinkeller"
+  : wein.anzahl === 0
+  ? "📦 Austrinken & archivieren"
+  : "📦 Archivieren"}
 </button>
   <button
     type="button"

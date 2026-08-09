@@ -116,7 +116,17 @@ function bestandAendern(id: number, veraenderung: number) {
       JSON.stringify([...verbraeuche, neuerVerbrauch])
     );
   }
+let sollArchiviertWerden = false;
 
+if (
+  veraenderung === -1 &&
+  aktuellerWein.anzahl === 1 &&
+  !aktuellerWein.archiviert
+) {
+  sollArchiviertWerden = window.confirm(
+    "Das war die letzte Flasche. Möchtest du diesen Wein jetzt ins Archiv verschieben?"
+  );
+}
   const neueListe = weine.map((wein) => {
     if (wein.id !== id) {
       return wein;
@@ -125,6 +135,7 @@ function bestandAendern(id: number, veraenderung: number) {
     return {
       ...wein,
       anzahl: Math.max(0, wein.anzahl + veraenderung),
+      archiviert: sollArchiviertWerden || wein.archiviert,
     };
   });
 
@@ -200,8 +211,10 @@ function bewertungAendern(id: number, sterne: number) {
   }
 
   const bestaetigt = window.confirm(
-    "Möchtest du diesen Wein wirklich archivieren? Der Bestand wird auf 0 gesetzt."
-  );
+  aktuellerWein.anzahl === 0
+    ? "Der Bestand ist 0. Möchtest du diesen Wein ins Archiv verschieben?"
+    : `Möchtest du diesen Wein wirklich archivieren? Der aktuelle Bestand von ${aktuellerWein.anzahl} ${aktuellerWein.anzahl === 1 ? "Flasche" : "Flaschen"} wird auf 0 gesetzt.`
+);
 
   if (!bestaetigt) {
     return;
