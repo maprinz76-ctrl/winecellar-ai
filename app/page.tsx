@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type Wein = {
@@ -29,6 +30,7 @@ type Verbrauch = {
   preis: number;
 };
 export default function Home() {
+  const pathname = usePathname();
   const [weine, setWeine] = useState<Wein[]>([]);
 
   const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
@@ -154,13 +156,7 @@ const lieblingswein =
           </h1>
         </header>
 
-        <section
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: "16px",
-          }}
-        >
+        <section className="dashboard-grid">
          <DashboardCard
   icon="🍷"
   title="Weine"
@@ -312,16 +308,20 @@ const lieblingswein =
       </div>
 
       <nav
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "white",
-          borderTop: "1px solid #ded8d2",
-          padding: "12px 20px",
-        }}
-      >
+  style={{
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    borderTop: "1px solid #ded8d2",
+    padding: "10px 20px",
+    paddingBottom: "max(10px, env(safe-area-inset-bottom))",
+    boxShadow: "0 -4px 18px rgba(40, 30, 30, 0.08)",
+    zIndex: 1000,
+  }}
+>
+      
         <div
           style={{
             maxWidth: "820px",
@@ -331,9 +331,18 @@ const lieblingswein =
             fontSize: "24px",
           }}
         >
-          <Link href="/" style={{ textDecoration: "none" }}>
-            🏠
-          </Link>
+          <Link
+  href="/"
+  style={{
+    textDecoration: "none",
+    color: pathname === "/" ? "#7b1026" : "#8a817c",
+    fontWeight: pathname === "/" ? "bold" : "normal",
+    transform: pathname === "/" ? "scale(1.12)" : "scale(1)",
+    transition: "0.2s",
+  }}
+>
+  🏠
+</Link>
 
           <Link href="/weinkeller" style={{ textDecoration: "none" }}>
             🍷

@@ -1,7 +1,12 @@
 "use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
   export default function WeinHinzufuegen() {
+    
+    const pathname = usePathname();
     const [produzent, setProduzent] = useState("");
   const [weinname, setWeinname] = useState("");
   const [jahrgang, setJahrgang] = useState("");
@@ -219,6 +224,55 @@ import { useState } from "react";
         </button>
             </form>
     </div>
+    <nav
+  style={{
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    borderTop: "1px solid #ded8d2",
+    padding: "12px 20px",
+    zIndex: 1000,
+  }}
+>
+  <div
+    style={{
+      maxWidth: "820px",
+      margin: "0 auto",
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
+      fontSize: "24px",
+    }}
+  >
+    <Link href="/" style={{ textDecoration: "none" }}>
+      🏠
+    </Link>
+
+    <Link href="/weinkeller" style={{ textDecoration: "none" }}>
+      🍷
+    </Link>
+
+    <Link
+      href="/wein-hinzufuegen"
+      style={{
+        textDecoration: "none",
+        borderBottom:
+          pathname === "/wein-hinzufuegen"
+            ? "3px solid #7b1026"
+            : "none",
+        paddingBottom: "5px",
+      }}
+    >
+      ➕
+    </Link>
+
+    <span>🔍</span>
+
+    <span>👤</span>
+  </div>
+</nav>
     </main>
   );
 }

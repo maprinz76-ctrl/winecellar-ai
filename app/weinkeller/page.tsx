@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import WeinKarte from "../components/WeinKarte";
 
@@ -30,6 +31,7 @@ type Verbrauch = {
   preis: number;
 };
 export default function Weinkeller() {
+  const pathname = usePathname();
   const [weine, setWeine] = useState<Wein[]>([]);
 const [suche, setSuche] = useState("");
 const [sortierung, setSortierung] = useState("name");
@@ -552,6 +554,53 @@ function bewertungAendern(id: number, sterne: number) {
           </Link>
         )}
       </div>
+      <nav
+  style={{
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    borderTop: "1px solid #ded8d2",
+    padding: "12px 20px",
+    zIndex: 1000,
+  }}
+>
+  <div
+    style={{
+      maxWidth: "820px",
+      margin: "0 auto",
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
+      fontSize: "24px",
+    }}
+  >
+    <Link href="/" style={{ textDecoration: "none" }}>
+      🏠
+    </Link>
+
+    <Link
+      href="/weinkeller"
+      style={{
+        textDecoration: "none",
+        borderBottom:
+          pathname === "/weinkeller" ? "3px solid #7b1026" : "none",
+        paddingBottom: "5px",
+      }}
+    >
+      🍷
+    </Link>
+
+    <Link href="/wein-hinzufuegen" style={{ textDecoration: "none" }}>
+      ➕
+    </Link>
+
+    <span>🔍</span>
+
+    <span>👤</span>
+  </div>
+</nav>
     </main>
   );
 }
