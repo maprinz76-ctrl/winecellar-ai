@@ -15,22 +15,66 @@ type Wein = {
   preis: number;
   bewertung?: number;
   bild?: string;
+  favorit?: boolean;
+archiviert?: boolean;
 };
-
+type Verbrauch = {
+  id: number;
+  weinId: number;
+  produzent: string;
+  weinname: string;
+  jahrgang: string;
+  datum: string;
+  anzahl: number;
+  preis: number;
+};
 export default function Home() {
   const [weine, setWeine] = useState<Wein[]>([]);
 
-  useEffect(() => {
-    const daten = localStorage.getItem("weine");
+  const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
 
-    if (daten) {
-      setWeine(JSON.parse(daten));
-    }
-  }, []);
+  useEffect(() => {
+  const daten = localStorage.getItem("weine");
+
+  if (daten) {
+    setWeine(JSON.parse(daten));
+  }
+
+  const verbrauchsDaten = localStorage.getItem("verbraeuche");
+
+  if (verbrauchsDaten) {
+    setVerbraeuche(JSON.parse(verbrauchsDaten));
+  }
+}, []);
 
   const kennzahlen = useMemo(() => {
-    const anzahlWeine = weine.length;
+    const aktiveWeine = weine.filter(
+  (wein) => wein.archiviert !== true
+);
 
+const archivierteWeine = weine.filter(
+  (wein) => wein.archiviert === true
+);
+    const anzahlWeine = aktiveWeine.length;
+const getrunkeneFlaschen = verbraeuche.reduce(
+  (summe, verbrauch) => summe + verbrauch.anzahl,
+  0
+);
+const jetzt = new Date();
+
+const getrunkenDiesenMonat = verbraeuche
+  .filter((verbrauch) => {
+    const datum = new Date(verbrauch.datum);
+
+    return (
+      datum.getMonth() === jetzt.getMonth() &&
+      datum.getFullYear() === jetzt.getFullYear()
+    );
+  })
+  .reduce(
+    (summe, verbrauch) => summe + verbrauch.anzahl,
+    0
+  );
     const anzahlFlaschen = weine.reduce(
       (summe, wein) => summe + wein.anzahl,
       0
@@ -46,14 +90,14 @@ export default function Home() {
 
       const durchschnittBewertung =
         anzahlWeine > 0
-          ? weine.reduce(
+          ? aktiveWeine.reduce(
               (summe, wein) => summe + (wein.bewertung || 0),
               0
             ) / anzahlWeine
           : 0;
 const lieblingswein =
-  weine.length > 0
-    ? [...weine].sort(
+  aktiveWeine.length > 0
+    ? [...aktiveWeine].sort(
         (a, b) =>
           (b.bewertung || 0) - (a.bewertung || 0) ||
           b.preis - a.preis
@@ -66,6 +110,9 @@ const lieblingswein =
       durchschnittspreis,
       durchschnittBewertung,
       lieblingswein,
+      anzahlArchivierteWeine: archivierteWeine.length,
+      getrunkeneFlaschen,
+      getrunkenDiesenMonat,
     };
   }, [weine]);
 
@@ -114,11 +161,11 @@ const lieblingswein =
             gap: "16px",
           }}
         >
-          <DashboardCard
-            icon="🍷"
-            title="Weine"
-            value={String(kennzahlen.anzahlWeine)}
-          />
+         <DashboardCard
+  icon="🍷"
+  title="Weine"
+  value={String(kennzahlen.anzahlWeine)}
+/>
           <DashboardCard
             icon="🍾"
             title="Flaschen"
@@ -134,7 +181,21 @@ const lieblingswein =
             title="Ø Bewertung"
             value={`${kennzahlen.durchschnittBewertung.toFixed(1)} / 5`}
           />
+         <DashboardCard
+  icon="📅"
+  title="Diesen Monat"
+  value={String(kennzahlen.getrunkenDiesenMonat)}
+  href="/verbrauch"
+/>
+          <DashboardCard
+  icon="📦"
+  title="Archiv"
+  value={String(kennzahlen.anzahlArchivierteWeine)}
+  fullWidth={false}
+  href="/weinkeller?ansicht=archiv"
+/>
           {kennzahlen.lieblingswein && (
+            
   <div
     style={{
       gridColumn: "1 / -1",
@@ -297,20 +358,27 @@ function DashboardCard({
   icon,
   title,
   value,
+  fullWidth = false,
+  href,
 }: {
   icon: string;
   title: string;
   value: string;
+  fullWidth?: boolean;
+  href?: string;
 }) {
-  return (
-    <div
-      style={{
-        backgroundColor: "white",
-        padding: "22px",
-        borderRadius: "16px",
-        boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
-      }}
-    >
+ 
+    const inhalt = (
+  <div
+    style={{
+      gridColumn: fullWidth ? "1 / -1" : "auto",
+      backgroundColor: "white",
+      padding: "22px",
+      borderRadius: "16px",
+      boxShadow: "0 6px 20px rgba(40, 30, 30, 0.08)",
+      cursor: href ? "pointer" : "default",
+    }}
+  >
       <div style={{ fontSize: "28px" }}>{icon}</div>
 
       <p
@@ -326,4 +394,21 @@ function DashboardCard({
       <strong style={{ fontSize: "22px" }}>{value}</strong>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        style={{
+          gridColumn: fullWidth ? "1 / -1" : "auto",
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      >
+        {inhalt}
+      </Link>
+    );
+  }
+
+  return inhalt;
 }

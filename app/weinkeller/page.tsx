@@ -36,13 +36,18 @@ const [sortierung, setSortierung] = useState("name");
 const [nurFavoriten, setNurFavoriten] = useState(false);
 const [archivAnzeigen, setArchivAnzeigen] = useState(false);
   useEffect(() => {
-    
-        const daten = localStorage.getItem("weine");
+  const daten = localStorage.getItem("weine");
 
-    if (daten) {
-      setWeine(JSON.parse(daten));
-    }
-  }, []);
+  if (daten) {
+    setWeine(JSON.parse(daten));
+  }
+
+  const parameter = new URLSearchParams(window.location.search);
+
+  if (parameter.get("ansicht") === "archiv") {
+    setArchivAnzeigen(true);
+  }
+}, []);
 const gefilterteWeine = weine
   .filter((wein: Wein) => {
     const text = `
