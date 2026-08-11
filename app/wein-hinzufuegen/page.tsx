@@ -16,6 +16,8 @@ import { useState } from "react";
   const [anzahl, setAnzahl] = useState("");
   const [preis, setPreis] = useState("");
   const [bild, setBild] = useState("");
+  const [kiLaedt, setKiLaedt] = useState(false);
+const [kiFehler, setKiFehler] = useState("");
   function bildAuswaehlen(event: React.ChangeEvent<HTMLInputElement>) {
   const datei = event.target.files?.[0];
 
@@ -38,7 +40,55 @@ import { useState } from "react";
 
   reader.readAsDataURL(datei);
 }
- 
+ async function etikettErkennen() {
+  if (!bild) {
+    setKiFehler("Bitte zuerst ein Foto auswählen.");
+    return;
+  }
+
+  setKiLaedt(true);
+  setKiFehler("");
+
+  try {
+    const response = await fetch("/api/wein-erkennen", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        bild,
+      }),
+    });
+
+    const daten = await response.json();
+
+    if (!response.ok) {
+      setKiFehler(daten.fehler || "Die Weinerkennung ist fehlgeschlagen.");
+      return;
+    }
+
+    const text =
+  daten.output?.[1]?.content?.[0]?.text;
+
+if (!text) {
+  setKiFehler("Die KI hat keine Weindaten zurückgegeben.");
+  return;
+}
+
+const weinDaten = JSON.parse(text);
+
+setProduzent(weinDaten.produzent || "");
+setWeinname(weinDaten.weinname || "");
+setJahrgang(weinDaten.jahrgang || "");
+setLand(weinDaten.land || "");
+setRegion(weinDaten.region || "");
+setRebsorte(weinDaten.rebsorte || "");
+  } catch {
+    setKiFehler("Die Verbindung zur Weinerkennung ist fehlgeschlagen.");
+  } finally {
+    setKiLaedt(false);
+  }
+}
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -96,6 +146,8 @@ import { useState } from "react";
       <h1>🍷 Wein hinzufügen</h1>
 <button
   type="button"
+  onClick={etikettErkennen}
+  disabled={kiLaedt}
   style={{
     width: "100%",
     marginTop: "20px",
@@ -110,8 +162,19 @@ import { useState } from "react";
     cursor: "pointer",
   }}
 >
-  📷 Etikett fotografieren (demnächst)
+ {kiLaedt ? "🤖 Analysiere Etikett..." : "📷 Etikett erkennen"}
 </button>
+{kiFehler && (
+  <p
+    style={{
+      color: "#b42318",
+      margin: "8px 0 0",
+      fontSize: "14px",
+    }}
+  >
+    {kiFehler}
+  </p>
+)}
 <div
   style={{
     background: "white",
