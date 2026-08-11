@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WeinKarte from "../components/WeinKarte";
 
 type Wein = {
@@ -34,6 +34,7 @@ export default function Weinkeller() {
   const pathname = usePathname();
   const [weine, setWeine] = useState<Wein[]>([]);
 const [suche, setSuche] = useState("");
+const suchfeldRef = useRef<HTMLInputElement>(null);
 const [sortierung, setSortierung] = useState("name");
 const [nurFavoriten, setNurFavoriten] = useState(false);
 const [archivAnzeigen, setArchivAnzeigen] = useState(false);
@@ -49,6 +50,16 @@ const [archivAnzeigen, setArchivAnzeigen] = useState(false);
   if (parameter.get("ansicht") === "archiv") {
     setArchivAnzeigen(true);
   }
+ if (parameter.get("suche") === "1") {
+  setTimeout(() => {
+    suchfeldRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    suchfeldRef.current?.focus();
+  }, 300);
+}
 }, []);
 const gefilterteWeine = weine
   .filter((wein: Wein) => {
@@ -369,6 +380,7 @@ function bewertungAendern(id: number, sterne: number) {
   </select>
 </div>
 <input
+ref={suchfeldRef}
   type="text"
   placeholder="🔍 Wein, Produzent, Land oder Rebsorte suchen..."
   value={suche}
@@ -596,7 +608,25 @@ function bewertungAendern(id: number, sterne: number) {
       ➕
     </Link>
 
-    <span>🔍</span>
+    <button
+  type="button"
+  onClick={() => {
+    suchfeldRef.current?.focus();
+    suchfeldRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  }}
+  style={{
+    background: "none",
+    border: "none",
+    padding: "0 0 5px",
+    fontSize: "24px",
+    cursor: "pointer",
+  }}
+>
+  🔍
+</button>
 
     <span>👤</span>
   </div>

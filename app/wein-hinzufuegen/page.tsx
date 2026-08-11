@@ -268,7 +268,14 @@ import { useState } from "react";
       ➕
     </Link>
 
-    <span>🔍</span>
+    <Link
+  href="/weinkeller?suche=1"
+  style={{
+    textDecoration: "none",
+  }}
+>
+  🔍
+</Link>
 
     <span>👤</span>
   </div>

@@ -355,7 +355,21 @@ const lieblingswein =
             ➕
           </Link>
 
-          <span>🔍</span>
+         <button
+  type="button"
+  onClick={() => {
+    window.location.href = "/weinkeller?suche=1";
+  }}
+  style={{
+    background: "none",
+    border: "none",
+    padding: 0,
+    fontSize: "24px",
+    cursor: "pointer",
+  }}
+>
+  🔍
+</button>
           <span>👤</span>
         </div>
       </nav>
