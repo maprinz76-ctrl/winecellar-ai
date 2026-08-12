@@ -11,6 +11,7 @@ type Wein = {
   jahrgang: string;
   land: string;
   region: string;
+  appellation?: string;
   rebsorte: string;
   anzahl: number;
   preis: number;
@@ -166,6 +167,7 @@ export default function WeinDetail() {
 
           <p>🌍 {wein.land}</p>
           <p>📍 {wein.region}</p>
+          <p>🏷️ {wein.appellation}</p>
           <p>🍇 {wein.rebsorte}</p>
           <p>📅 {wein.jahrgang}</p>
 

@@ -12,6 +12,7 @@ const [wein, setWein] = useState({
   jahrgang: "",
   land: "",
   region: "",
+  appellation: "",
   rebsorte: "",
   preis: 0,
   anzahl: 1,
@@ -139,6 +140,23 @@ function speichern() {
     setWein({
       ...wein,
       region: e.target.value,
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+  }}
+/>
+<label>Appellation</label>
+<input
+  type="text"
+  value={wein.appellation || ""}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      appellation: e.target.value,
     })
   }
   style={{
