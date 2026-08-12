@@ -12,6 +12,7 @@ import { useState } from "react";
   const [jahrgang, setJahrgang] = useState("");
   const [land, setLand] = useState("");
   const [region, setRegion] = useState("");
+  const [appellation, setAppellation] = useState("");
   const [rebsorte, setRebsorte] = useState("");
   const [anzahl, setAnzahl] = useState("");
   const [preis, setPreis] = useState("");
@@ -67,8 +68,10 @@ const [kiFehler, setKiFehler] = useState("");
       return;
     }
 
-    const text =
-  daten.output?.[1]?.content?.[0]?.text;
+    const text = daten.output
+  ?.flatMap((eintrag: any) => eintrag.content || [])
+  ?.find((inhalt: any) => inhalt.type === "output_text")
+  ?.text;
 
 if (!text) {
   setKiFehler("Die KI hat keine Weindaten zurückgegeben.");
@@ -82,6 +85,7 @@ setWeinname(weinDaten.weinname || "");
 setJahrgang(weinDaten.jahrgang || "");
 setLand(weinDaten.land || "");
 setRegion(weinDaten.region || "");
+setAppellation(weinDaten.appellation || "");
 setRebsorte(weinDaten.rebsorte || "");
   } catch {
     setKiFehler("Die Verbindung zur Weinerkennung ist fehlgeschlagen.");
@@ -104,6 +108,7 @@ setRebsorte(weinDaten.rebsorte || "");
       jahrgang,
       land,
       region,
+      appellation,
       rebsorte,
       anzahl: Number(anzahl),
       preis: Number(preis),
@@ -219,6 +224,12 @@ setRebsorte(weinDaten.rebsorte || "");
   placeholder="Region"
   value={region}
   onChange={(e) => setRegion(e.target.value)}
+/>
+<input
+  type="text"
+  placeholder="Appellation"
+  value={appellation}
+  onChange={(e) => setAppellation(e.target.value)}
 />
         <input
   placeholder="Rebsorte"

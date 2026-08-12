@@ -35,17 +35,30 @@ export async function POST(request: Request) {
             content: [
               {
                 type: "input_text",
-                text: `Analysiere dieses Weinetikett.
+               text: `Analysiere das Foto dieser Weinflasche sorgfältig.
 
-Ermittle soweit auf dem Bild erkennbar:
-- Produzent
-- Weinname
-- Jahrgang
-- Land
-- Region
-- Rebsorte
+Identifiziere den Wein anhand aller sichtbaren Informationen auf Etikett, Flasche und Verschluss.
 
-Antworte ausschließlich als gültiges JSON in diesem Format:
+Ermittle:
+
+- produzent: Der tatsächliche Produzent bzw. das Weingut.
+- weinname: Der Name des Weins. Wiederhole den Produzenten nicht unnötig im Weinnamen.
+- jahrgang: Ausschließlich die vierstellige Jahreszahl des Jahrgangs, falls sicher erkennbar.
+- land: Das Herkunftsland auf Deutsch.
+- region: Die übergeordnete Weinregion, z. B. Loire, Toskana, Piemont, Rioja oder Bordeaux.
+- appellation: Die möglichst genaue Appellation oder Herkunftsbezeichnung, z. B. Pouilly-Fumé, Sancerre, Chianti Classico DOCG oder Barolo DOCG.
+- rebsorte: Die Rebsorte bzw. die wichtigsten Rebsorten. Verwende die international gebräuchliche Bezeichnung.
+
+Wichtige Regeln:
+- Lies zuerst die tatsächlich sichtbaren Angaben auf dem Foto.
+- Unterscheide sorgfältig zwischen Produzent, Weinname und Appellation.
+- Erfinde keinen Jahrgang.
+- Ergänze Informationen nur, wenn sie anhand des eindeutig identifizierten Weins zuverlässig bestimmbar sind.
+- Wenn eine Information nicht zuverlässig bestimmt werden kann, verwende einen leeren String.
+- Antworte ausschließlich mit gültigem JSON.
+- Schreibe keine Erklärung und keinen zusätzlichen Text.
+
+Verwende exakt dieses Format:
 
 {
   "produzent": "",
@@ -53,10 +66,9 @@ Antworte ausschließlich als gültiges JSON in diesem Format:
   "jahrgang": "",
   "land": "",
   "region": "",
+  "appellation": "",
   "rebsorte": ""
-}
-
-Wenn eine Information nicht sicher erkennbar ist, verwende einen leeren String.`,
+}`,
               },
               {
                 type: "input_image",
