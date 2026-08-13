@@ -19,6 +19,7 @@ import { useState } from "react";
   const [bild, setBild] = useState("");
   const [kiLaedt, setKiLaedt] = useState(false);
 const [kiFehler, setKiFehler] = useState("");
+const [kiWarnung, setKiWarnung] = useState("");
   function bildAuswaehlen(event: React.ChangeEvent<HTMLInputElement>) {
   const datei = event.target.files?.[0];
 
@@ -79,14 +80,74 @@ if (!text) {
 }
 
 const weinDaten = JSON.parse(text);
+console.log("KI-Sicherheitswerte:", weinDaten.sicherheit);
 
-setProduzent(weinDaten.produzent || "");
-setWeinname(weinDaten.weinname || "");
-setJahrgang(weinDaten.jahrgang || "");
-setLand(weinDaten.land || "");
-setRegion(weinDaten.region || "");
-setAppellation(weinDaten.appellation || "");
-setRebsorte(weinDaten.rebsorte || "");
+const sicherheit = weinDaten.sicherheit || {};
+const unsichereFelder: string[] = [];
+
+if (sicherheit.produzent >= 70 && sicherheit.produzent < 90) {
+  unsichereFelder.push("Produzent");
+}
+
+if (sicherheit.weinname >= 70 && sicherheit.weinname < 90) {
+  unsichereFelder.push("Weinname");
+}
+
+if (sicherheit.jahrgang >= 70 && sicherheit.jahrgang < 90) {
+  unsichereFelder.push("Jahrgang");
+}
+
+if (sicherheit.land >= 70 && sicherheit.land < 90) {
+  unsichereFelder.push("Land");
+}
+
+if (sicherheit.region >= 70 && sicherheit.region < 90) {
+  unsichereFelder.push("Region");
+}
+
+if (sicherheit.appellation >= 70 && sicherheit.appellation < 90) {
+  unsichereFelder.push("Appellation");
+}
+
+if (sicherheit.rebsorte >= 70 && sicherheit.rebsorte < 90) {
+  unsichereFelder.push("Rebsorte");
+}
+
+if (unsichereFelder.length > 0) {
+  setKiWarnung(
+    `Bitte prüfen: ${unsichereFelder.join(", ")} wurde von der KI nicht eindeutig erkannt.`
+  );
+} else {
+  setKiWarnung("");
+}
+
+setProduzent(
+  sicherheit.produzent >= 70 ? weinDaten.produzent || "" : ""
+);
+
+setWeinname(
+  sicherheit.weinname >= 70 ? weinDaten.weinname || "" : ""
+);
+
+setJahrgang(
+  sicherheit.jahrgang >= 70 ? weinDaten.jahrgang || "" : ""
+);
+
+setLand(
+  sicherheit.land >= 70 ? weinDaten.land || "" : ""
+);
+
+setRegion(
+  sicherheit.region >= 70 ? weinDaten.region || "" : ""
+);
+
+setAppellation(
+  sicherheit.appellation >= 70 ? weinDaten.appellation || "" : ""
+);
+
+setRebsorte(
+  sicherheit.rebsorte >= 70 ? weinDaten.rebsorte || "" : ""
+);
   } catch {
     setKiFehler("Die Verbindung zur Weinerkennung ist fehlgeschlagen.");
   } finally {
@@ -180,6 +241,20 @@ setRebsorte(weinDaten.rebsorte || "");
     {kiFehler}
   </p>
 )}
+{kiWarnung && (
+  <p
+    style={{
+      color: "#9a6700",
+      backgroundColor: "#fff8e1",
+      padding: "10px 12px",
+      borderRadius: "8px",
+      margin: "8px 0 0",
+      fontSize: "14px",
+    }}
+  >
+    ⚠️ {kiWarnung}
+  </p>
+)}
 <div
   style={{
     background: "white",
@@ -231,10 +306,15 @@ setRebsorte(weinDaten.rebsorte || "");
   value={appellation}
   onChange={(e) => setAppellation(e.target.value)}
 />
-        <input
+        <textarea
   placeholder="Rebsorte"
   value={rebsorte}
   onChange={(e) => setRebsorte(e.target.value)}
+  rows={2}
+  style={{
+    resize: "vertical",
+    fontFamily: "inherit",
+  }}
 />
         <input
   placeholder="Anzahl Flaschen"

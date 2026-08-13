@@ -50,11 +50,19 @@ Ermittle:
 - rebsorte: Die Rebsorte bzw. die wichtigsten Rebsorten. Verwende die international gebräuchliche Bezeichnung.
 
 Wichtige Regeln:
-- Lies zuerst die tatsächlich sichtbaren Angaben auf dem Foto.
-- Unterscheide sorgfältig zwischen Produzent, Weinname und Appellation.
-- Erfinde keinen Jahrgang.
-- Ergänze Informationen nur, wenn sie anhand des eindeutig identifizierten Weins zuverlässig bestimmbar sind.
-- Wenn eine Information nicht zuverlässig bestimmt werden kann, verwende einen leeren String.
+- - Lies zuerst alle tatsächlich sichtbaren Angaben auf dem Foto.
+- Identifiziere den Wein nur dann anhand deines Wissens, wenn Produzent und Wein eindeutig bestimmbar sind.
+- "produzent" enthält ausschließlich den Hersteller, das Weingut oder Château.
+- "weinname" enthält ausschließlich den Namen bzw. die Cuvée des Weins. Wiederhole den Produzenten nicht, wenn dies nicht Teil des eigentlichen Weinnamens ist.
+- "region" enthält die übergeordnete Weinregion, z. B. Bordeaux, Toskana, Piemont oder Loire.
+- "appellation" enthält die konkrete Herkunftsbezeichnung bzw. Appellation, z. B. Moulis-en-Médoc AOC, Chianti Classico DOCG oder Pouilly-Fumé AOC.
+- "rebsorte" enthält eine oder mehrere Rebsorten. Mehrere Rebsorten werden mit Komma getrennt.
+- Erfinde keinen Jahrgang. Übernimm ihn nur, wenn er auf dem Foto eindeutig erkennbar ist.
+- Ergänze andere Informationen nur, wenn sie anhand des eindeutig identifizierten Weins zuverlässig bestimmbar sind.
+- Wenn eine Information nicht zuverlässig bestimmbar ist, verwende einen leeren String.
+- Bewerte für jedes erkannte Feld die Sicherheit mit einer ganzen Zahl von 0 bis 100.
+- 90 bis 100 bedeutet eindeutig erkannt, 70 bis 89 bedeutet sehr wahrscheinlich, unter 70 bedeutet unsicher.
+- Wenn eine Information nicht zuverlässig bestimmbar ist, lasse das eigentliche Feld leer und setze die Sicherheit entsprechend niedrig.
 - Antworte ausschließlich mit gültigem JSON.
 - Schreibe keine Erklärung und keinen zusätzlichen Text.
 
@@ -67,8 +75,18 @@ Verwende exakt dieses Format:
   "land": "",
   "region": "",
   "appellation": "",
-  "rebsorte": ""
-}`,
+  "rebsorte": "",
+  "sicherheit": {
+    "produzent": 0,
+    "weinname": 0,
+    "jahrgang": 0,
+    "land": 0,
+    "region": 0,
+    "appellation": 0,
+    "rebsorte": 0
+  }
+}
+  `,
               },
               {
                 type: "input_image",
