@@ -19,6 +19,7 @@ import { useState } from "react";
   const [bild, setBild] = useState("");
   const [kiLaedt, setKiLaedt] = useState(false);
 const [kiFehler, setKiFehler] = useState("");
+const [unsichereFelder, setUnsichereFelder] = useState<string[]>([]);
 const [kiWarnung, setKiWarnung] = useState("");
   function bildAuswaehlen(event: React.ChangeEvent<HTMLInputElement>) {
   const datei = event.target.files?.[0];
@@ -83,43 +84,45 @@ const weinDaten = JSON.parse(text);
 console.log("KI-Sicherheitswerte:", weinDaten.sicherheit);
 
 const sicherheit = weinDaten.sicherheit || {};
-const unsichereFelder: string[] = [];
+const neueUnsichereFelder: string[] = [];
 
 if (sicherheit.produzent >= 70 && sicherheit.produzent < 90) {
-  unsichereFelder.push("Produzent");
+  neueUnsichereFelder.push("Produzent");
 }
 
 if (sicherheit.weinname >= 70 && sicherheit.weinname < 90) {
-  unsichereFelder.push("Weinname");
+  neueUnsichereFelder.push("Weinname");
 }
 
 if (sicherheit.jahrgang >= 70 && sicherheit.jahrgang < 90) {
-  unsichereFelder.push("Jahrgang");
+  neueUnsichereFelder.push("Jahrgang");
 }
 
 if (sicherheit.land >= 70 && sicherheit.land < 90) {
-  unsichereFelder.push("Land");
+  neueUnsichereFelder.push("Land");
 }
 
 if (sicherheit.region >= 70 && sicherheit.region < 90) {
-  unsichereFelder.push("Region");
+  neueUnsichereFelder.push("Region");
 }
 
 if (sicherheit.appellation >= 70 && sicherheit.appellation < 90) {
-  unsichereFelder.push("Appellation");
+  neueUnsichereFelder.push("Appellation");
 }
 
 if (sicherheit.rebsorte >= 70 && sicherheit.rebsorte < 90) {
-  unsichereFelder.push("Rebsorte");
+  neueUnsichereFelder.push("Rebsorte");
 }
 
-if (unsichereFelder.length > 0) {
+if (neueUnsichereFelder.length > 0) {
   setKiWarnung(
-    `Bitte prüfen: ${unsichereFelder.join(", ")} wurde von der KI nicht eindeutig erkannt.`
+    `Bitte prüfen: ${neueUnsichereFelder.join(", ")} wurde von der KI nicht eindeutig erkannt.`
   );
 } else {
   setKiWarnung("");
 }
+
+setUnsichereFelder(neueUnsichereFelder);
 
 setProduzent(
   sicherheit.produzent >= 70 ? weinDaten.produzent || "" : ""
@@ -306,7 +309,7 @@ setRebsorte(
   value={appellation}
   onChange={(e) => setAppellation(e.target.value)}
 />
-        <textarea
+ <textarea
   placeholder="Rebsorte"
   value={rebsorte}
   onChange={(e) => setRebsorte(e.target.value)}
@@ -314,6 +317,12 @@ setRebsorte(
   style={{
     resize: "vertical",
     fontFamily: "inherit",
+    backgroundColor: unsichereFelder.includes("Rebsorte")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Rebsorte")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
   }}
 />
         <input
