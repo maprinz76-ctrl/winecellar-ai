@@ -8,6 +8,7 @@ type Wein = {
   jahrgang: string;
   land: string;
   region: string;
+  appellation: string;
   rebsorte: string;
   anzahl: number;
   preis: number;
@@ -140,7 +141,18 @@ export default function WeinKarte({
   >
     📍 {wein.region}
   </span>
-
+{wein.appellation && (
+  <span
+    style={{
+      background: "#f5f2ee",
+      padding: "6px 10px",
+      borderRadius: "999px",
+      fontSize: "14px",
+    }}
+  >
+    🏷️ {wein.appellation}
+  </span>
+)}
   <span
     style={{
       background: "#f5f2ee",

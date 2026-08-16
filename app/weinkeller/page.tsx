@@ -13,6 +13,7 @@ type Wein = {
   land: string;
   region: string;
   rebsorte: string;
+  appellation: string;
   anzahl: number;
   preis: number;
   bewertung: number;
@@ -68,6 +69,7 @@ const gefilterteWeine = weine
       ${wein.weinname}
       ${wein.land}
       ${wein.region}
+      ${wein.appellation}
       ${wein.rebsorte}
       ${wein.jahrgang}
     `.toLowerCase();
