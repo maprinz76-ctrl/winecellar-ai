@@ -21,6 +21,21 @@ import { useState } from "react";
 const [kiFehler, setKiFehler] = useState("");
 const [unsichereFelder, setUnsichereFelder] = useState<string[]>([]);
 const [kiWarnung, setKiWarnung] = useState("");
+function feldBestaetigen(feld: string) {
+  setUnsichereFelder((aktuell) => {
+    const neueFelder = aktuell.filter((eintrag) => eintrag !== feld);
+
+    if (neueFelder.length > 0) {
+      setKiWarnung(
+        `Bitte prüfen: ${neueFelder.join(", ")} wurde von der KI nicht eindeutig erkannt.`
+      );
+    } else {
+      setKiWarnung("");
+    }
+
+    return neueFelder;
+  });
+}
   function bildAuswaehlen(event: React.ChangeEvent<HTMLInputElement>) {
   const datei = event.target.files?.[0];
 
@@ -279,7 +294,10 @@ setRebsorte(
         <input
   placeholder="Produzent"
   value={produzent}
-  onChange={(e) => setProduzent(e.target.value)}
+ onChange={(e) => {
+  setProduzent(e.target.value);
+  feldBestaetigen("Produzent");
+}}
   style={{
     backgroundColor: unsichereFelder.includes("Produzent")
       ? "#fff8e1"
@@ -292,7 +310,10 @@ setRebsorte(
         <input
   placeholder="Weinname"
   value={weinname}
-  onChange={(e) => setWeinname(e.target.value)}
+  onChange={(e) => {
+  setWeinname(e.target.value);
+  feldBestaetigen("Weinname");
+}}
   style={{
     backgroundColor: unsichereFelder.includes("Weinname")
       ? "#fff8e1"
@@ -306,7 +327,10 @@ setRebsorte(
   placeholder="Jahrgang"
   type="number"
   value={jahrgang}
-  onChange={(e) => setJahrgang(e.target.value)}
+  onChange={(e) => {
+  setJahrgang(e.target.value);
+  feldBestaetigen("Jahrgang");
+}}
   style={{
     backgroundColor: unsichereFelder.includes("Jahrgang")
       ? "#fff8e1"
@@ -320,7 +344,10 @@ setRebsorte(
        <input
   placeholder="Land"
   value={land}
-  onChange={(e) => setLand(e.target.value)}
+  onChange={(e) => {
+  setLand(e.target.value);
+  feldBestaetigen("Land");
+}}
   style={{
     backgroundColor: unsichereFelder.includes("Land")
       ? "#fff8e1"
@@ -333,7 +360,10 @@ setRebsorte(
         <input
   placeholder="Region"
   value={region}
-  onChange={(e) => setRegion(e.target.value)}
+ onChange={(e) => {
+  setRegion(e.target.value);
+feldBestaetigen("Region");
+}}
   style={{
     backgroundColor: unsichereFelder.includes("Region")
       ? "#fff8e1"
@@ -347,7 +377,10 @@ setRebsorte(
   type="text"
   placeholder="Appellation"
   value={appellation}
-  onChange={(e) => setAppellation(e.target.value)}
+  onChange={(e) => {
+  setAppellation(e.target.value);
+  feldBestaetigen("Appellation");
+}}
   style={{
     backgroundColor: unsichereFelder.includes("Appellation")
       ? "#fff8e1"
@@ -360,7 +393,10 @@ setRebsorte(
  <textarea
   placeholder="Rebsorte"
   value={rebsorte}
-  onChange={(e) => setRebsorte(e.target.value)}
+ onChange={(e) => {
+  setRebsorte(e.target.value);
+  feldBestaetigen("Rebsorte");
+}}
   rows={2}
   style={{
     resize: "vertical",
