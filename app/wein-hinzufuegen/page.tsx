@@ -280,34 +280,82 @@ setRebsorte(
   placeholder="Produzent"
   value={produzent}
   onChange={(e) => setProduzent(e.target.value)}
+  style={{
+    backgroundColor: unsichereFelder.includes("Produzent")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Produzent")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
+  }}
 />
         <input
   placeholder="Weinname"
   value={weinname}
   onChange={(e) => setWeinname(e.target.value)}
+  style={{
+    backgroundColor: unsichereFelder.includes("Weinname")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Weinname")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
+  }}
 />
         <input
   placeholder="Jahrgang"
   type="number"
   value={jahrgang}
   onChange={(e) => setJahrgang(e.target.value)}
+  style={{
+    backgroundColor: unsichereFelder.includes("Jahrgang")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Jahrgang")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
+  }}
 />
 
-        <input
+       <input
   placeholder="Land"
   value={land}
   onChange={(e) => setLand(e.target.value)}
+  style={{
+    backgroundColor: unsichereFelder.includes("Land")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Land")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
+  }}
 />
         <input
   placeholder="Region"
   value={region}
   onChange={(e) => setRegion(e.target.value)}
+  style={{
+    backgroundColor: unsichereFelder.includes("Region")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Region")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
+  }}
 />
 <input
   type="text"
   placeholder="Appellation"
   value={appellation}
   onChange={(e) => setAppellation(e.target.value)}
+  style={{
+    backgroundColor: unsichereFelder.includes("Appellation")
+      ? "#fff8e1"
+      : "white",
+    border: unsichereFelder.includes("Appellation")
+      ? "1px solid #d4a017"
+      : "1px solid #ddd",
+  }}
 />
  <textarea
   placeholder="Rebsorte"
