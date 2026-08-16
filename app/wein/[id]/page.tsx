@@ -82,26 +82,27 @@ export default function WeinDetail() {
             boxShadow: "0 6px 20px rgba(40,30,30,0.08)",
           }}
         >
-          {wein.bild && (
-            <img
-              src={wein.bild}
-              alt={wein.weinname}
-              style={{
-                width: "220px",
-                height: "260px",
-                objectFit: "contain",
-                display: "block",
-                margin: "0 auto 25px",
-              }}
-            />
-          )}
-<div
+        <div
   style={{
-    display: "flex",
-    justifyContent: "flex-end",
-    marginBottom: "10px",
+    position: "relative",
+    marginBottom: "20px",
   }}
 >
+  {wein.bild && (
+    <img
+      src={wein.bild}
+      alt={wein.weinname}
+      style={{
+        width: "220px",
+        maxHeight: "260px",
+        height: "auto",
+        objectFit: "contain",
+        display: "block",
+        margin: "0 auto",
+      }}
+    />
+  )}
+
   <button
     type="button"
     onClick={() => {
@@ -124,6 +125,9 @@ export default function WeinDetail() {
       });
     }}
     style={{
+      position: "absolute",
+      top: "0",
+      right: "0",
       border: "none",
       background: "transparent",
       fontSize: "30px",
@@ -134,23 +138,31 @@ export default function WeinDetail() {
     {wein.favorit ? "❤️" : "🤍"}
   </button>
 </div>
-          <h1
-            style={{
-              color: "#7b1026",
-              marginBottom: "6px",
-            }}
-          >
-            {wein.produzent}
-          </h1>
-
           <div
-            style={{
-              fontSize: "22px",
-              marginBottom: "18px",
-            }}
-          >
-            {wein.weinname}
-          </div>
+  style={{
+    marginTop: "8px",
+    marginBottom: "18px",
+  }}
+>
+  <h1
+    style={{
+      color: "#7b1026",
+      fontSize: "28px",
+      margin: "0 0 6px 0",
+    }}
+  >
+    {wein.produzent}
+  </h1>
+
+  <div
+    style={{
+      fontSize: "22px",
+      color: "#222",
+    }}
+  >
+    {wein.weinname}
+  </div>
+</div>
 
           <div
             style={{
@@ -165,11 +177,71 @@ export default function WeinDetail() {
             </span>
           </div>
 
-          <p>🌍 {wein.land}</p>
-          <p>📍 {wein.region}</p>
-          <p>🏷️ {wein.appellation}</p>
-          <p>🍇 {wein.rebsorte}</p>
-          <p>📅 {wein.jahrgang}</p>
+          <div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+    marginBottom: "20px",
+  }}
+>
+  <span
+    style={{
+      background: "#f5f2ee",
+      padding: "6px 10px",
+      borderRadius: "999px",
+      fontSize: "14px",
+    }}
+  >
+    🌍 {wein.land}
+  </span>
+
+  <span
+    style={{
+      background: "#f5f2ee",
+      padding: "6px 10px",
+      borderRadius: "999px",
+      fontSize: "14px",
+    }}
+  >
+    📍 {wein.region}
+  </span>
+
+  {wein.appellation && (
+    <span
+      style={{
+        background: "#f5f2ee",
+        padding: "6px 10px",
+        borderRadius: "999px",
+        fontSize: "14px",
+      }}
+    >
+      🏷️ {wein.appellation}
+    </span>
+  )}
+
+  <span
+    style={{
+      background: "#f5f2ee",
+      padding: "6px 10px",
+      borderRadius: "999px",
+      fontSize: "14px",
+    }}
+  >
+    🍇 {wein.rebsorte}
+  </span>
+
+  <span
+    style={{
+      background: "#f5f2ee",
+      padding: "6px 10px",
+      borderRadius: "999px",
+      fontSize: "14px",
+    }}
+  >
+    📅 {wein.jahrgang}
+  </span>
+</div>
 
           <hr
             style={{
