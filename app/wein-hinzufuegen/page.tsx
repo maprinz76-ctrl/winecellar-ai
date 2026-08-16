@@ -48,15 +48,40 @@ function feldBestaetigen(feld: string) {
     return;
   }
 
-  const reader = new FileReader();
+ const reader = new FileReader();
 
-  reader.onloadend = () => {
-    if (typeof reader.result === "string") {
-      setBild(reader.result);
+reader.onload = () => {
+  if (typeof reader.result !== "string") {
+    return;
+  }
+
+  const img = new Image();
+
+  img.onload = () => {
+    const maxBreite = 900;
+    const faktor = Math.min(1, maxBreite / img.width);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(img.width * faktor);
+    canvas.height = Math.round(img.height * faktor);
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      setBild(reader.result as string);
+      return;
     }
+
+    context.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const komprimiertesBild = canvas.toDataURL("image/jpeg", 0.75);
+    setBild(komprimiertesBild);
   };
 
-  reader.readAsDataURL(datei);
+  img.src = reader.result;
+};
+
+reader.readAsDataURL(datei);
 }
  async function etikettErkennen() {
   if (!bild) {

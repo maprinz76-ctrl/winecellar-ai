@@ -50,14 +50,25 @@ Ermittle:
 - rebsorte: Die Rebsorte bzw. die wichtigsten Rebsorten. Verwende die international gebräuchliche Bezeichnung.
 
 Wichtige Regeln:
-- - Lies zuerst alle tatsächlich sichtbaren Angaben auf dem Foto.
+- Lies zuerst alle tatsächlich sichtbaren Angaben auf dem Foto.
+- Sichtbare Angaben auf dem Etikett haben immer Vorrang vor deinem allgemeinen Wissen über einen Wein.
+- Wenn sichtbare Angaben auf dem Foto im Widerspruch zu deinem Wissen stehen, verwende ausschließlich die sichtbaren Angaben.
+- Überprüfe vor der Ausgabe, ob produzent, weinname, jahrgang und rebsorte mit den tatsächlich sichtbaren Angaben auf dem Etikett vereinbar sind.
 - Identifiziere den Wein nur dann anhand deines Wissens, wenn Produzent und Wein eindeutig bestimmbar sind.
 - "produzent" enthält ausschließlich den Hersteller, das Weingut oder Château.
-- "weinname" enthält ausschließlich den Namen bzw. die Cuvée des Weins. Wiederhole den Produzenten nicht, wenn dies nicht Teil des eigentlichen Weinnamens ist.
+- "weinname" enthält ausschließlich den eigentlichen Namen bzw. die Cuvée des Weins.
+- Verwechsle niemals Weinname und Rebsorte.
+- Wenn auf dem Etikett ein individueller Produkt- oder Cuvée-Name sichtbar ist, z. B. "San Giù", "Il Bruciato", "L'Origine", "Grand Ardèche" oder "Aska", verwende diesen als "weinname" und nicht die Rebsorte.
+- Bei einem Château-Wein steht in "produzent" der vollständige Château-Name, z. B. "Château Chasse-Spleen". In "weinname" steht nur der eigentliche Weinname ohne den vorangestellten Begriff "Château", z. B. "Chasse-Spleen".
+- Wiederhole den vollständigen Produzentennamen niemals unverändert im Feld "weinname".
 - "region" enthält die übergeordnete Weinregion, z. B. Bordeaux, Toskana, Piemont oder Loire.
 - "appellation" enthält die konkrete Herkunftsbezeichnung bzw. Appellation, z. B. Moulis-en-Médoc AOC, Chianti Classico DOCG oder Pouilly-Fumé AOC.
-- "rebsorte" enthält eine oder mehrere Rebsorten. Mehrere Rebsorten werden mit Komma getrennt.
+- "rebsorte" enthält ausschließlich konkrete Rebsortennamen.
+- Mehrere Rebsorten werden mit Komma getrennt.
+- Verwende niemals Formulierungen wie "und mehr", "weitere", "etc.", "u. a." oder ähnliche Sammelbegriffe.
+- Wenn nur ein Teil der Rebsorten zuverlässig bestimmbar ist, nenne ausschließlich diese konkreten Rebsorten.
 - Erfinde keinen Jahrgang. Übernimm ihn nur, wenn er auf dem Foto eindeutig erkennbar ist.
+- Ergänze Informationen aus deinem Wissen nur dann, wenn sie den sichtbaren Angaben nicht widersprechen und der Wein eindeutig identifiziert wurde.
 - Ergänze andere Informationen nur, wenn sie anhand des eindeutig identifizierten Weins zuverlässig bestimmbar sind.
 - Wenn eine Information nicht zuverlässig bestimmbar ist, verwende einen leeren String.
 - Bewerte für jedes erkannte Feld die Sicherheit mit einer ganzen Zahl von 0 bis 100.
