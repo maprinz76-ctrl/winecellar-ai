@@ -179,20 +179,53 @@ export default function WeinDetail() {
             }}
           />
 
-          <p>
-            💰 <strong>CHF {wein.preis.toFixed(2)}</strong> pro Flasche
-          </p>
+          <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "12px",
+    marginBottom: "25px",
+  }}
+>
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "16px",
+      borderRadius: "12px",
+    }}
+  >
+    <div style={{ fontSize: "13px", color: "#7b6f68", marginBottom: "6px" }}>
+      💰 Preis pro Flasche
+    </div>
+    <strong>CHF {wein.preis.toFixed(2)}</strong>
+  </div>
 
-          <p>
-            📦 <strong>{wein.anzahl}</strong> Flaschen
-          </p>
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "16px",
+      borderRadius: "12px",
+    }}
+  >
+    <div style={{ fontSize: "13px", color: "#7b6f68", marginBottom: "6px" }}>
+      📦 Bestand
+    </div>
+    <strong>{wein.anzahl} Flaschen</strong>
+  </div>
 
-          <p>
-            💎 Gesamtwert:{" "}
-            <strong>
-              CHF {(wein.preis * wein.anzahl).toFixed(2)}
-            </strong>
-          </p>
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "16px",
+      borderRadius: "12px",
+    }}
+  >
+    <div style={{ fontSize: "13px", color: "#7b6f68", marginBottom: "6px" }}>
+      💎 Gesamtwert
+    </div>
+    <strong>CHF {(wein.preis * wein.anzahl).toFixed(2)}</strong>
+  </div>
+</div>
           <Link
   href={`/wein-bearbeiten/${wein.id}`}
   style={{ textDecoration: "none" }}
