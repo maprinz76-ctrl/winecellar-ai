@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
   export default function WeinHinzufuegen() {
     
@@ -21,6 +21,7 @@ import { useState } from "react";
 const [kiFehler, setKiFehler] = useState("");
 const [unsichereFelder, setUnsichereFelder] = useState<string[]>([]);
 const [kiWarnung, setKiWarnung] = useState("");
+const dateiInputRef = useRef<HTMLInputElement>(null);
 function feldBestaetigen(feld: string) {
   setUnsichereFelder((aktuell) => {
     const neueFelder = aktuell.filter((eintrag) => eintrag !== feld);
@@ -234,14 +235,21 @@ setRebsorte(
     alert(`${produzent} ${weinname} wurde gespeichert.`);
 
     setProduzent("");
-    setWeinname("");
-    setJahrgang("");
-    setLand("");
-    setRegion("");
-    setRebsorte("");
-    setAnzahl("");
-    setPreis("");
-    setBild("");
+setWeinname("");
+setJahrgang("");
+setLand("");
+setRegion("");
+setAppellation("");
+setRebsorte("");
+setAnzahl("");
+setPreis("");
+setBild("");
+if (dateiInputRef.current) {
+  dateiInputRef.current.value = "";
+}
+setUnsichereFelder([]);
+setKiWarnung("");
+setKiFehler("");
   }
   return (
     <main
@@ -461,6 +469,7 @@ feldBestaetigen("Region");
 
   <input
     type="file"
+    ref={dateiInputRef}
     accept="image/*"
     capture="environment"
     onChange={bildAuswaehlen}
