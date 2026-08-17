@@ -38,7 +38,32 @@ export default function WeinDetail() {
 
     setWein(gefundenerWein || null);
   }, [params.id]);
+function bestandAendern(veraenderung: number) {
+  if (!wein) return;
 
+  const neueAnzahl = Math.max(0, wein.anzahl + veraenderung);
+
+  const daten = localStorage.getItem("weine");
+  if (!daten) return;
+
+  const weine: Wein[] = JSON.parse(daten);
+
+  const neueWeine = weine.map((einWein) =>
+    einWein.id === wein.id
+      ? {
+          ...einWein,
+          anzahl: neueAnzahl,
+        }
+      : einWein
+  );
+
+  localStorage.setItem("weine", JSON.stringify(neueWeine));
+
+  setWein({
+    ...wein,
+    anzahl: neueAnzahl,
+  });
+}
   if (!wein) {
     return (
       <main style={{ padding: "40px", fontFamily: "Arial" }}>
@@ -272,18 +297,63 @@ export default function WeinDetail() {
     <strong>CHF {wein.preis.toFixed(2)}</strong>
   </div>
 
+ <div
+  style={{
+    backgroundColor: "#f6f2ec",
+    padding: "16px",
+    borderRadius: "12px",
+  }}
+>
   <div
     style={{
-      backgroundColor: "#f6f2ec",
-      padding: "16px",
-      borderRadius: "12px",
+      fontSize: "13px",
+      color: "#7b6f68",
+      marginBottom: "8px",
     }}
   >
-    <div style={{ fontSize: "13px", color: "#7b6f68", marginBottom: "6px" }}>
-      📦 Bestand
-    </div>
-    <strong>{wein.anzahl} Flaschen</strong>
+    📦 Bestand
   </div>
+
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "14px",
+    }}
+  >
+    <button
+      type="button"
+      onClick={() => bestandAendern(-1)}
+      style={{
+        border: "none",
+        borderRadius: "50%",
+        width: "34px",
+        height: "34px",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    >
+      −
+    </button>
+
+    <strong>{wein.anzahl} Flaschen</strong>
+
+    <button
+      type="button"
+      onClick={() => bestandAendern(1)}
+      style={{
+        border: "none",
+        borderRadius: "50%",
+        width: "34px",
+        height: "34px",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    >
+      +
+    </button>
+  </div>
+</div>
 
   <div
     style={{
