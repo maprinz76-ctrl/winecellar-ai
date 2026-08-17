@@ -325,13 +325,18 @@ function bestandAendern(veraenderung: number) {
       type="button"
       onClick={() => bestandAendern(-1)}
       style={{
-        border: "none",
-        borderRadius: "50%",
-        width: "34px",
-        height: "34px",
-        cursor: "pointer",
-        fontSize: "18px",
-      }}
+  border: "none",
+  borderRadius: "50%",
+  width: "34px",
+  height: "34px",
+  cursor: "pointer",
+  fontSize: "20px",
+  backgroundColor: "#eee8f8",
+  color: "#4b2a7b",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}}
     >
       −
     </button>
@@ -342,13 +347,18 @@ function bestandAendern(veraenderung: number) {
       type="button"
       onClick={() => bestandAendern(1)}
       style={{
-        border: "none",
-        borderRadius: "50%",
-        width: "34px",
-        height: "34px",
-        cursor: "pointer",
-        fontSize: "18px",
-      }}
+  border: "none",
+  borderRadius: "50%",
+  width: "34px",
+  height: "34px",
+  cursor: "pointer",
+  fontSize: "20px",
+  backgroundColor: "#eee8f8",
+  color: "#4b2a7b",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}}
     >
       +
     </button>

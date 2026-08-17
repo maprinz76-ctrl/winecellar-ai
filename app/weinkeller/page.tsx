@@ -39,6 +39,11 @@ const suchfeldRef = useRef<HTMLInputElement>(null);
 const [sortierung, setSortierung] = useState("name");
 const [nurFavoriten, setNurFavoriten] = useState(false);
 const [archivAnzeigen, setArchivAnzeigen] = useState(false);
+const [filterAnzeigen, setFilterAnzeigen] = useState(false);
+const [filterLand, setFilterLand] = useState("");
+const [filterRegion, setFilterRegion] = useState("");
+const [filterRebsorte, setFilterRebsorte] = useState("");
+const [filterBewertung, setFilterBewertung] = useState("");
   useEffect(() => {
   const daten = localStorage.getItem("weine");
 
@@ -80,7 +85,28 @@ const passtZumArchiv = archivAnzeigen
   ? wein.archiviert === true
   : wein.archiviert !== true;
 
-return passtZurSuche && passtZuFavoriten && passtZumArchiv;
+const passtZumLand =
+  !filterLand || wein.land === filterLand;
+const passtZurRegion =
+  !filterRegion || wein.region === filterRegion;
+  const passtZurRebsorte =
+  !filterRebsorte ||
+  wein.rebsorte
+    .split(",")
+    .map((rebsorte) => rebsorte.trim())
+    .includes(filterRebsorte);
+    const passtZurBewertung =
+  !filterBewertung ||
+  (wein.bewertung || 0) >= Number(filterBewertung);
+return (
+  passtZurSuche &&
+  passtZuFavoriten &&
+  passtZumArchiv &&
+  passtZumLand &&
+  passtZurRegion &&
+  passtZurRebsorte &&
+  passtZurBewertung
+);
   })
   .sort((a, b) => {
     switch (sortierung) {
@@ -476,7 +502,127 @@ ref={suchfeldRef}
     cursor: "pointer",
     display: "inline-block",
   }}
+><button
+  type="button"
+  onClick={() => setFilterAnzeigen(!filterAnzeigen)}
+  style={{
+    border: "none",
+    backgroundColor: "#f6f2ec",
+    padding: "12px 16px",
+    borderRadius: "10px",
+    color: "#7b1026",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
 >
+  ⚙️ Filter
+</button>
+{filterAnzeigen && (
+  <div
+    style={{
+      marginTop: "12px",
+      marginBottom: "24px",
+      padding: "16px",
+      backgroundColor: "#f6f2ec",
+      borderRadius: "12px",
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: "12px",
+    }}
+  >
+    <select
+  value={filterLand}
+  onChange={(e) => setFilterLand(e.target.value)}
+>
+  <option value="">Alle Länder</option>
+  <option value="Deutschland">Deutschland</option>
+  <option value="Frankreich">Frankreich</option>
+  <option value="Italien">Italien</option>
+  <option value="Schweiz">Schweiz</option>
+  <option value="Spanien">Spanien</option>
+  <option value="Portugal">Portugal</option>
+  <option value="Österreich">Österreich</option>
+  <option value="Argentinien">Argentinien</option>
+  <option value="Chile">Chile</option>
+  <option value="USA">USA</option>
+  <option value="Australien">Australien</option>
+  <option value="Neuseeland">Neuseeland</option>
+</select>
+<select
+  value={filterRegion}
+  onChange={(e) => setFilterRegion(e.target.value)}
+>
+  <option value="">Alle Regionen</option>
+
+  {[...new Set(
+    weine
+      .map((wein) => wein.region)
+      .filter((region) => region)
+  )]
+    .sort()
+    .map((region) => (
+      <option key={region} value={region}>
+        {region}
+      </option>
+    ))}
+</select>
+    <select
+  value={filterRebsorte}
+  onChange={(e) => setFilterRebsorte(e.target.value)}
+>
+  <option value="">Alle Rebsorten</option>
+
+  {[...new Set(
+    weine
+      .flatMap((wein) =>
+        wein.rebsorte
+          .split(",")
+          .map((rebsorte) => rebsorte.trim())
+      )
+      .filter((rebsorte) => rebsorte)
+  )]
+    .sort()
+    .map((rebsorte) => (
+      <option key={rebsorte} value={rebsorte}>
+        {rebsorte}
+      </option>
+    ))}
+</select>
+
+<select
+  value={filterBewertung}
+  onChange={(e) => setFilterBewertung(e.target.value)}
+>
+  <option value="">Alle Bewertungen</option>
+  <option value="5">★★★★★</option>
+  <option value="4">★★★★☆ und besser</option>
+  <option value="3">★★★☆☆ und besser</option>
+  <option value="2">★★☆☆☆ und besser</option>
+  <option value="1">★☆☆☆☆ und besser</option>
+</select>
+<button
+  type="button"
+  onClick={() => {
+    setFilterLand("");
+    setFilterRegion("");
+    setFilterRebsorte("");
+    setFilterBewertung("");
+  }}
+  style={{
+    gridColumn: "1 / -1",
+    border: "none",
+    backgroundColor: "#7b1026",
+    color: "white",
+    padding: "10px 14px",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  Filter zurücksetzen
+</button>
+  </div>
+)}
   📥 Backup wiederherstellen
   <input
     type="file"
