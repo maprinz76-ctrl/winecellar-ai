@@ -519,6 +519,7 @@ ref={suchfeldRef}
 </button>
 {filterAnzeigen && (
   <div
+  className="filter-grid"
   style={{
     marginTop: "12px",
     marginBottom: "24px",
@@ -528,7 +529,7 @@ ref={suchfeldRef}
     borderRadius: "16px",
     maxWidth: "560px",
     display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    
     gap: "12px",
     boxShadow: "0 4px 14px rgba(0,0,0,0.04)",
   }}
