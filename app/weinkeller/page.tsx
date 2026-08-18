@@ -519,20 +519,34 @@ ref={suchfeldRef}
 </button>
 {filterAnzeigen && (
   <div
-    style={{
-      marginTop: "12px",
-      marginBottom: "24px",
-      padding: "16px",
-      backgroundColor: "#f6f2ec",
-      borderRadius: "12px",
-      display: "grid",
-      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-      gap: "12px",
-    }}
-  >
+  style={{
+    marginTop: "12px",
+    marginBottom: "24px",
+    padding: "18px",
+    backgroundColor: "white",
+    border: "1px solid #eee8e2",
+    borderRadius: "16px",
+    maxWidth: "560px",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "12px",
+    boxShadow: "0 4px 14px rgba(0,0,0,0.04)",
+  }}
+>
     <select
   value={filterLand}
   onChange={(e) => setFilterLand(e.target.value)}
+  style={{
+  width: "100%",
+  padding: "10px 12px",
+  border: "1px solid #ddd",
+  borderRadius: "10px",
+  backgroundColor: "white",
+  color: "#7b1026",
+  fontWeight: "600",
+  fontSize: "14px",
+  cursor: "pointer",
+}}
 >
   <option value="">Alle Länder</option>
   <option value="Deutschland">Deutschland</option>
@@ -551,6 +565,17 @@ ref={suchfeldRef}
 <select
   value={filterRegion}
   onChange={(e) => setFilterRegion(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "white",
+    color: "#7b1026",
+    fontWeight: "600",
+    fontSize: "14px",
+    cursor: "pointer",
+  }}
 >
   <option value="">Alle Regionen</option>
 
@@ -566,9 +591,20 @@ ref={suchfeldRef}
       </option>
     ))}
 </select>
-    <select
+ <select
   value={filterRebsorte}
   onChange={(e) => setFilterRebsorte(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "white",
+    color: "#7b1026",
+    fontWeight: "600",
+    fontSize: "14px",
+    cursor: "pointer",
+  }}
 >
   <option value="">Alle Rebsorten</option>
 
@@ -592,6 +628,17 @@ ref={suchfeldRef}
 <select
   value={filterBewertung}
   onChange={(e) => setFilterBewertung(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "white",
+    color: "#7b1026",
+    fontWeight: "600",
+    fontSize: "14px",
+    cursor: "pointer",
+  }}
 >
   <option value="">Alle Bewertungen</option>
   <option value="5">★★★★★</option>
