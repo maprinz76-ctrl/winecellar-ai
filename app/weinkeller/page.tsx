@@ -423,6 +423,7 @@ ref={suchfeldRef}
     boxSizing: "border-box",
   }}
 />
+<div className="weinkeller-actions">
 <button
   type="button"
   onClick={() => setNurFavoriten(!nurFavoriten)}
@@ -490,7 +491,9 @@ ref={suchfeldRef}
   }}
 >
   🍷 Verbrauch
+  
 </Link>
+</div>
 <label
   style={{
     marginLeft: "12px",
@@ -504,6 +507,7 @@ ref={suchfeldRef}
   }}
 ><button
   type="button"
+  className="filter-toggle"
   onClick={() => setFilterAnzeigen(!filterAnzeigen)}
   style={{
     border: "none",
