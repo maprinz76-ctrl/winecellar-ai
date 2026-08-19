@@ -119,7 +119,7 @@ export default function WeinKarte({
     gap: "8px",
     marginBottom: "16px",
   }}
->
+></div>
   <span
     style={{
       background: "#f5f2ee",
@@ -174,7 +174,7 @@ export default function WeinKarte({
   >
     📅 {wein.jahrgang}
   </span>
-</div>
+
 <div
   style={{
     margin: "10px 0",
@@ -328,7 +328,9 @@ export default function WeinKarte({
     paddingTop: "16px",
     borderTop: "1px solid #eee8e3",
   }}
-><Link
+></div>
+<div className="wein-karte-actions">
+<Link
   href={`/wein/${wein.id}`}
   style={{ textDecoration: "none" }}
 >
