@@ -119,7 +119,7 @@ export default function WeinKarte({
     gap: "8px",
     marginBottom: "16px",
   }}
-></div>
+>
   <span
     style={{
       background: "#f5f2ee",
@@ -174,7 +174,7 @@ export default function WeinKarte({
   >
     📅 {wein.jahrgang}
   </span>
-
+</div>
 <div
   style={{
     margin: "10px 0",
