@@ -144,7 +144,7 @@ return (
         return 0;
     }
   });
-function bestandAendern(id: number, veraenderung: number) {
+async function bestandAendern(id: number, veraenderung: number) {
   const aktuellerWein = weine.find((wein) => wein.id === id);
 
   if (!aktuellerWein) {
@@ -196,7 +196,25 @@ if (
       archiviert: sollArchiviertWerden || wein.archiviert,
     };
   });
+const aktualisierterWein = neueListe.find((wein) => wein.id === id);
 
+if (!aktualisierterWein) {
+  return;
+}
+
+const { error } = await supabase
+  .from("weine")
+  .update({
+    anzahl: aktualisierterWein.anzahl,
+    archiviert: aktualisierterWein.archiviert,
+  })
+  .eq("id", id);
+
+if (error) {
+  console.error("Fehler beim Ändern des Bestands:", error);
+  alert("Der Bestand konnte nicht gespeichert werden.");
+  return;
+}
   setWeine(neueListe);
   localStorage.setItem("weine", JSON.stringify(neueListe));
 }

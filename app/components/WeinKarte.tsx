@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import InfoBox from "./InfoBox";
+import { supabase } from "../../lib/supabase";
 type Wein = {
   id: number;
   produzent: string;
@@ -64,27 +65,23 @@ export default function WeinKarte({
 
 <button
   type="button"
-  onClick={() => {
-    const daten = JSON.parse(localStorage.getItem("weine") || "[]");
+  onClick={async () => {
+  const neuerFavorit = !wein.favorit;
 
-    const neueWeine = daten.map((w: any) =>
-      w.id === wein.id
-        ? { ...w, favorit: !w.favorit }
-        : w
-    );
+  const { error } = await supabase
+    .from("weine")
+    .update({
+      favorit: neuerFavorit,
+    })
+    .eq("id", wein.id);
 
-    localStorage.setItem("weine", JSON.stringify(neueWeine));
-    window.location.reload();
-  }}
-  style={{
-  position: "absolute",
-  top: "18px",
-  right: "18px",
-  background: "none",
-  border: "none",
-  padding: "0",
-  fontSize: "26px",
-  cursor: "pointer",
+  if (error) {
+    console.error("Fehler beim Ändern des Favoriten:", error);
+    alert("Der Favorit konnte nicht gespeichert werden.");
+    return;
+  }
+
+  window.location.href = "/weinkeller";
 }}
   title={wein.favorit ? "Favorit entfernen" : "Als Favorit markieren"}
 >
