@@ -1,6 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { supabase } from "../../../lib/supabase";
 export default function WeinBearbeiten() {  
     const params = useParams();
 const router = useRouter();
@@ -33,13 +34,24 @@ useEffect(() => {
     setWein(gefundenerWein);
   }
 }, [id]);
-function speichern() {
+async function speichern() {
   const weine = JSON.parse(localStorage.getItem("weine") || "[]");
 
   const neueWeine = weine.map((w: any) =>
     w.id === id ? wein : w
   );
+const { error } = await supabase
+  .from("weine")
+  .update({
+    bewertung: Number(wein.bewertung || 0),
+  })
+  .eq("id", Number(id));
 
+if (error) {
+  console.error("Fehler beim Speichern der Bewertung:", error);
+  alert("Die Bewertung konnte nicht gespeichert werden.");
+  return;
+}
   localStorage.setItem("weine", JSON.stringify(neueWeine));
 
   router.push("/weinkeller");

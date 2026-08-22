@@ -218,7 +218,7 @@ if (error) {
   setWeine(neueListe);
   localStorage.setItem("weine", JSON.stringify(neueListe));
 }
-function bewertungAendern(id: number, sterne: number) {
+async function bewertungAendern(id: number, sterne: number) {
   const neueListe = weine.map((wein) => {
     if (wein.id !== id) {
       return wein;
@@ -229,7 +229,18 @@ function bewertungAendern(id: number, sterne: number) {
       bewertung: sterne,
     };
   });
+const { error } = await supabase
+  .from("weine")
+  .update({
+    bewertung: sterne,
+  })
+  .eq("id", id);
 
+if (error) {
+  console.error("Fehler beim Speichern der Bewertung:", error);
+  alert("Die Bewertung konnte nicht gespeichert werden.");
+  return;
+}
   setWeine(neueListe);
   localStorage.setItem("weine", JSON.stringify(neueListe));
 }
