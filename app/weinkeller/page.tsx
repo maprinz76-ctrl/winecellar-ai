@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import WeinKarte from "../components/WeinKarte";
+import { supabase } from "../../lib/supabase";
 
 type Wein = {
   id: number;
@@ -45,11 +46,22 @@ const [filterRegion, setFilterRegion] = useState("");
 const [filterRebsorte, setFilterRebsorte] = useState("");
 const [filterBewertung, setFilterBewertung] = useState("");
   useEffect(() => {
-  const daten = localStorage.getItem("weine");
+  async function ladeWeine() {
+  const { data, error } = await supabase
+    .from("weine")
+    .select("*");
 
-  if (daten) {
-    setWeine(JSON.parse(daten));
+  if (error) {
+    console.error("Fehler beim Laden der Weine:", error);
+    return;
   }
+
+  if (data) {
+    setWeine(data);
+  }
+}
+
+ladeWeine();
 
   const parameter = new URLSearchParams(window.location.search);
 

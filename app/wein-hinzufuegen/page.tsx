@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
-
+import { supabase } from "../../lib/supabase";
   export default function WeinHinzufuegen() {
     
     const pathname = usePathname();
@@ -198,7 +198,7 @@ setRebsorte(
     setKiLaedt(false);
   }
 }
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!produzent.trim() || !weinname.trim()) {
@@ -221,16 +221,29 @@ setRebsorte(
       bild,
     };
 
-    const gespeicherteWeine = JSON.parse(
-      localStorage.getItem("weine") || "[]"
-    );
+    const { error } = await supabase
+  .from("weine")
+  .insert([
+    {
+      produzent,
+      weinname,
+      jahrgang: jahrgang ? Number(jahrgang) : null,
+      land,
+      region,
+      appellation,
+      rebsorte,
+      anzahl: Number(anzahl),
+      preis: Number(preis),
+      bewertung: 0,
+      bild: bild || null,
+    },
+  ]);
 
-    gespeicherteWeine.push(neuerWein);
-
-    localStorage.setItem(
-      "weine",
-      JSON.stringify(gespeicherteWeine)
-    );
+if (error) {
+  console.error("Fehler beim Speichern des Weins:", error);
+  alert("Der Wein konnte nicht gespeichert werden.");
+  return;
+}
 
     alert(`${produzent} ${weinname} wurde gespeichert.`);
 
