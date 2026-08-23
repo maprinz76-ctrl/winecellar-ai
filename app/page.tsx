@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 type Wein = {
   id: number;
@@ -36,17 +37,50 @@ export default function Home() {
   const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
 
   useEffect(() => {
-  const daten = localStorage.getItem("weine");
+  async function datenLaden() {
+    const { data: weinDaten, error: weinFehler } = await supabase
+      .from("weine")
+      .select("*");
 
-  if (daten) {
-    setWeine(JSON.parse(daten));
+    if (weinFehler) {
+      console.error("Fehler beim Laden der Weine:", weinFehler);
+    } else {
+      setWeine((weinDaten || []).map((wein: any) => ({
+        ...wein,
+        anzahl: Number(wein.anzahl || 0),
+        preis: Number(wein.preis || 0),
+        bewertung: Number(wein.bewertung || 0),
+      })));
+    }
+
+    const { data: verbrauchsDaten, error: verbrauchsFehler } =
+      await supabase
+        .from("verbraeuche")
+        .select("*")
+        .order("datum", { ascending: false });
+
+    if (verbrauchsFehler) {
+      console.error(
+        "Fehler beim Laden der Verbräuche:",
+        verbrauchsFehler
+      );
+    } else {
+      setVerbraeuche(
+        (verbrauchsDaten || []).map((eintrag: any) => ({
+          id: eintrag.id,
+          weinId: eintrag.wein_id,
+          produzent: eintrag.produzent,
+          weinname: eintrag.weinname,
+          jahrgang: eintrag.jahrgang,
+          datum: eintrag.datum,
+          anzahl: Number(eintrag.anzahl || 0),
+          preis: Number(eintrag.preis || 0),
+        }))
+      );
+    }
   }
 
-  const verbrauchsDaten = localStorage.getItem("verbraeuche");
-
-  if (verbrauchsDaten) {
-    setVerbraeuche(JSON.parse(verbrauchsDaten));
-  }
+  datenLaden();
 }, []);
 
   const kennzahlen = useMemo(() => {
@@ -75,6 +109,20 @@ const getrunkenDiesenMonat = verbraeuche
   })
   .reduce(
     (summe, verbrauch) => summe + verbrauch.anzahl,
+    0
+  );
+  const verbrauchswertDiesenMonat = verbraeuche
+  .filter((verbrauch) => {
+    const datum = new Date(verbrauch.datum);
+
+    return (
+      datum.getMonth() === jetzt.getMonth() &&
+      datum.getFullYear() === jetzt.getFullYear()
+    );
+  })
+  .reduce(
+    (summe, verbrauch) =>
+      summe + verbrauch.anzahl * verbrauch.preis,
     0
   );
     const anzahlFlaschen = weine.reduce(
@@ -115,8 +163,9 @@ const lieblingswein =
       anzahlArchivierteWeine: archivierteWeine.length,
       getrunkeneFlaschen,
       getrunkenDiesenMonat,
+      verbrauchswertDiesenMonat,
     };
-  }, [weine]);
+  }, [weine, verbraeuche]);
 
   return (
     <main
@@ -183,11 +232,17 @@ const lieblingswein =
   value={String(kennzahlen.getrunkenDiesenMonat)}
   href="/verbrauch"
 />
+<DashboardCard
+  icon="💸"
+  title="Verbrauchswert"
+  value={`CHF ${kennzahlen.verbrauchswertDiesenMonat.toFixed(2)}`}
+  href="/verbrauch"
+/>
           <DashboardCard
   icon="📦"
   title="Archiv"
   value={String(kennzahlen.anzahlArchivierteWeine)}
-  fullWidth={false}
+  fullWidth={true}
   href="/weinkeller?ansicht=archiv"
 />
           {kennzahlen.lieblingswein && (
