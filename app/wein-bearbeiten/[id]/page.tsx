@@ -43,8 +43,18 @@ async function speichern() {
 const { error } = await supabase
   .from("weine")
   .update({
-    bewertung: Number(wein.bewertung || 0),
-  })
+  produzent: wein.produzent,
+  weinname: wein.weinname,
+  jahrgang: wein.jahrgang,
+  land: wein.land,
+  region: wein.region,
+  rebsorte: wein.rebsorte,
+  anzahl: Number(wein.anzahl || 0),
+  preis: Number(wein.preis || 0),
+  bewertung: Number(wein.bewertung || 0),
+  bild: wein.bild,
+  notiz: wein.notiz,
+})
   .eq("id", Number(id));
 
 if (error) {
