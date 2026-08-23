@@ -99,6 +99,54 @@ const verbrauchDieserMonat = verbraeuche
     datum: number;
   }>)
 ).sort((a, b) => b.datum - a.datum);
+async function verbrauchLoeschen(eintrag: Verbrauch) {
+  const bestaetigt = window.confirm(
+    "Möchtest du diesen Verbrauch wirklich löschen? Die Flasche wird dem Bestand wieder gutgeschrieben."
+  );
+
+  if (!bestaetigt) {
+    return;
+  }
+
+  const { data: weinDaten, error: weinFehler } = await supabase
+    .from("weine")
+    .select("anzahl")
+    .eq("id", eintrag.weinId)
+    .single();
+
+  if (weinFehler) {
+    console.error("Fehler beim Laden des Weinbestands:", weinFehler);
+    return;
+  }
+
+  const neuerBestand = Number(weinDaten.anzahl || 0) + eintrag.anzahl;
+
+  const { error: bestandFehler } = await supabase
+    .from("weine")
+    .update({
+      anzahl: neuerBestand,
+    })
+    .eq("id", eintrag.weinId);
+
+  if (bestandFehler) {
+    console.error("Fehler beim Wiederherstellen des Bestands:", bestandFehler);
+    return;
+  }
+
+  const { error: loeschFehler } = await supabase
+    .from("verbraeuche")
+    .delete()
+    .eq("id", eintrag.id);
+
+  if (loeschFehler) {
+    console.error("Fehler beim Löschen des Verbrauchs:", loeschFehler);
+    return;
+  }
+
+  setVerbraeuche((alt) =>
+    alt.filter((verbrauch) => verbrauch.id !== eintrag.id)
+  );
+}
  return (
   <main
     style={{
@@ -358,6 +406,21 @@ const verbrauchDieserMonat = verbraeuche
                   >
                     💰 CHF {(eintrag.anzahl * eintrag.preis).toFixed(2)}
                   </span>
+                  <button
+  type="button"
+  onClick={() => verbrauchLoeschen(eintrag)}
+  style={{
+    backgroundColor: "#f7e9ec",
+    color: "#7b1026",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  🗑️ Löschen
+</button>
                 </div>
               </div>
             </div>
