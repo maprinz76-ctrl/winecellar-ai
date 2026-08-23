@@ -173,6 +173,21 @@ async function bestandAendern(id: number, veraenderung: number) {
       "verbraeuche",
       JSON.stringify([...verbraeuche, neuerVerbrauch])
     );
+    const { error: verbrauchFehler } = await supabase
+  .from("verbraeuche")
+  .insert({
+    wein_id: aktuellerWein.id,
+    produzent: aktuellerWein.produzent,
+    weinname: aktuellerWein.weinname,
+    jahrgang: aktuellerWein.jahrgang,
+    datum: neuerVerbrauch.datum,
+    anzahl: 1,
+    preis: aktuellerWein.preis,
+  });
+
+if (verbrauchFehler) {
+  console.error("Fehler beim Speichern des Verbrauchs:", verbrauchFehler);
+}
   }
 let sollArchiviertWerden = false;
 

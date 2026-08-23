@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
 
 type Verbrauch = {
   id: number;
@@ -17,13 +18,34 @@ type Verbrauch = {
 export default function VerbrauchSeite() {
   const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
 
-  useEffect(() => {
-    const daten = localStorage.getItem("verbraeuche");
+ useEffect(() => {
+  async function verbraeucheLaden() {
+    const { data, error } = await supabase
+      .from("verbraeuche")
+      .select("*")
+      .order("datum", { ascending: false });
 
-    if (daten) {
-      setVerbraeuche(JSON.parse(daten));
+    if (error) {
+      console.error("Fehler beim Laden der Verbräuche:", error);
+      return;
     }
-  }, []);
+
+    const geladeneVerbraeuche: Verbrauch[] = (data || []).map((eintrag: any) => ({
+      id: eintrag.id,
+      weinId: eintrag.wein_id,
+      produzent: eintrag.produzent,
+      weinname: eintrag.weinname,
+      jahrgang: eintrag.jahrgang,
+      datum: eintrag.datum,
+      anzahl: Number(eintrag.anzahl || 0),
+      preis: Number(eintrag.preis || 0),
+    }));
+
+    setVerbraeuche(geladeneVerbraeuche);
+  }
+
+  verbraeucheLaden();
+}, []);
 const getrunkeneFlaschen = verbraeuche.reduce(
   (summe, eintrag) => summe + eintrag.anzahl,
   0
