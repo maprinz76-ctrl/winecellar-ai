@@ -22,17 +22,37 @@ const [wein, setWein] = useState({
   notiz: "",
 });
 useEffect(() => {
-  const gespeicherteWeine = JSON.parse(
-    localStorage.getItem("weine") || "[]"
-  );
+  async function weinLaden() {
+    const { data, error } = await supabase
+      .from("weine")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-  const gefundenerWein = gespeicherteWeine.find(
-    (eintrag: { id: number }) => eintrag.id === id
-  );
+    if (error) {
+      console.error("Fehler beim Laden des Weins:", error);
+      return;
+    }
 
-  if (gefundenerWein) {
-    setWein(gefundenerWein);
+    if (data) {
+      setWein({
+        produzent: data.produzent || "",
+        weinname: data.weinname || "",
+        jahrgang: String(data.jahrgang || ""),
+        land: data.land || "",
+        region: data.region || "",
+        appellation: data.appellation || "",
+        rebsorte: data.rebsorte || "",
+        preis: Number(data.preis || 0),
+        anzahl: Number(data.anzahl || 0),
+        bewertung: Number(data.bewertung || 0),
+        bild: data.bild || "",
+        notiz: data.notiz || "",
+      });
+    }
   }
+
+  weinLaden();
 }, [id]);
 async function speichern() {
   const weine = JSON.parse(localStorage.getItem("weine") || "[]");

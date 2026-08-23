@@ -153,10 +153,7 @@ async function bestandAendern(id: number, veraenderung: number) {
 
   // Verbrauch speichern, wenn eine Flasche entnommen wird
   if (veraenderung === -1 && aktuellerWein.anzahl > 0) {
-    const gespeicherteVerbraeuche = localStorage.getItem("verbraeuche");
-    const verbraeuche: Verbrauch[] = gespeicherteVerbraeuche
-      ? JSON.parse(gespeicherteVerbraeuche)
-      : [];
+   
 
     const neuerVerbrauch: Verbrauch = {
       id: Date.now(),
@@ -169,10 +166,7 @@ async function bestandAendern(id: number, veraenderung: number) {
       preis: aktuellerWein.preis,
     };
 
-    localStorage.setItem(
-      "verbraeuche",
-      JSON.stringify([...verbraeuche, neuerVerbrauch])
-    );
+    
     const { error: verbrauchFehler } = await supabase
   .from("verbraeuche")
   .insert({
@@ -231,7 +225,7 @@ if (error) {
   return;
 }
   setWeine(neueListe);
-  localStorage.setItem("weine", JSON.stringify(neueListe));
+  
 }
 async function bewertungAendern(id: number, sterne: number) {
   const neueListe = weine.map((wein) => {
@@ -257,29 +251,41 @@ if (error) {
   return;
 }
   setWeine(neueListe);
-  localStorage.setItem("weine", JSON.stringify(neueListe));
+  
 }
-  function weinLoeschen(id: number) {
-    const bestaetigt = window.confirm(
-      "Möchtest du diesen Wein wirklich löschen?"
-    );
+ async function weinLoeschen(id: number) {
+  const bestaetigt = window.confirm(
+    "Möchtest du diesen Wein wirklich löschen?"
+  );
 
-    if (!bestaetigt) {
-      return;
-    }
-
-    const neueListe = weine.filter((wein) => wein.id !== id);
-
-    setWeine(neueListe);
-    localStorage.setItem("weine", JSON.stringify(neueListe));
+  if (!bestaetigt) {
+    return;
   }
- function weinArchivieren(id: number) {
+
+  const { error } = await supabase
+    .from("weine")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Fehler beim Löschen des Weins:", error);
+    alert("Der Wein konnte nicht gelöscht werden.");
+    return;
+  }
+
+  const neueListe = weine.filter((wein) => wein.id !== id);
+
+  setWeine(neueListe);
+  
+}
+async function weinArchivieren(id: number) {
   const aktuellerWein = weine.find((wein) => wein.id === id);
 
   if (!aktuellerWein) {
     return;
   }
 
+  // Wein aus dem Archiv zurückholen
   if (aktuellerWein.archiviert) {
     const eingabe = window.prompt(
       "Wie viele Flaschen möchtest du zurück in den Weinkeller legen?",
@@ -297,6 +303,20 @@ if (error) {
       return;
     }
 
+    const { error } = await supabase
+      .from("weine")
+      .update({
+        archiviert: false,
+        anzahl: neueAnzahl,
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Fehler beim Wiederherstellen des Weins:", error);
+      alert("Der Wein konnte nicht wiederhergestellt werden.");
+      return;
+    }
+
     const neueListe = weine.map((wein) =>
       wein.id === id
         ? {
@@ -308,17 +328,33 @@ if (error) {
     );
 
     setWeine(neueListe);
-    localStorage.setItem("weine", JSON.stringify(neueListe));
     return;
   }
 
+  // Wein archivieren
   const bestaetigt = window.confirm(
-  aktuellerWein.anzahl === 0
-    ? "Der Bestand ist 0. Möchtest du diesen Wein ins Archiv verschieben?"
-    : `Möchtest du diesen Wein wirklich archivieren? Der aktuelle Bestand von ${aktuellerWein.anzahl} ${aktuellerWein.anzahl === 1 ? "Flasche" : "Flaschen"} wird auf 0 gesetzt.`
-);
+    aktuellerWein.anzahl === 0
+      ? "Der Bestand ist 0. Möchtest du diesen Wein ins Archiv verschieben?"
+      : `Möchtest du diesen Wein wirklich archivieren? Der aktuelle Bestand von ${aktuellerWein.anzahl} ${
+          aktuellerWein.anzahl === 1 ? "Flasche" : "Flaschen"
+        } wird auf 0 gesetzt.`
+  );
 
   if (!bestaetigt) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("weine")
+    .update({
+      archiviert: true,
+      anzahl: 0,
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Fehler beim Archivieren des Weins:", error);
+    alert("Der Wein konnte nicht archiviert werden.");
     return;
   }
 
@@ -333,64 +369,106 @@ if (error) {
   );
 
   setWeine(neueListe);
-  localStorage.setItem("weine", JSON.stringify(neueListe));
 }
-  function backupExportieren() {
-    const daten = localStorage.getItem("weine");
+  async function backupExportieren() {
+  const { data, error } = await supabase
+    .from("weine")
+    .select("*")
+    .order("id", { ascending: true });
 
-    if (!daten) {
-      alert("Es sind keine Weine zum Sichern vorhanden.");
-      return;
-    }
-
-    const blob = new Blob([daten], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `weinkeller-backup-${new Date()
-      .toISOString()
-      .slice(0, 10)}.json`;
-
-    link.click();
-    URL.revokeObjectURL(url);
+  if (error) {
+    console.error("Fehler beim Erstellen des Backups:", error);
+    alert("Das Backup konnte nicht erstellt werden.");
+    return;
   }
-    function backupImportieren(datei: File) {
-    const reader = new FileReader();
 
-    reader.onload = (event) => {
-      try {
-        const inhalt = event.target?.result;
+  if (!data || data.length === 0) {
+    alert("Es sind keine Weine zum Sichern vorhanden.");
+    return;
+  }
 
-        if (typeof inhalt !== "string") {
-          alert("Die Backup-Datei konnte nicht gelesen werden.");
-          return;
-        }
+  const jsonDaten = JSON.stringify(data, null, 2);
 
-        const importierteWeine = JSON.parse(inhalt);
+  const blob = new Blob([jsonDaten], {
+    type: "application/json",
+  });
 
-        if (!Array.isArray(importierteWeine)) {
-          alert("Diese Datei ist kein gültiges Weinkeller-Backup.");
-          return;
-        }
+  const url = URL.createObjectURL(blob);
 
-        const bestaetigt = window.confirm(
-          "Möchtest du das Backup wirklich wiederherstellen? Die aktuell gespeicherten Weine werden ersetzt."
-        );
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `weinkeller-backup-${new Date()
+    .toISOString()
+    .slice(0, 10)}.json`;
 
-        if (!bestaetigt) return;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+   function backupImportieren(datei: File) {
+  const reader = new FileReader();
 
-        localStorage.setItem("weine", JSON.stringify(importierteWeine));
-        setWeine(importierteWeine);
+  reader.onload = async (event) => {
+    try {
+      const inhalt = event.target?.result;
 
-        alert("Backup wurde erfolgreich wiederhergestellt.");
-      } catch {
-        alert("Die Backup-Datei ist ungültig oder beschädigt.");
+      if (typeof inhalt !== "string") {
+        alert("Die Backup-Datei konnte nicht gelesen werden.");
+        return;
       }
-    };
 
-    reader.readAsText(datei);
-  }
+      const importierteWeine = JSON.parse(inhalt);
+
+      if (!Array.isArray(importierteWeine)) {
+        alert("Diese Datei ist kein gültiges Weinkeller-Backup.");
+        return;
+      }
+
+      const bestaetigt = window.confirm(
+        "Möchtest du das Backup wirklich wiederherstellen? Die aktuell gespeicherten Weine werden ersetzt."
+      );
+
+      if (!bestaetigt) {
+        return;
+      }
+
+      const { error: loeschFehler } = await supabase
+        .from("weine")
+        .delete()
+        .gte("id", 0);
+
+      if (loeschFehler) {
+        console.error(
+          "Fehler beim Löschen der bisherigen Weine:",
+          loeschFehler
+        );
+        alert("Das Backup konnte nicht wiederhergestellt werden.");
+        return;
+      }
+
+      const { data, error: importFehler } = await supabase
+        .from("weine")
+        .insert(importierteWeine)
+        .select();
+
+      if (importFehler) {
+        console.error(
+          "Fehler beim Importieren des Backups:",
+          importFehler
+        );
+        alert("Das Backup konnte nicht wiederhergestellt werden.");
+        return;
+      }
+
+      setWeine(data || []);
+
+      alert("Backup wurde erfolgreich wiederhergestellt.");
+    } catch {
+      alert("Die Backup-Datei ist ungültig oder beschädigt.");
+    }
+  };
+
+  reader.readAsText(datei);
+}
   return (
     <main
       style={{
