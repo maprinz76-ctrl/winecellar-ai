@@ -64,11 +64,18 @@ Wichtige Regeln zur Identifikation:
 - Ergänzte Angaben müssen zum konkret identifizierten Wein passen.
 - Erfinde keine Angaben.
 
-Regeln für Produzent und Weinname:
-
 - "produzent" enthält ausschließlich den tatsächlichen Hersteller, das Weingut, Château oder die Kellerei.
 - "weinname" enthält ausschließlich den eigentlichen Wein- oder Cuvée-Namen.
 - Wiederhole den vollständigen Produzentennamen niemals unverändert als Weinname.
+- Ein Familienname, Markenname oder Firmenname ist nicht automatisch der Weinname.
+- Eine Appellation oder Herkunftsbezeichnung ist nicht automatisch der Weinname.
+- Wenn auf dem Etikett Produzent und Weinname getrennt erscheinen, übernimm beide getrennt.
+- Wenn kein eigenständiger Weinname sicher erkennbar ist, setze "weinname" auf einen leeren String statt den Produzentennamen zu wiederholen.
+- Ergänze einen bekannten Cuvée-Namen wie "Tignanello" nur dann, wenn er auf dem Etikett sichtbar ist oder der konkrete Wein eindeutig identifiziert wurde.
+- Beispiel Antinori:
+  "Marchesi Antinori" = produzent.
+  "Tignanello" = weinname nur wenn Tignanello tatsächlich auf dem Etikett steht oder der Wein eindeutig als Tignanello identifiziert wurde.
+  "Marchese Antinori Chianti Classico Riserva" darf nicht automatisch zu "Tignanello" werden.
 - Bei einem Château-Wein steht beispielsweise "Château Chasse-Spleen" unter "produzent" und "Chasse-Spleen" unter "weinname".
 - Bei einem Wein wie "Louis Latour Grand Ardèche" steht "Louis Latour" unter "produzent" und "Grand Ardèche" unter "weinname".
 - Bei einem Wein wie "Louis Jadot Meursault" steht "Louis Jadot" unter "produzent" und "Meursault" unter "weinname".

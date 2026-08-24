@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { supabase } from "../../../lib/supabase";
 
 type Wein = {
   id: number;
@@ -24,46 +25,122 @@ type Wein = {
 export default function WeinDetail() {
   const params = useParams();
   const [wein, setWein] = useState<Wein | null>(null);
+const [verbraeuche, setVerbraeuche] = useState<any[]>([]);
+ useEffect(() => {
+  async function weinLaden() {
+    const { data, error } = await supabase
+      .from("weine")
+      .select("*")
+      .eq("id", Number(params.id))
+      .single();
 
-  useEffect(() => {
-    const daten = localStorage.getItem("weine");
+    if (error) {
+      console.error("Fehler beim Laden des Weins:", error);
+      setWein(null);
+      return;
+    }
+if (data) {
+  setWein({
+    id: data.id,
+    produzent: data.produzent || "",
+    weinname: data.weinname || "",
+    jahrgang: String(data.jahrgang || ""),
+    land: data.land || "",
+    region: data.region || "",
+    appellation: data.appellation || "",
+    rebsorte: data.rebsorte || "",
+    anzahl: Number(data.anzahl || 0),
+    preis: Number(data.preis || 0),
+    bewertung: Number(data.bewertung || 0),
+    bild: data.bild || "",
+    notiz: data.notiz || "",
+    favorit: data.favorit || false,
+  });
+}
+    const { data: verbrauchsDaten, error: verbrauchsFehler } =
+  await supabase
+    .from("verbraeuche")
+    .select("*")
+    .eq("wein_id", Number(params.id))
+    .order("datum", { ascending: false });
 
-    if (!daten) return;
+if (verbrauchsFehler) {
+  console.error("Fehler beim Laden der Verbräuche:", verbrauchsFehler);
+} else {
+  setVerbraeuche(verbrauchsDaten || []);
+}
+}
 
-    const weine: Wein[] = JSON.parse(daten);
+weinLaden();
+}, [params.id]);
 
-    const gefundenerWein = weine.find(
-      (einWein) => String(einWein.id) === String(params.id)
-    );
-
-    setWein(gefundenerWein || null);
-  }, [params.id]);
-function bestandAendern(veraenderung: number) {
+async function bestandAendern(veraenderung: number) {
   if (!wein) return;
+
+  if (veraenderung === -1 && wein.anzahl <= 0) {
+    return;
+  }
 
   const neueAnzahl = Math.max(0, wein.anzahl + veraenderung);
 
-  const daten = localStorage.getItem("weine");
-  if (!daten) return;
+  // Wenn eine Flasche entnommen wird, Verbrauch speichern
+  if (veraenderung === -1 && wein.anzahl > 0) {
+    const datum = new Date().toISOString();
 
-  const weine: Wein[] = JSON.parse(daten);
+    const { data: neuerVerbrauch, error: verbrauchFehler } =
+      await supabase
+        .from("verbraeuche")
+        .insert({
+          wein_id: wein.id,
+          produzent: wein.produzent,
+          weinname: wein.weinname,
+          jahrgang: wein.jahrgang,
+          datum: datum,
+          anzahl: 1,
+          preis: wein.preis,
+        })
+        .select()
+        .single();
 
-  const neueWeine = weine.map((einWein) =>
-    einWein.id === wein.id
-      ? {
-          ...einWein,
-          anzahl: neueAnzahl,
-        }
-      : einWein
-  );
+    if (verbrauchFehler) {
+      console.error(
+        "Fehler beim Speichern des Verbrauchs:",
+        verbrauchFehler
+      );
+      alert("Der Verbrauch konnte nicht gespeichert werden.");
+      return;
+    }
 
-  localStorage.setItem("weine", JSON.stringify(neueWeine));
+    if (neuerVerbrauch) {
+      setVerbraeuche((bisher) => [neuerVerbrauch, ...bisher]);
+    }
+  }
+
+  const { error } = await supabase
+    .from("weine")
+    .update({
+      anzahl: neueAnzahl,
+    })
+    .eq("id", wein.id);
+
+  if (error) {
+    console.error("Fehler beim Ändern des Bestands:", error);
+    alert("Der Bestand konnte nicht gespeichert werden.");
+    return;
+  }
 
   setWein({
     ...wein,
     anzahl: neueAnzahl,
   });
 }
+const getrunkeneFlaschen = verbraeuche.reduce(
+  (summe, eintrag) => summe + Number(eintrag.anzahl || 0),
+  0
+);
+
+const letzterVerbrauch =
+  verbraeuche.length > 0 ? verbraeuche[0].datum : null;
   if (!wein) {
     return (
       <main style={{ padding: "40px", fontFamily: "Arial" }}>
@@ -130,25 +207,27 @@ function bestandAendern(veraenderung: number) {
 
   <button
     type="button"
-    onClick={() => {
-      const daten = localStorage.getItem("weine");
-      if (!daten) return;
+   onClick={async () => {
+  const neuerFavorit = !wein.favorit;
 
-      const weine: Wein[] = JSON.parse(daten);
+  const { error } = await supabase
+    .from("weine")
+    .update({
+      favorit: neuerFavorit,
+    })
+    .eq("id", wein.id);
 
-      const neueWeine = weine.map((einWein) =>
-        einWein.id === wein.id
-          ? { ...einWein, favorit: !wein.favorit }
-          : einWein
-      );
+  if (error) {
+    console.error("Fehler beim Speichern des Favoriten:", error);
+    alert("Der Favorit konnte nicht gespeichert werden.");
+    return;
+  }
 
-      localStorage.setItem("weine", JSON.stringify(neueWeine));
-
-      setWein({
-        ...wein,
-        favorit: !wein.favorit,
-      });
-    }}
+  setWein({
+    ...wein,
+    favorit: neuerFavorit,
+  });
+}}
     style={{
       position: "absolute",
       top: "0",
@@ -376,6 +455,72 @@ function bestandAendern(veraenderung: number) {
       💎 Gesamtwert
     </div>
     <strong>CHF {(wein.preis * wein.anzahl).toFixed(2)}</strong>
+  </div>
+</div>
+<hr
+  style={{
+    border: "none",
+    borderTop: "1px solid #eee",
+    margin: "25px 0",
+  }}
+/>
+
+<div
+  style={{
+    backgroundColor: "#f6f2ec",
+    padding: "18px",
+    borderRadius: "12px",
+    marginBottom: "25px",
+  }}
+>
+  <h3
+    style={{
+      marginTop: 0,
+      marginBottom: "12px",
+      color: "#7b1026",
+    }}
+  >
+    🍷 Verbrauch dieses Weins
+  </h3>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+      gap: "12px",
+    }}
+  >
+    <div>
+      <div
+        style={{
+          fontSize: "13px",
+          color: "#7b6f68",
+          marginBottom: "6px",
+        }}
+      >
+        Getrunkene Flaschen
+      </div>
+
+      <strong>{getrunkeneFlaschen}</strong>
+    </div>
+
+    <div>
+      <div
+        style={{
+          fontSize: "13px",
+          color: "#7b6f68",
+          marginBottom: "6px",
+        }}
+      >
+        Letzter Verbrauch
+      </div>
+
+      <strong>
+        {letzterVerbrauch
+          ? new Date(letzterVerbrauch).toLocaleDateString("de-CH")
+          : "Noch kein Verbrauch"}
+      </strong>
+    </div>
   </div>
 </div>
           <Link
