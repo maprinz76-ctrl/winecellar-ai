@@ -533,7 +533,55 @@ const letzterVerbrauch =
     margin: "25px 0",
   }}
 />
+{verbraeuche.length > 0 && (
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "18px",
+      borderRadius: "12px",
+      marginBottom: "25px",
+    }}
+  >
+    <h3
+      style={{
+        marginTop: 0,
+        marginBottom: "12px",
+        color: "#7b1026",
+      }}
+    >
+      📋 Verbrauchshistorie
+    </h3>
 
+    <div
+      style={{
+        display: "grid",
+        gap: "10px",
+      }}
+    >
+      {verbraeuche.map((eintrag) => (
+        <div
+          key={eintrag.id}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "20px",
+            borderBottom: "1px solid #e5ded7",
+            paddingBottom: "10px",
+          }}
+        >
+          <span>
+            {new Date(eintrag.datum).toLocaleDateString("de-CH")}
+          </span>
+
+          <strong>
+            🍷 {eintrag.anzahl}{" "}
+            {Number(eintrag.anzahl) === 1 ? "Flasche" : "Flaschen"}
+          </strong>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 <div
   style={{
     backgroundColor: "#f6f2ec",
