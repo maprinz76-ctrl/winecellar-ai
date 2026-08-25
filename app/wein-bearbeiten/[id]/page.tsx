@@ -55,36 +55,31 @@ useEffect(() => {
   weinLaden();
 }, [id]);
 async function speichern() {
-  const weine = JSON.parse(localStorage.getItem("weine") || "[]");
+  const { error } = await supabase
+    .from("weine")
+    .update({
+      produzent: wein.produzent,
+      weinname: wein.weinname,
+      jahrgang: wein.jahrgang,
+      land: wein.land,
+      region: wein.region,
+      appellation: wein.appellation,
+      rebsorte: wein.rebsorte,
+      anzahl: Number(wein.anzahl || 0),
+      preis: Number(wein.preis || 0),
+      bewertung: Number(wein.bewertung || 0),
+      bild: wein.bild,
+      notiz: wein.notiz,
+    })
+    .eq("id", id);
 
-  const neueWeine = weine.map((w: any) =>
-    w.id === id ? wein : w
-  );
-const { error } = await supabase
-  .from("weine")
-  .update({
-  produzent: wein.produzent,
-  weinname: wein.weinname,
-  jahrgang: wein.jahrgang,
-  land: wein.land,
-  region: wein.region,
-  rebsorte: wein.rebsorte,
-  anzahl: Number(wein.anzahl || 0),
-  preis: Number(wein.preis || 0),
-  bewertung: Number(wein.bewertung || 0),
-  bild: wein.bild,
-  notiz: wein.notiz,
-})
-  .eq("id", Number(id));
+  if (error) {
+    console.error("Fehler beim Speichern des Weins:", error);
+    alert("Der Wein konnte nicht gespeichert werden.");
+    return;
+  }
 
-if (error) {
-  console.error("Fehler beim Speichern der Bewertung:", error);
-  alert("Die Bewertung konnte nicht gespeichert werden.");
-  return;
-}
-  localStorage.setItem("weine", JSON.stringify(neueWeine));
-
-  router.push("/weinkeller");
+  router.push(`/wein/${id}`);
 }
   return (
     <main
