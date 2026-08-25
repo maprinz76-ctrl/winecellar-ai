@@ -138,13 +138,17 @@ const getrunkenDiesenMonat = verbraeuche
     const durchschnittspreis =
       anzahlFlaschen > 0 ? gesamtwert / anzahlFlaschen : 0;
 
-      const durchschnittBewertung =
-        anzahlWeine > 0
-          ? aktiveWeine.reduce(
-              (summe, wein) => summe + (wein.bewertung || 0),
-              0
-            ) / anzahlWeine
-          : 0;
+      const bewerteteWeine = aktiveWeine.filter(
+  (wein) => Number(wein.bewertung || 0) > 0
+);
+
+const durchschnittBewertung =
+  bewerteteWeine.length > 0
+    ? bewerteteWeine.reduce(
+        (summe, wein) => summe + Number(wein.bewertung || 0),
+        0
+      ) / bewerteteWeine.length
+    : 0;
 const lieblingswein =
   aktiveWeine.length > 0
     ? [...aktiveWeine].sort(
