@@ -134,6 +134,59 @@ async function bestandAendern(veraenderung: number) {
     anzahl: neueAnzahl,
   });
 }
+async function verbrauchRueckgaengigMachen(eintrag: any) {
+  if (!wein) return;
+
+  const bestaetigt = window.confirm(
+    "Möchtest du diesen Verbrauch wirklich rückgängig machen? Die Flasche wird dem Bestand wieder gutgeschrieben."
+  );
+
+  if (!bestaetigt) {
+    return;
+  }
+
+  const neueAnzahl = wein.anzahl + Number(eintrag.anzahl || 0);
+
+  const { error: bestandsFehler } = await supabase
+    .from("weine")
+    .update({
+      anzahl: neueAnzahl,
+    })
+    .eq("id", wein.id);
+
+  if (bestandsFehler) {
+    console.error(
+      "Fehler beim Wiederherstellen des Bestands:",
+      bestandsFehler
+    );
+    alert("Der Bestand konnte nicht wiederhergestellt werden.");
+    return;
+  }
+
+  const { error: loeschFehler } = await supabase
+    .from("verbraeuche")
+    .delete()
+    .eq("id", eintrag.id);
+
+  if (loeschFehler) {
+    console.error(
+      "Fehler beim Löschen des Verbrauchs:",
+      loeschFehler
+    );
+    alert("Der Verbrauch konnte nicht gelöscht werden.");
+    return;
+  }
+
+  setWein({
+    ...wein,
+    anzahl: neueAnzahl,
+  });
+
+  setVerbraeuche((bisher) =>
+    bisher.filter((verbrauch) => verbrauch.id !== eintrag.id)
+  );
+}
+
 const getrunkeneFlaschen = verbraeuche.reduce(
   (summe, eintrag) => summe + Number(eintrag.anzahl || 0),
   0
@@ -523,10 +576,8 @@ const letzterVerbrauch =
     </div>
   </div>
 </div>
-          <Link
-  href={`/wein-bearbeiten/${wein.id}`}
-  style={{ textDecoration: "none" }}
-><hr
+ 
+<hr
   style={{
     border: "none",
     borderTop: "1px solid #eee",
@@ -573,10 +624,35 @@ const letzterVerbrauch =
             {new Date(eintrag.datum).toLocaleDateString("de-CH")}
           </span>
 
-          <strong>
-            🍷 {eintrag.anzahl}{" "}
-            {Number(eintrag.anzahl) === 1 ? "Flasche" : "Flaschen"}
-          </strong>
+          <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  }}
+>
+  <strong>
+    🍷 {eintrag.anzahl}{" "}
+    {Number(eintrag.anzahl) === 1 ? "Flasche" : "Flaschen"}
+  </strong>
+
+  <button
+    type="button"
+    onClick={() => verbrauchRueckgaengigMachen(eintrag)}
+    style={{
+      border: "none",
+      backgroundColor: "#f7e9ec",
+      color: "#7b1026",
+      borderRadius: "8px",
+      padding: "6px 10px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+    title="Verbrauch rückgängig machen"
+  >
+    ↩️
+  </button>
+</div>
         </div>
       ))}
     </div>
@@ -609,6 +685,9 @@ const letzterVerbrauch =
     {wein.notiz || "Noch keine Notiz erfasst."}
   </p>
 </div>
+<Link
+  href={`/wein-bearbeiten/${wein.id}`}
+>
   <button
     type="button"
     style={{
