@@ -250,7 +250,14 @@ const lieblingswein =
   href="/weinkeller?ansicht=archiv"
 />
           {kennzahlen.lieblingswein && (
-            
+    
+    <Link
+  href={`/wein/${kennzahlen.lieblingswein.id}`}
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
   <div
     style={{
       gridColumn: "1 / -1",
@@ -324,6 +331,7 @@ const lieblingswein =
       CHF {kennzahlen.lieblingswein.preis.toFixed(2)}
     </p>
   </div>
+  </Link>
 )}
         </section>
 
