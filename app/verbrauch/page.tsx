@@ -99,6 +99,14 @@ const verbrauchDieserMonat = verbraeuche
     datum: number;
   }>)
 ).sort((a, b) => b.datum - a.datum);
+const grenze12Monate = new Date();
+grenze12Monate.setMonth(grenze12Monate.getMonth() - 11);
+grenze12Monate.setDate(1);
+grenze12Monate.setHours(0, 0, 0, 0);
+
+const monatsAuswertungLetzte12Monate = monatsAuswertung.filter(
+  (monat) => monat.datum >= grenze12Monate.getTime()
+);
 async function verbrauchLoeschen(eintrag: Verbrauch) {
   const bestaetigt = window.confirm(
     "Möchtest du diesen Verbrauch wirklich löschen? Die Flasche wird dem Bestand wieder gutgeschrieben."
@@ -281,7 +289,7 @@ async function verbrauchLoeschen(eintrag: Verbrauch) {
           📊 Verbrauch nach Monaten
         </h2>
 
-        {monatsAuswertung.length === 0 ? (
+        {monatsAuswertungLetzte12Monate.length === 0 ? (
           <p style={{ margin: 0 }}>Noch keine Monatsdaten vorhanden.</p>
         ) : (
           <div
@@ -290,7 +298,7 @@ async function verbrauchLoeschen(eintrag: Verbrauch) {
               gap: "10px",
             }}
           >
-            {monatsAuswertung.map((monat) => (
+           {monatsAuswertungLetzte12Monate.map((monat) => (
               <div
                 key={monat.monat}
                 style={{
