@@ -91,6 +91,8 @@ export default function Home() {
 const archivierteWeine = weine.filter(
   (wein) => wein.archiviert === true
 );
+const zuletztGetrunken =
+  verbraeuche.length > 0 ? verbraeuche[0] : null;
     const anzahlWeine = aktiveWeine.length;
 const getrunkeneFlaschen = verbraeuche.reduce(
   (summe, verbrauch) => summe + verbrauch.anzahl,
@@ -168,6 +170,7 @@ const lieblingswein =
       getrunkeneFlaschen,
       getrunkenDiesenMonat,
       verbrauchswertDiesenMonat,
+      zuletztGetrunken,
     };
   }, [weine, verbraeuche]);
 
@@ -242,6 +245,15 @@ const lieblingswein =
   value={`CHF ${kennzahlen.verbrauchswertDiesenMonat.toFixed(2)}`}
   href="/verbrauch"
 />
+{kennzahlen.zuletztGetrunken && (
+  <DashboardCard
+    icon="🍷"
+    title="Zuletzt getrunken"
+    fullWidth={true}
+   value={`${kennzahlen.zuletztGetrunken.produzent} – ${kennzahlen.zuletztGetrunken.weinname} · ${new Date(kennzahlen.zuletztGetrunken.datum).toLocaleDateString("de-CH")} · CHF ${kennzahlen.zuletztGetrunken.preis.toFixed(2)}`}
+    href="/verbrauch"
+  />
+)}
           <DashboardCard
   icon="📦"
   title="Archiv"
