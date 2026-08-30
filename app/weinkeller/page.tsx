@@ -45,6 +45,7 @@ const [filterLand, setFilterLand] = useState("");
 const [filterRegion, setFilterRegion] = useState("");
 const [filterRebsorte, setFilterRebsorte] = useState("");
 const [filterBewertung, setFilterBewertung] = useState("");
+const [filterPreis, setFilterPreis] = useState("");
   useEffect(() => {
   async function ladeWeine() {
   const { data, error } = await supabase
@@ -110,6 +111,11 @@ const passtZurRegion =
     const passtZurBewertung =
   !filterBewertung ||
   (wein.bewertung || 0) >= Number(filterBewertung);
+  const passtZumPreis =
+  !filterPreis ||
+  (filterPreis === "bis30" && wein.preis <= 30) ||
+  (filterPreis === "30bis50" && wein.preis > 30 && wein.preis <= 50) ||
+  (filterPreis === "ueber50" && wein.preis > 50);
 return (
   passtZurSuche &&
   passtZuFavoriten &&
@@ -118,6 +124,7 @@ return (
   passtZurRegion &&
   passtZurRebsorte &&
   passtZurBewertung
+  && passtZumPreis
 );
   })
   .sort((a, b) => {
@@ -688,18 +695,18 @@ ref={suchfeldRef}
 }}
 >
   <option value="">Alle Länder</option>
-  <option value="Deutschland">Deutschland</option>
-  <option value="Frankreich">Frankreich</option>
-  <option value="Italien">Italien</option>
-  <option value="Schweiz">Schweiz</option>
-  <option value="Spanien">Spanien</option>
-  <option value="Portugal">Portugal</option>
-  <option value="Österreich">Österreich</option>
-  <option value="Argentinien">Argentinien</option>
-  <option value="Chile">Chile</option>
-  <option value="USA">USA</option>
-  <option value="Australien">Australien</option>
-  <option value="Neuseeland">Neuseeland</option>
+
+{[...new Set(
+  weine
+    .map((wein) => wein.land)
+    .filter((land) => land)
+)]
+  .sort()
+  .map((land) => (
+    <option key={land} value={land}>
+      {land}
+    </option>
+  ))}
 </select>
 <select
   value={filterRegion}
@@ -786,6 +793,26 @@ ref={suchfeldRef}
   <option value="2">★★☆☆☆ und besser</option>
   <option value="1">★☆☆☆☆ und besser</option>
 </select>
+<select
+  value={filterPreis}
+  onChange={(e) => setFilterPreis(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "white",
+    color: "#7b1026",
+    fontWeight: "600",
+    fontSize: "14px",
+    cursor: "pointer",
+  }}
+>
+  <option value="">Alle Preise</option>
+  <option value="bis30">Bis CHF 30</option>
+  <option value="30bis50">CHF 30 bis 50</option>
+  <option value="ueber50">Über CHF 50</option>
+</select>
 <button
   type="button"
   onClick={() => {
@@ -793,6 +820,7 @@ ref={suchfeldRef}
     setFilterRegion("");
     setFilterRebsorte("");
     setFilterBewertung("");
+    setFilterPreis("");
   }}
   style={{
     gridColumn: "1 / -1",
