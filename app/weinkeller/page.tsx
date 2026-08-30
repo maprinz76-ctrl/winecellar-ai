@@ -46,6 +46,7 @@ const [filterRegion, setFilterRegion] = useState("");
 const [filterRebsorte, setFilterRebsorte] = useState("");
 const [filterBewertung, setFilterBewertung] = useState("");
 const [filterPreis, setFilterPreis] = useState("");
+const [filterJahrgang, setFilterJahrgang] = useState("");
   useEffect(() => {
   async function ladeWeine() {
   const { data, error } = await supabase
@@ -116,6 +117,8 @@ const passtZurRegion =
   (filterPreis === "bis30" && wein.preis <= 30) ||
   (filterPreis === "30bis50" && wein.preis > 30 && wein.preis <= 50) ||
   (filterPreis === "ueber50" && wein.preis > 50);
+  const passtZumJahrgang =
+  !filterJahrgang || String(wein.jahrgang) === filterJahrgang;
 return (
   passtZurSuche &&
   passtZuFavoriten &&
@@ -123,8 +126,9 @@ return (
   passtZumLand &&
   passtZurRegion &&
   passtZurRebsorte &&
-  passtZurBewertung
-  && passtZumPreis
+  passtZurBewertung &&
+passtZumPreis &&
+passtZumJahrgang
 );
   })
   .sort((a, b) => {
@@ -826,6 +830,35 @@ ref={suchfeldRef}
   <option value="30bis50">CHF 30 bis 50</option>
   <option value="ueber50">Über CHF 50</option>
 </select>
+<select
+  value={filterJahrgang}
+  onChange={(e) => setFilterJahrgang(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "white",
+    color: "#7b1026",
+    fontWeight: "600",
+    fontSize: "14px",
+    cursor: "pointer",
+  }}
+>
+  <option value="">Alle Jahrgänge</option>
+
+  {[...new Set(
+    weine
+      .map((wein) => wein.jahrgang)
+      .filter((jahrgang) => jahrgang)
+  )]
+    .sort((a, b) => Number(b) - Number(a))
+    .map((jahrgang) => (
+      <option key={jahrgang} value={jahrgang}>
+        {jahrgang}
+      </option>
+    ))}
+</select>
 <button
   type="button"
   onClick={() => {
@@ -834,6 +867,7 @@ ref={suchfeldRef}
     setFilterRebsorte("");
     setFilterBewertung("");
     setFilterPreis("");
+    setFilterJahrgang("");
   }}
   style={{
     gridColumn: "1 / -1",
