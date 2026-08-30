@@ -681,7 +681,11 @@ ref={suchfeldRef}
 >
     <select
   value={filterLand}
-  onChange={(e) => setFilterLand(e.target.value)}
+ onChange={(e) => {
+  setFilterLand(e.target.value);
+  setFilterRegion("");
+  setFilterRebsorte("");
+}}
   style={{
   width: "100%",
   padding: "10px 12px",
@@ -710,7 +714,10 @@ ref={suchfeldRef}
 </select>
 <select
   value={filterRegion}
-  onChange={(e) => setFilterRegion(e.target.value)}
+  onChange={(e) => {
+  setFilterRegion(e.target.value);
+  setFilterRebsorte("");
+}}
   style={{
     width: "100%",
     padding: "10px 12px",
