@@ -725,17 +725,18 @@ ref={suchfeldRef}
 >
   <option value="">Alle Regionen</option>
 
-  {[...new Set(
-    weine
-      .map((wein) => wein.region)
-      .filter((region) => region)
-  )]
-    .sort()
-    .map((region) => (
-      <option key={region} value={region}>
-        {region}
-      </option>
-    ))}
+ {[...new Set(
+  weine
+    .filter((wein) => !filterLand || wein.land === filterLand)
+    .map((wein) => wein.region)
+    .filter((region) => region)
+)]
+  .sort()
+  .map((region) => (
+    <option key={region} value={region}>
+      {region}
+    </option>
+  ))}
 </select>
  <select
   value={filterRebsorte}
@@ -754,21 +755,26 @@ ref={suchfeldRef}
 >
   <option value="">Alle Rebsorten</option>
 
-  {[...new Set(
-    weine
-      .flatMap((wein) =>
-        wein.rebsorte
-          .split(",")
-          .map((rebsorte) => rebsorte.trim())
-      )
-      .filter((rebsorte) => rebsorte)
-  )]
-    .sort()
-    .map((rebsorte) => (
-      <option key={rebsorte} value={rebsorte}>
-        {rebsorte}
-      </option>
-    ))}
+ {[...new Set(
+  weine
+    .filter(
+      (wein) =>
+        (!filterLand || wein.land === filterLand) &&
+        (!filterRegion || wein.region === filterRegion)
+    )
+    .flatMap((wein) =>
+      wein.rebsorte
+        .split(",")
+        .map((rebsorte) => rebsorte.trim())
+    )
+    .filter((rebsorte) => rebsorte)
+)]
+  .sort()
+  .map((rebsorte) => (
+    <option key={rebsorte} value={rebsorte}>
+      {rebsorte}
+    </option>
+  ))}
 </select>
 
 <select
