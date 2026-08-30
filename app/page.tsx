@@ -35,7 +35,7 @@ export default function Home() {
   const [weine, setWeine] = useState<Wein[]>([]);
 
   const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
-
+const [weinDesAbends, setWeinDesAbends] = useState<Wein | null>(null);
   useEffect(() => {
   async function datenLaden() {
     const { data: weinDaten, error: weinFehler } = await supabase
@@ -82,7 +82,24 @@ export default function Home() {
 
   datenLaden();
 }, []);
+function neuenWeinVorschlagen() {
+  const verfuegbareWeine = weine.filter(
+    (wein) => wein.archiviert !== true && wein.anzahl > 0
+  );
 
+  if (verfuegbareWeine.length === 0) {
+    setWeinDesAbends(null);
+    return;
+  }
+
+ const gewichteteWeine = verfuegbareWeine.flatMap((wein) => {
+  const gewicht = Math.max(1, wein.bewertung || 1);
+  return Array(gewicht).fill(wein);
+});
+
+const zufallsIndex = Math.floor(Math.random() * gewichteteWeine.length);
+setWeinDesAbends(gewichteteWeine[zufallsIndex]);
+}
   const kennzahlen = useMemo(() => {
     const aktiveWeine = weine.filter(
   (wein) => wein.archiviert !== true
@@ -261,6 +278,37 @@ const lieblingswein =
   fullWidth={true}
   href="/weinkeller?ansicht=archiv"
 />
+<div style={{ gridColumn: "1 / -1" }}>
+<DashboardCard
+  icon="🍷"
+  title="Wein des Abends"
+  href={weinDesAbends ? `/wein/${weinDesAbends.id}` : undefined}
+value={
+  weinDesAbends
+? `${weinDesAbends.produzent} – ${weinDesAbends.weinname} · ${weinDesAbends.jahrgang} · ${(weinDesAbends.bewertung ?? 0) > 0 ? `⭐ ${weinDesAbends.bewertung}/5` : "Noch nicht bewertet"} · 🍾 ${weinDesAbends.anzahl} ${weinDesAbends.anzahl === 1 ? "Flasche" : "Flaschen"}`
+    : "Noch keinen Wein ausgewählt"
+}
+/>
+<button
+
+  type="button"
+  onClick={neuenWeinVorschlagen}
+  style={{
+  marginTop: "12px",
+  width: "100%",
+  padding: "12px 16px",
+  border: "none",
+  borderRadius: "10px",
+  backgroundColor: "#7b1026",
+  color: "white",
+  fontWeight: "700",
+  fontSize: "14px",
+  cursor: "pointer",
+}}
+>
+  Anderen Wein vorschlagen
+</button>
+</div>
           {kennzahlen.lieblingswein && (
     
     <Link
