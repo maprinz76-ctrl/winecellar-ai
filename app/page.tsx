@@ -36,6 +36,8 @@ export default function Home() {
 
   const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
 const [weinDesAbends, setWeinDesAbends] = useState<Wein | null>(null);
+const [anlass, setAnlass] = useState("");
+const [passendeWeine, setPassendeWeine] = useState<Wein[]>([]);
   useEffect(() => {
   async function datenLaden() {
     const { data: weinDaten, error: weinFehler } = await supabase
@@ -88,18 +90,100 @@ function neuenWeinVorschlagen() {
   );
 
   if (verfuegbareWeine.length === 0) {
+    setPassendeWeine([]);
     setWeinDesAbends(null);
     return;
   }
 
- const gewichteteWeine = verfuegbareWeine.flatMap((wein) => {
-  const gewicht = Math.max(1, wein.bewertung || 1);
-  return Array(gewicht).fill(wein);
-});
+  // Ohne Anlass: weiterhin einen zufälligen Wein vorschlagen
+  if (!anlass) {
+    setPassendeWeine([]);
 
-const zufallsIndex = Math.floor(Math.random() * gewichteteWeine.length);
-setWeinDesAbends(gewichteteWeine[zufallsIndex]);
+    const gewichteteWeine = verfuegbareWeine.flatMap((wein) => {
+      const gewicht = Math.max(1, wein.bewertung || 1);
+      return Array(gewicht).fill(wein);
+    });
+
+    const zufallsIndex = Math.floor(
+      Math.random() * gewichteteWeine.length
+    );
+
+    setWeinDesAbends(gewichteteWeine[zufallsIndex]);
+    return;
+  }
+
+  const passende = verfuegbareWeine.filter((wein) => {
+    const text =
+      `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+    if (anlass === "fisch") {
+      return (
+        text.includes("chardonnay") ||
+        text.includes("sauvignon blanc") ||
+        text.includes("riesling") ||
+        text.includes("pinot grigio")
+      );
+    }
+
+    if (anlass === "fleisch") {
+      return (
+        text.includes("cabernet") ||
+        text.includes("merlot") ||
+        text.includes("syrah") ||
+        text.includes("primitivo")
+      );
+    }
+
+    if (anlass === "pasta") {
+      return (
+        text.includes("sangiovese") ||
+        text.includes("merlot") ||
+        text.includes("primitivo")
+      );
+    }
+
+    if (anlass === "pizza") {
+      return (
+        text.includes("sangiovese") ||
+        text.includes("primitivo") ||
+        text.includes("montepulciano")
+      );
+    }
+
+    if (anlass === "kaese") {
+      return (
+        text.includes("merlot") ||
+        text.includes("cabernet") ||
+        text.includes("syrah")
+      );
+    }
+
+    if (anlass === "apero") {
+      return (
+        text.includes("sauvignon blanc") ||
+        text.includes("chardonnay") ||
+        text.includes("pinot grigio")
+      );
+    }
+
+    return false;
+  });
+
+  const sortiertePassendeWeine = [...passende].sort(
+    (a, b) => (b.bewertung || 0) - (a.bewertung || 0)
+  );
+
+  setPassendeWeine(sortiertePassendeWeine);
+  setWeinDesAbends(sortiertePassendeWeine[0] ?? null);
 }
+useEffect(() => {
+  if (anlass) {
+    neuenWeinVorschlagen();
+  } else {
+    setPassendeWeine([]);
+    setWeinDesAbends(null);
+  }
+}, [anlass, weine]);
   const kennzahlen = useMemo(() => {
     const aktiveWeine = weine.filter(
   (wein) => wein.archiviert !== true
@@ -279,6 +363,67 @@ const lieblingswein =
   href="/weinkeller?ansicht=archiv"
 />
 <div style={{ gridColumn: "1 / -1" }}>
+<p
+  style={{
+    margin: "0 0 8px",
+    fontSize: "16px",
+    fontWeight: "700",
+    color: "#7b1026",
+  }}
+>
+  🍽️ Was passt heute?
+</p>
+<select
+  value={anlass}
+  onChange={(e) => setAnlass(e.target.value)}
+  style={{
+  width: "100%",
+  padding: "12px 14px",
+  border: "1px solid #ddd",
+  borderRadius: "10px",
+  backgroundColor: "white",
+  color: "#7b1026",
+  fontWeight: "600",
+  fontSize: "14px",
+  cursor: "pointer",
+  marginBottom: "12px",
+}}
+>
+  <option value="">Anlass auswählen</option>
+  <option value="fleisch">🥩 Fleisch</option>
+  <option value="fisch">🐟 Fisch</option>
+  <option value="pasta">🍝 Pasta</option>
+  <option value="pizza">🍕 Pizza</option>
+  <option value="kaese">🧀 Käse</option>
+  <option value="apero">🥂 Apéro</option>
+</select>
+{anlass && passendeWeine.length > 0 && (
+  <div
+    style={{
+      backgroundColor: "#f7f3ee",
+      borderRadius: "10px",
+      padding: "14px",
+      marginBottom: "14px",
+    }}
+  >
+    <div
+      style={{
+        fontSize: "14px",
+        fontWeight: "700",
+        color: "#7b1026",
+        marginBottom: "8px",
+      }}
+    >
+      🍷 Passende Weine aus deinem Keller
+    </div>
+
+    {passendeWeine.map((wein) => (
+      <div key={wein.id}>
+        {wein.produzent} – {wein.weinname} · {wein.rebsorte}
+      </div>
+    ))}
+  </div>
+)}
 <DashboardCard
   icon="🍷"
   title="Wein des Abends"
@@ -286,7 +431,9 @@ const lieblingswein =
 value={
   weinDesAbends
 ? `${weinDesAbends.produzent} – ${weinDesAbends.weinname} · ${weinDesAbends.jahrgang} · ${(weinDesAbends.bewertung ?? 0) > 0 ? `⭐ ${weinDesAbends.bewertung}/5` : "Noch nicht bewertet"} · 🍾 ${weinDesAbends.anzahl} ${weinDesAbends.anzahl === 1 ? "Flasche" : "Flaschen"}`
-    : "Noch keinen Wein ausgewählt"
+ : anlass
+  ? "Kein passender Wein für diesen Anlass im Keller"
+  : "Noch keinen Wein ausgewählt"
 }
 />
 <button
