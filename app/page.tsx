@@ -111,7 +111,117 @@ function neuenWeinVorschlagen() {
     setWeinDesAbends(gewichteteWeine[zufallsIndex]);
     return;
   }
+function fischPunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
 
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("sauvignon blanc")) return 5;
+  if (text.includes("albariño")) return 5;
+
+  if (text.includes("riesling")) return 4;
+  if (text.includes("grüner veltliner")) return 4;
+  if (text.includes("chardonnay")) return 4;
+  if (text.includes("chenin blanc")) return 4;
+
+  if (text.includes("pinot grigio")) return 3;
+  if (text.includes("pinot gris")) return 3;
+
+  return 0;
+}
+function fleischPunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+  if (text.includes("cabernet")) return 5;
+  if (text.includes("syrah")) return 5;
+  if (text.includes("shiraz")) return 5;
+  if (text.includes("malbec")) return 5;
+  if (text.includes("nebbiolo")) return 5;
+
+  if (text.includes("tempranillo")) return 4;
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("primitivo")) return 4;
+  if (text.includes("merlot")) return 4;
+
+  if (text.includes("pinot noir")) return 3;
+
+  return 0;
+}
+function pastaPunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
+  if (text.includes("montepulciano")) return 5;
+
+  if (text.includes("primitivo")) return 4;
+  if (text.includes("nebbiolo")) return 4;
+  if (text.includes("nero d'avola")) return 4;
+
+  if (text.includes("merlot")) return 3;
+  if (text.includes("tempranillo")) return 3;
+  if (text.includes("pinot noir")) return 3;
+
+  return 0;
+}
+function pizzaPunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
+  if (text.includes("montepulciano")) return 5;
+
+  if (text.includes("primitivo")) return 4;
+  if (text.includes("nero d'avola")) return 4;
+  if (text.includes("aglianico")) return 4;
+  if (text.includes("negroamaro")) return 4;
+
+  if (text.includes("merlot")) return 3;
+
+  return 0;
+}
+function kaesePunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+  if (text.includes("nebbiolo")) return 5;
+  if (text.includes("riesling")) return 5;
+
+  if (text.includes("pinot noir")) return 4;
+  if (text.includes("syrah")) return 4;
+  if (text.includes("shiraz")) return 4;
+  if (text.includes("chardonnay")) return 4;
+
+  if (text.includes("merlot")) return 3;
+  if (text.includes("cabernet")) return 3;
+  if (text.includes("sangiovese")) return 3;
+  if (text.includes("tempranillo")) return 3;
+
+  return 0;
+}
+function aperoPunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+  if (text.includes("champagne")) return 5;
+  if (text.includes("prosecco")) return 5;
+  if (text.includes("sauvignon blanc")) return 5;
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("albariño")) return 5;
+
+  if (text.includes("riesling")) return 4;
+  if (text.includes("grüner veltliner")) return 4;
+  if (text.includes("chenin blanc")) return 4;
+  if (text.includes("pinot grigio")) return 4;
+  if (text.includes("pinot gris")) return 4;
+
+  if (text.includes("chardonnay")) return 3;
+
+  return 0;
+}
   const passende = verfuegbareWeine.filter((wein) => {
     const text =
       `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
@@ -206,12 +316,69 @@ function neuenWeinVorschlagen() {
     return false;
   });
 
-  const sortiertePassendeWeine = [...passende].sort(
-    (a, b) => (b.bewertung || 0) - (a.bewertung || 0)
-  );
+ const sortiertePassendeWeine = [...passende].sort((a, b) => {
+  if (anlass === "fisch") {
+    const punkteUnterschied = fischPunkte(b) - fischPunkte(a);
+
+    if (punkteUnterschied !== 0) {
+      return punkteUnterschied;
+    }
+  }
+if (anlass === "fleisch") {
+  const punkteUnterschied = fleischPunkte(b) - fleischPunkte(a);
+
+  if (punkteUnterschied !== 0) {
+    return punkteUnterschied;
+  }
+}
+if (anlass === "pasta") {
+  const punkteUnterschied = pastaPunkte(b) - pastaPunkte(a);
+
+  if (punkteUnterschied !== 0) {
+    return punkteUnterschied;
+  }
+}
+if (anlass === "pizza") {
+  const punkteUnterschied = pizzaPunkte(b) - pizzaPunkte(a);
+
+  if (punkteUnterschied !== 0) {
+    return punkteUnterschied;
+  }
+}
+if (anlass === "kaese") {
+  const punkteUnterschied = kaesePunkte(b) - kaesePunkte(a);
+
+  if (punkteUnterschied !== 0) {
+    return punkteUnterschied;
+  }
+}
+if (anlass === "apero") {
+  const punkteUnterschied = aperoPunkte(b) - aperoPunkte(a);
+
+  if (punkteUnterschied !== 0) {
+    return punkteUnterschied;
+  }
+}
+  return (b.bewertung || 0) - (a.bewertung || 0);
+});
 
   setPassendeWeine(sortiertePassendeWeine);
   setWeinDesAbends(sortiertePassendeWeine[0] ?? null);
+}
+function naechstenWeinVorschlagen() {
+  if (anlass && passendeWeine.length > 1) {
+    const aktuellerIndex = passendeWeine.findIndex(
+      (wein) => wein.id === weinDesAbends?.id
+    );
+
+    const naechsterIndex =
+      (aktuellerIndex + 1) % passendeWeine.length;
+
+    setWeinDesAbends(passendeWeine[naechsterIndex]);
+    return;
+  }
+
+  neuenWeinVorschlagen();
 }
 useEffect(() => {
   if (anlass) {
@@ -476,7 +643,7 @@ value={
 <button
 
   type="button"
-  onClick={neuenWeinVorschlagen}
+  onClick={naechstenWeinVorschlagen}
   style={{
   marginTop: "12px",
   width: "100%",
