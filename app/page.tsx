@@ -116,55 +116,92 @@ function neuenWeinVorschlagen() {
     const text =
       `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
 
-    if (anlass === "fisch") {
-      return (
-        text.includes("chardonnay") ||
-        text.includes("sauvignon blanc") ||
-        text.includes("riesling") ||
-        text.includes("pinot grigio")
-      );
-    }
+   if (anlass === "fisch") {
+  return (
+    text.includes("chardonnay") ||
+    text.includes("sauvignon blanc") ||
+    text.includes("riesling") ||
+    text.includes("pinot grigio") ||
+    text.includes("pinot gris") ||
+    text.includes("vermentino") ||
+    text.includes("grüner veltliner") ||
+    text.includes("chenin blanc") ||
+    text.includes("albariño")
+  );
+}
 
-    if (anlass === "fleisch") {
-      return (
-        text.includes("cabernet") ||
-        text.includes("merlot") ||
-        text.includes("syrah") ||
-        text.includes("primitivo")
-      );
-    }
+   if (anlass === "fleisch") {
+  return (
+    text.includes("cabernet") ||
+    text.includes("merlot") ||
+    text.includes("syrah") ||
+    text.includes("shiraz") ||
+    text.includes("primitivo") ||
+    text.includes("nebbiolo") ||
+    text.includes("tempranillo") ||
+    text.includes("malbec") ||
+    text.includes("sangiovese") ||
+    text.includes("pinot noir")
+  );
+}
 
-    if (anlass === "pasta") {
-      return (
-        text.includes("sangiovese") ||
-        text.includes("merlot") ||
-        text.includes("primitivo")
-      );
-    }
+   if (anlass === "pasta") {
+  return (
+    text.includes("sangiovese") ||
+    text.includes("merlot") ||
+    text.includes("primitivo") ||
+    text.includes("barbera") ||
+    text.includes("montepulciano") ||
+    text.includes("nebbiolo") ||
+    text.includes("nero d'avola") ||
+    text.includes("tempranillo") ||
+    text.includes("pinot noir")
+  );
+}
 
-    if (anlass === "pizza") {
-      return (
-        text.includes("sangiovese") ||
-        text.includes("primitivo") ||
-        text.includes("montepulciano")
-      );
-    }
+   if (anlass === "pizza") {
+  return (
+    text.includes("sangiovese") ||
+    text.includes("primitivo") ||
+    text.includes("montepulciano") ||
+    text.includes("barbera") ||
+    text.includes("nero d'avola") ||
+    text.includes("aglianico") ||
+    text.includes("negroamaro") ||
+    text.includes("merlot")
+  );
+}
 
     if (anlass === "kaese") {
-      return (
-        text.includes("merlot") ||
-        text.includes("cabernet") ||
-        text.includes("syrah")
-      );
-    }
+  return (
+    text.includes("merlot") ||
+    text.includes("cabernet") ||
+    text.includes("syrah") ||
+    text.includes("shiraz") ||
+    text.includes("pinot noir") ||
+    text.includes("nebbiolo") ||
+    text.includes("sangiovese") ||
+    text.includes("tempranillo") ||
+    text.includes("chardonnay") ||
+    text.includes("riesling")
+  );
+}
 
-    if (anlass === "apero") {
-      return (
-        text.includes("sauvignon blanc") ||
-        text.includes("chardonnay") ||
-        text.includes("pinot grigio")
-      );
-    }
+   if (anlass === "apero") {
+  return (
+    text.includes("sauvignon blanc") ||
+    text.includes("chardonnay") ||
+    text.includes("pinot grigio") ||
+    text.includes("pinot gris") ||
+    text.includes("riesling") ||
+    text.includes("vermentino") ||
+    text.includes("grüner veltliner") ||
+    text.includes("chenin blanc") ||
+    text.includes("albariño") ||
+    text.includes("prosecco") ||
+    text.includes("champagne")
+  );
+}
 
     return false;
   });
