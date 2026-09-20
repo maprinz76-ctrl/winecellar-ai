@@ -37,6 +37,10 @@ export default function Home() {
   const [verbraeuche, setVerbraeuche] = useState<Verbrauch[]>([]);
 const [weinDesAbends, setWeinDesAbends] = useState<Wein | null>(null);
 const [anlass, setAnlass] = useState("");
+const [fleischArt, setFleischArt] = useState("");
+const [fischArt, setFischArt] = useState("");
+const [pastaArt, setPastaArt] = useState("");
+const [pizzaArt, setPizzaArt] = useState("");
 const [passendeWeine, setPassendeWeine] = useState<Wein[]>([]);
   useEffect(() => {
   async function datenLaden() {
@@ -129,10 +133,138 @@ function fischPunkte(wein: Wein) {
 
   return 0;
 }
+function fischArtPunkte(wein: Wein) {
+  const text =
+    `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+
+  if (fischArt === "weissfisch") {
+    if (text.includes("sauvignon blanc")) return 5;
+    if (text.includes("vermentino")) return 5;
+    if (text.includes("riesling")) return 5;
+    if (text.includes("albariño")) return 5;
+
+    if (text.includes("chardonnay")) return 4;
+    if (text.includes("pinot grigio")) return 4;
+    if (text.includes("pinot gris")) return 4;
+
+    return 0;
+  }
+
+  if (fischArt === "lachs") {
+    if (text.includes("chardonnay")) return 5;
+    if (text.includes("pinot noir")) return 5;
+
+    if (text.includes("riesling")) return 4;
+    if (text.includes("sauvignon blanc")) return 4;
+    if (text.includes("vermentino")) return 4;
+
+    return 0;
+  }
+
+  if (fischArt === "thunfisch") {
+    if (text.includes("pinot noir")) return 5;
+    if (text.includes("sangiovese")) return 5;
+
+    if (text.includes("chardonnay")) return 4;
+    if (text.includes("vermentino")) return 4;
+    if (text.includes("barbera")) return 4;
+
+    return 0;
+  }
+
+  if (fischArt === "meeresfruechte") {
+    if (text.includes("sauvignon blanc")) return 5;
+    if (text.includes("vermentino")) return 5;
+    if (text.includes("albariño")) return 5;
+
+    if (text.includes("riesling")) return 4;
+    if (text.includes("pinot grigio")) return 4;
+    if (text.includes("pinot gris")) return 4;
+    if (text.includes("chardonnay")) return 3;
+
+    return 0;
+  }
+
+  return fischPunkte(wein);
+}
 function fleischPunkte(wein: Wein) {
   const text =
     `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
 
+  if (fleischArt === "rind") {
+    if (text.includes("cabernet")) return 5;
+    if (text.includes("malbec")) return 5;
+    if (text.includes("syrah")) return 5;
+    if (text.includes("shiraz")) return 5;
+    if (text.includes("nebbiolo")) return 5;
+
+    if (text.includes("tempranillo")) return 4;
+    if (text.includes("merlot")) return 4;
+    if (text.includes("sangiovese")) return 4;
+    if (text.includes("primitivo")) return 4;
+
+    if (text.includes("pinot noir")) return 3;
+
+    return 0;
+  }
+if (fleischArt === "kalb") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("chardonnay")) return 5;
+
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("merlot")) return 4;
+  if (text.includes("nebbiolo")) return 4;
+  if (text.includes("barbera")) return 4;
+
+  if (text.includes("cabernet")) return 3;
+  if (text.includes("syrah")) return 3;
+
+  return 0;
+}
+if (fleischArt === "lamm") {
+  if (text.includes("syrah")) return 5;
+  if (text.includes("shiraz")) return 5;
+  if (text.includes("cabernet")) return 5;
+  if (text.includes("tempranillo")) return 5;
+
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("nebbiolo")) return 4;
+  if (text.includes("malbec")) return 4;
+  if (text.includes("merlot")) return 4;
+
+  if (text.includes("primitivo")) return 3;
+  if (text.includes("pinot noir")) return 3;
+
+  return 0;
+}
+if (fleischArt === "schwein") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("riesling")) return 5;
+
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("barbera")) return 4;
+  if (text.includes("merlot")) return 4;
+  if (text.includes("chardonnay")) return 4;
+
+  if (text.includes("primitivo")) return 3;
+  if (text.includes("tempranillo")) return 3;
+
+  return 0;
+}
+if (fleischArt === "gefluegel") {
+  if (text.includes("chardonnay")) return 5;
+  if (text.includes("pinot noir")) return 5;
+
+  if (text.includes("riesling")) return 4;
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("vermentino")) return 4;
+  if (text.includes("sangiovese")) return 4;
+
+  if (text.includes("merlot")) return 3;
+  if (text.includes("barbera")) return 3;
+
+  return 0;
+}
   if (text.includes("cabernet")) return 5;
   if (text.includes("syrah")) return 5;
   if (text.includes("shiraz")) return 5;
@@ -152,24 +284,148 @@ function pastaPunkte(wein: Wein) {
   const text =
     `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
 
-  if (text.includes("sangiovese")) return 5;
-  if (text.includes("barbera")) return 5;
-  if (text.includes("montepulciano")) return 5;
+  if (pastaArt === "tomate") {
+    if (text.includes("sangiovese")) return 5;
+    if (text.includes("barbera")) return 5;
+    if (text.includes("montepulciano")) return 5;
+    if (text.includes("primitivo")) return 4;
+    if (text.includes("nero d'avola")) return 4;
+  }
 
-  if (text.includes("primitivo")) return 4;
-  if (text.includes("nebbiolo")) return 4;
-  if (text.includes("nero d'avola")) return 4;
+  if (pastaArt === "ragu") {
+    if (text.includes("sangiovese")) return 5;
+    if (text.includes("nebbiolo")) return 5;
+    if (text.includes("barbera")) return 5;
+    if (text.includes("primitivo")) return 4;
+    if (text.includes("merlot")) return 4;
+  }
 
-  if (text.includes("merlot")) return 3;
-  if (text.includes("tempranillo")) return 3;
-  if (text.includes("pinot noir")) return 3;
+  if (pastaArt === "carbonara") {
+    if (text.includes("pinot noir")) return 5;
+    if (text.includes("chardonnay")) return 5;
+    if (text.includes("vermentino")) return 4;
+    if (text.includes("sangiovese")) return 4;
+  }
+
+  if (pastaArt === "rahm") {
+    if (text.includes("chardonnay")) return 5;
+    if (text.includes("pinot noir")) return 5;
+    if (text.includes("riesling")) return 4;
+    if (text.includes("vermentino")) return 4;
+  }
+
+  if (pastaArt === "meeresfruechte") {
+    if (text.includes("vermentino")) return 5;
+    if (text.includes("sauvignon blanc")) return 5;
+    if (text.includes("albariño")) return 5;
+    if (text.includes("chardonnay")) return 4;
+    if (text.includes("pinot grigio")) return 4;
+  }
+
+  if (pastaArt === "pesto") {
+    if (text.includes("vermentino")) return 5;
+    if (text.includes("sauvignon blanc")) return 5;
+    if (text.includes("pinot grigio")) return 4;
+    if (text.includes("chardonnay")) return 3;
+  }
+
+  if (pastaArt === "pilze") {
+    if (text.includes("pinot noir")) return 5;
+    if (text.includes("nebbiolo")) return 5;
+    if (text.includes("barbera")) return 4;
+    if (text.includes("chardonnay")) return 4;
+  }
 
   return 0;
 }
 function pizzaPunkte(wein: Wein) {
   const text =
     `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+if (pizzaArt === "margherita") {
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
+  if (text.includes("montepulciano")) return 5;
+  if (text.includes("nero d'avola")) return 4;
+  if (text.includes("primitivo")) return 4;
+}
+if (pizzaArt === "napoli") {
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 4;
+  if (text.includes("pinot noir")) return 4;
+  if (text.includes("montepulciano")) return 4;
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("chardonnay")) return 3;
 
+  return 0;
+}
+if (pizzaArt === "salami") {
+  if (text.includes("primitivo")) return 5;
+  if (text.includes("nero d'avola")) return 5;
+  if (text.includes("montepulciano")) return 5;
+
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("barbera")) return 4;
+  if (text.includes("aglianico")) return 4;
+}
+if (pizzaArt === "prosciutto") {
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("montepulciano")) return 4;
+  if (text.includes("primitivo")) return 4;
+  if (text.includes("merlot")) return 4;
+}
+if (pizzaArt === "funghi") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("nebbiolo")) return 5;
+  if (text.includes("barbera")) return 4;
+  if (text.includes("chardonnay")) return 4;
+  if (text.includes("merlot")) return 4;
+}
+if (pizzaArt === "diavola") {
+  if (text.includes("primitivo")) return 5;
+  if (text.includes("nero d'avola")) return 5;
+  if (text.includes("aglianico")) return 5;
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("montepulciano")) return 4;
+  if (text.includes("syrah")) return 4;
+}
+if (pizzaArt === "formaggi") {
+  if (text.includes("nebbiolo")) return 5;
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("chardonnay")) return 5;
+
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("barbera")) return 4;
+  if (text.includes("merlot")) return 4;
+
+  if (text.includes("cabernet")) return 3;
+}
+if (pizzaArt === "gemuese") {
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
+  if (text.includes("vermentino")) return 5;
+
+  if (text.includes("pinot noir")) return 4;
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("montepulciano")) return 4;
+
+  if (text.includes("chardonnay")) return 3;
+}
+if (pizzaArt === "meeresfruechte") {
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("sauvignon blanc")) return 5;
+  if (text.includes("albariño")) return 5;
+
+  if (text.includes("pinot grigio")) return 4;
+  if (text.includes("pinot gris")) return 4;
+  if (text.includes("chardonnay")) return 4;
+  if (text.includes("riesling")) return 4;
+
+  return 0;
+}
   if (text.includes("sangiovese")) return 5;
   if (text.includes("barbera")) return 5;
   if (text.includes("montepulciano")) return 5;
@@ -226,7 +482,11 @@ function aperoPunkte(wein: Wein) {
     const text =
       `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
 
-   if (anlass === "fisch") {
+  if (anlass === "fisch") {
+  if (fischArt) {
+    return fischArtPunkte(wein) > 0;
+  }
+
   return (
     text.includes("chardonnay") ||
     text.includes("sauvignon blanc") ||
@@ -240,7 +500,7 @@ function aperoPunkte(wein: Wein) {
   );
 }
 
-   if (anlass === "fleisch") {
+ if (anlass === "fleisch") {
   return (
     text.includes("cabernet") ||
     text.includes("merlot") ||
@@ -251,11 +511,86 @@ function aperoPunkte(wein: Wein) {
     text.includes("tempranillo") ||
     text.includes("malbec") ||
     text.includes("sangiovese") ||
-    text.includes("pinot noir")
+    text.includes("pinot noir") ||
+    text.includes("chardonnay") ||
+    text.includes("riesling") ||
+    text.includes("sauvignon blanc") ||
+    text.includes("vermentino") ||
+    text.includes("barbera")
   );
 }
 
-   if (anlass === "pasta") {
+  if (anlass === "pasta") {
+  if (pastaArt === "tomate") {
+    return (
+      text.includes("sangiovese") ||
+      text.includes("barbera") ||
+      text.includes("montepulciano") ||
+      text.includes("primitivo") ||
+      text.includes("nero d'avola")
+    );
+  }
+
+  if (pastaArt === "ragu") {
+    return (
+      text.includes("sangiovese") ||
+      text.includes("nebbiolo") ||
+      text.includes("barbera") ||
+      text.includes("montepulciano") ||
+      text.includes("primitivo") ||
+      text.includes("merlot")
+    );
+  }
+
+  if (pastaArt === "carbonara") {
+    return (
+      text.includes("chardonnay") ||
+      text.includes("vermentino") ||
+      text.includes("pinot grigio") ||
+      text.includes("pinot gris") ||
+      text.includes("sangiovese") ||
+      text.includes("pinot noir")
+    );
+  }
+
+  if (pastaArt === "rahm") {
+    return (
+      text.includes("chardonnay") ||
+      text.includes("pinot grigio") ||
+      text.includes("pinot gris") ||
+      text.includes("vermentino") ||
+      text.includes("pinot noir")
+    );
+  }
+
+  if (pastaArt === "meeresfruechte") {
+    return (
+      text.includes("vermentino") ||
+      text.includes("sauvignon blanc") ||
+      text.includes("riesling") ||
+      text.includes("albariño") ||
+      text.includes("pinot grigio")
+    );
+  }
+
+  if (pastaArt === "pesto") {
+    return (
+      text.includes("vermentino") ||
+      text.includes("sauvignon blanc") ||
+      text.includes("pinot grigio") ||
+      text.includes("riesling")
+    );
+  }
+
+  if (pastaArt === "pilze") {
+    return (
+      text.includes("pinot noir") ||
+      text.includes("nebbiolo") ||
+      text.includes("barbera") ||
+      text.includes("chardonnay")
+    );
+  }
+
   return (
     text.includes("sangiovese") ||
     text.includes("merlot") ||
@@ -271,15 +606,25 @@ function aperoPunkte(wein: Wein) {
 
    if (anlass === "pizza") {
   return (
-    text.includes("sangiovese") ||
-    text.includes("primitivo") ||
-    text.includes("montepulciano") ||
-    text.includes("barbera") ||
-    text.includes("nero d'avola") ||
-    text.includes("aglianico") ||
-    text.includes("negroamaro") ||
-    text.includes("merlot")
-  );
+  text.includes("sangiovese") ||
+  text.includes("primitivo") ||
+  text.includes("montepulciano") ||
+  text.includes("barbera") ||
+  text.includes("nero d'avola") ||
+  text.includes("aglianico") ||
+  text.includes("negroamaro") ||
+  text.includes("merlot") ||
+  text.includes("nebbiolo") ||
+  text.includes("pinot noir") ||
+  text.includes("vermentino") ||
+  text.includes("sauvignon blanc") ||
+  text.includes("chardonnay") ||
+  text.includes("riesling") ||
+  text.includes("albariño") ||
+  text.includes("pinot grigio") ||
+  text.includes("pinot gris") ||
+  text.includes("syrah")
+);
 }
 
     if (anlass === "kaese") {
@@ -318,7 +663,7 @@ function aperoPunkte(wein: Wein) {
 
  const sortiertePassendeWeine = [...passende].sort((a, b) => {
   if (anlass === "fisch") {
-    const punkteUnterschied = fischPunkte(b) - fischPunkte(a);
+    const punkteUnterschied = fischArtPunkte(b) - fischArtPunkte(a);
 
     if (punkteUnterschied !== 0) {
       return punkteUnterschied;
@@ -387,7 +732,7 @@ useEffect(() => {
     setPassendeWeine([]);
     setWeinDesAbends(null);
   }
-}, [anlass, weine]);
+}, [anlass, fleischArt, fischArt, pastaArt, pizzaArt, weine]);
   const kennzahlen = useMemo(() => {
     const aktiveWeine = weine.filter(
   (wein) => wein.archiviert !== true
@@ -601,6 +946,111 @@ const lieblingswein =
   <option value="kaese">🧀 Käse</option>
   <option value="apero">🥂 Apéro</option>
 </select>
+{anlass === "fleisch" && (
+  <select
+    value={fleischArt}
+    onChange={(e) => setFleischArt(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "12px 14px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      backgroundColor: "white",
+      color: "#7b1026",
+      fontWeight: "600",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "12px",
+    }}
+  >
+    <option value="">Fleischart auswählen</option>
+    <option value="rind">🥩 Rind</option>
+    <option value="kalb">🍖 Kalb</option>
+    <option value="lamm">🐑 Lamm</option>
+    <option value="schwein">🐖 Schwein</option>
+    <option value="gefluegel">🍗 Geflügel</option>
+  </select>
+)}
+{anlass === "fisch" && (
+  <select
+    value={fischArt}
+    onChange={(e) => setFischArt(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "12px 14px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      backgroundColor: "white",
+      color: "#7b1026",
+      fontWeight: "600",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "12px",
+    }}
+  >
+    <option value="">Fischart auswählen</option>
+    <option value="weissfisch">🐟 Weissfisch</option>
+    <option value="lachs">🐟 Lachs</option>
+    <option value="thunfisch">🐟 Thunfisch</option>
+    <option value="meeresfruechte">🦐 Meeresfrüchte</option>
+  </select>
+)}
+{anlass === "pasta" && (
+  <select
+    value={pastaArt}
+    onChange={(e) => setPastaArt(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "12px 14px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      backgroundColor: "white",
+      color: "#7b1026",
+      fontWeight: "600",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "12px",
+    }}
+  >
+    <option value="">Pasta auswählen</option>
+<option value="tomate">🍅 Tomatensauce</option>
+<option value="ragu">🍝 Fleisch / Ragù / Bolognese</option>
+<option value="carbonara">🥓 Carbonara</option>
+<option value="rahm">🥛 Rahm / Sahne</option>
+<option value="meeresfruechte">🦐 Fisch / Meeresfrüchte</option>
+<option value="pesto">🌿 Pesto</option>
+<option value="pilze">🍄 Pilze / Trüffel</option>
+  </select>
+)}
+{anlass === "pizza" && (
+  <select
+    value={pizzaArt}
+    onChange={(e) => setPizzaArt(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "12px 14px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      backgroundColor: "white",
+      color: "#7b1026",
+      fontWeight: "600",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "12px",
+    }}
+  >
+    <option value="">Pizza auswählen</option>
+    <option value="margherita">🍅 Margherita</option>
+    <option value="napoli">🐟 Napoli / Romana</option>
+    <option value="salami">🍕 Salami</option>
+    <option value="prosciutto">🥓 Prosciutto</option>
+    <option value="funghi">🍄 Funghi</option>
+    <option value="diavola">🌶️ Diavola</option>
+    <option value="formaggi">🧀 Quattro Formaggi</option>
+    <option value="gemuese">🥬 Gemüse</option>
+    <option value="meeresfruechte">🦐 Meeresfrüchte</option>
+  </select>
+)}
 {anlass && passendeWeine.length > 0 && (
   <div
     style={{
