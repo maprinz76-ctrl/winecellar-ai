@@ -41,6 +41,7 @@ const [fleischArt, setFleischArt] = useState("");
 const [fischArt, setFischArt] = useState("");
 const [pastaArt, setPastaArt] = useState("");
 const [pizzaArt, setPizzaArt] = useState("");
+const [kaeseArt, setKaeseArt] = useState("");
 const [passendeWeine, setPassendeWeine] = useState<Wein[]>([]);
   useEffect(() => {
   async function datenLaden() {
@@ -442,7 +443,103 @@ if (pizzaArt === "meeresfruechte") {
 function kaesePunkte(wein: Wein) {
   const text =
     `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+if (kaeseArt === "hartkaese") {
+  if (text.includes("nebbiolo")) return 5;
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
 
+  if (text.includes("cabernet")) return 4;
+  if (text.includes("merlot")) return 4;
+  if (text.includes("tempranillo")) return 4;
+
+  if (text.includes("pinot noir")) return 3;
+  if (text.includes("chardonnay")) return 3;
+
+  return 0;
+}
+if (kaeseArt === "weichkaese") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("chardonnay")) return 5;
+  if (text.includes("riesling")) return 5;
+
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("merlot")) return 2;
+  if (text.includes("vermentino")) return 4;
+
+  if (text.includes("sangiovese")) return 2;
+
+  return 0;
+}
+if (kaeseArt === "blauschimmel") {
+  if (text.includes("sauternes")) return 5;
+  if (text.includes("portwein")) return 5;
+  if (text.includes("port wine")) return 5;
+  if (text.includes("tokaji")) return 5;
+  if (text.includes("beerenauslese")) return 5;
+
+  if (text.includes("gewürztraminer")) return 4;
+  if (text.includes("riesling")) return 4;
+
+  return 0;
+}
+if (kaeseArt === "ziegenkaese") {
+  if (text.includes("sauvignon blanc")) return 5;
+  if (text.includes("sancerre")) return 5;
+  if (text.includes("pouilly-fumé")) return 5;
+  if (text.includes("vermentino")) return 5;
+
+  if (text.includes("riesling")) return 4;
+  if (text.includes("chenin blanc")) return 4;
+  if (text.includes("pinot grigio")) return 4;
+  if (text.includes("chardonnay")) return 3;
+
+  return 0;
+}
+if (kaeseArt === "schafskaese") {
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("nebbiolo")) return 5;
+  if (text.includes("montepulciano")) return 5;
+
+  if (text.includes("barbera")) return 4;
+  if (text.includes("primitivo")) return 4;
+  if (text.includes("tempranillo")) return 4;
+
+  if (text.includes("vermentino")) return 3;
+  if (text.includes("chardonnay")) return 3;
+
+  return 0;
+}
+if (kaeseArt === "fondue") {
+  if (text.includes("chasselas")) return 5;
+  if (text.includes("fendant")) return 5;
+  if (text.includes("petite arvine")) return 5;
+  if (text.includes("pinot blanc")) return 5;
+
+  if (text.includes("riesling")) return 4;
+  if (text.includes("sylvaner")) return 4;
+  if (text.includes("heida")) return 4;
+  if (text.includes("vermentino")) return 4;
+
+  if (text.includes("chardonnay")) return 3;
+  if (text.includes("pinot noir")) return 3;
+
+  return 0;
+}
+if (kaeseArt === "kaeseplatte") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("riesling")) return 5;
+  if (text.includes("chardonnay")) return 5;
+
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("merlot")) return 4;
+  if (text.includes("vermentino")) return 4;
+  if (text.includes("barbera")) return 4;
+
+  if (text.includes("cabernet")) return 3;
+  if (text.includes("primitivo")) return 3;
+
+  return 0;
+}
   if (text.includes("nebbiolo")) return 5;
   if (text.includes("riesling")) return 5;
 
@@ -629,17 +726,35 @@ function aperoPunkte(wein: Wein) {
 
     if (anlass === "kaese") {
   return (
-    text.includes("merlot") ||
-    text.includes("cabernet") ||
-    text.includes("syrah") ||
-    text.includes("shiraz") ||
-    text.includes("pinot noir") ||
-    text.includes("nebbiolo") ||
-    text.includes("sangiovese") ||
-    text.includes("tempranillo") ||
-    text.includes("chardonnay") ||
-    text.includes("riesling")
-  );
+  text.includes("merlot") ||
+  text.includes("cabernet") ||
+  text.includes("syrah") ||
+  text.includes("shiraz") ||
+  text.includes("pinot noir") ||
+  text.includes("nebbiolo") ||
+  text.includes("sangiovese") ||
+  text.includes("tempranillo") ||
+  text.includes("chardonnay") ||
+  text.includes("riesling") ||
+  text.includes("barbera") ||
+  text.includes("montepulciano") ||
+  text.includes("primitivo") ||
+  text.includes("vermentino") ||
+  text.includes("sauvignon blanc") ||
+  text.includes("chenin blanc") ||
+  text.includes("pinot grigio") ||
+  text.includes("gewürztraminer") ||
+  text.includes("chasselas") ||
+  text.includes("fendant") ||
+  text.includes("petite arvine") ||
+  text.includes("pinot blanc") ||
+  text.includes("sylvaner") ||
+  text.includes("heida") ||
+  text.includes("sauternes") ||
+  text.includes("portwein") ||
+  text.includes("port wine") ||
+  text.includes("amarone")
+);
 }
 
    if (anlass === "apero") {
@@ -660,8 +775,14 @@ function aperoPunkte(wein: Wein) {
 
     return false;
   });
-
- const sortiertePassendeWeine = [...passende].sort((a, b) => {
+const gefiltertePassendeWeine =
+  anlass === "kaese"
+    ? passende.filter((wein) =>
+        kaesePunkte(wein) >=
+        (kaeseArt === "blauschimmel" ? 4 : 3)
+      )
+    : passende;
+ const sortiertePassendeWeine = [...gefiltertePassendeWeine].sort((a, b) => {
   if (anlass === "fisch") {
     const punkteUnterschied = fischArtPunkte(b) - fischArtPunkte(a);
 
@@ -732,7 +853,7 @@ useEffect(() => {
     setPassendeWeine([]);
     setWeinDesAbends(null);
   }
-}, [anlass, fleischArt, fischArt, pastaArt, pizzaArt, weine]);
+}, [anlass, fleischArt, fischArt, pastaArt, pizzaArt, kaeseArt, weine]);
   const kennzahlen = useMemo(() => {
     const aktiveWeine = weine.filter(
   (wein) => wein.archiviert !== true
@@ -1051,6 +1172,49 @@ const lieblingswein =
     <option value="meeresfruechte">🦐 Meeresfrüchte</option>
   </select>
 )}
+{anlass === "kaese" && (
+  <select
+    value={kaeseArt}
+    onChange={(e) => setKaeseArt(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "12px 14px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      backgroundColor: "white",
+      color: "#7b1026",
+      fontWeight: "600",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "12px",
+    }}
+  >
+    <option value="">Käseart auswählen</option>
+    <option value="hartkaese">🧀 Hartkäse</option>
+    <option value="weichkaese">🧀 Weichkäse</option>
+    <option value="blauschimmel">🧀 Blauschimmelkäse</option>
+    <option value="ziegenkaese">🐐 Ziegenkäse</option>
+    <option value="schafskaese">🐑 Schafskäse / Pecorino</option>
+    <option value="fondue">🫕 Fondue / Raclette</option>
+    <option value="kaeseplatte">🍷 Gemischte Käseplatte</option>
+  </select>
+)}
+{anlass === "kaese" &&
+  kaeseArt === "blauschimmel" &&
+  passendeWeine.length === 0 && (
+    <div
+      style={{
+        backgroundColor: "#f7f3ee",
+        borderRadius: "10px",
+        padding: "14px",
+        marginBottom: "14px",
+        color: "#7b1026",
+      }}
+    >
+      🍷 Zu diesem Käse ist aktuell kein optimal
+      passender Wein in deinem Keller vorhanden.
+    </div>
+  )}
 {anlass && passendeWeine.length > 0 && (
   <div
     style={{
@@ -1090,6 +1254,7 @@ value={
   : "Noch keinen Wein ausgewählt"
 }
 />
+{(!anlass || passendeWeine.length > 0) && (
 <button
 
   type="button"
@@ -1109,6 +1274,7 @@ value={
 >
   Anderen Wein vorschlagen
 </button>
+)}
 </div>
           {kennzahlen.lieblingswein && (
     
