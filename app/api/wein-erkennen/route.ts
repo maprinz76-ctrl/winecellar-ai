@@ -54,6 +54,28 @@ Ermittle:
 - appellation: Die konkrete Appellation oder offizielle Herkunftsbezeichnung.
 - rebsorte: Ausschließlich konkrete Rebsortennamen.
 
+- trinkfenster_von: Schätze das erste Kalenderjahr, ab dem der konkret identifizierte Wein voraussichtlich gut trinkbar ist.
+- trinkfenster_bis: Schätze das letzte Kalenderjahr, bis zu dem der Wein bei fachgerechter Lagerung voraussichtlich gut trinkbar bleibt.
+- Berücksichtige Produzent, Weinname, Jahrgang, Herkunft, Rebsorten und das typische Lagerpotenzial des Weins.
+- Gib für beide Angaben ausschließlich vierstellige Jahreszahlen zurück.
+- Berücksichtige, dass sich Weine je nach Lagerbedingungen unterschiedlich entwickeln.
+- Erfinde keine Expertenempfehlungen oder Quellen.
+- Wenn der Wein nicht ausreichend zuverlässig identifiziert wurde oder eine seriöse Einschätzung nicht möglich ist, verwende für beide Angaben einen leeren String.
+- Das Trinkfenster ist immer eine KI-Schätzung und keine bestätigte Expertenempfehlung.
+
+- weinstil: Beschreibe den Stil des konkret identifizierten Weins mit wenigen treffenden Begriffen, beispielsweise "trocken, frisch, mineralisch" oder "trocken, kräftig, tanninreich".
+- Berücksichtige Weintyp, Rebsorten, Herkunft und den eindeutig identifizierten Wein.
+- Verwende nur Eigenschaften, die sich zuverlässig ableiten lassen.
+- Erfinde keine Verkostungsnotizen.
+- Wenn der Weinstil nicht ausreichend zuverlässig bestimmbar ist, verwende einen leeren String.
+
+- alkoholgehalt: Der auf dem Etikett angegebene Alkoholgehalt in Prozent, beispielsweise 14.5.
+- Gib ausschließlich die Zahl zurück, ohne Prozentzeichen oder "% vol.".
+- Verwende einen Punkt als Dezimaltrennzeichen.
+- Wenn der Alkoholgehalt auf dem Foto nicht eindeutig lesbar ist, verwende einen leeren String.
+- Schätze den Alkoholgehalt niemals anhand der Rebsorte, Region oder des Weintyps.
+
+
 Wichtige Regeln zur Identifikation:
 
 - Sichtbare Angaben auf dem Etikett haben höchste Priorität.
@@ -123,15 +145,28 @@ Verwende exakt dieses Format:
   "region": "",
   "appellation": "",
   "rebsorte": "",
+  "alkoholgehalt": "",
+  "weinstil": "",
+  "trinkfenster_von": "",
+"trinkfenster_bis": "",
   "sicherheit": {
-    "produzent": 0,
-    "weinname": 0,
-    "jahrgang": 0,
-    "land": 0,
-    "region": 0,
-    "appellation": 0,
-    "rebsorte": 0
-  }
+  "produzent": 0,
+  "weinname": 0,
+  "jahrgang": 0,
+  "land": 0,
+  "region": 0,
+  "appellation": 0,
+ 
+"rebsorte": 0,
+
+"alkoholgehalt": 0,
+"weinstil": 0,
+"trinkfenster_von": 0,
+"trinkfenster_bis": 0
+
+
+}
+
 }
 `,
               },

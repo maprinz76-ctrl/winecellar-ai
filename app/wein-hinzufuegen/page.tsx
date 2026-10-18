@@ -170,6 +170,28 @@ if (sicherheit.rebsorte >= 70 && sicherheit.rebsorte < 90) {
   neueUnsichereFelder.push("Rebsorte");
 }
 
+if (sicherheit.alkoholgehalt >= 70 && sicherheit.alkoholgehalt < 90) {
+  neueUnsichereFelder.push("Alkoholgehalt");
+}
+
+if (
+  sicherheit.trinkfenster_von >= 70 &&
+  sicherheit.trinkfenster_von < 90
+) {
+  neueUnsichereFelder.push("Trinkfenster von");
+}
+
+if (
+  sicherheit.trinkfenster_bis >= 70 &&
+  sicherheit.trinkfenster_bis < 90
+) {
+  neueUnsichereFelder.push("Trinkfenster bis");
+}
+
+if (sicherheit.weinstil >= 70 && sicherheit.weinstil < 90) {
+  neueUnsichereFelder.push("Weinstil");
+}
+
 if (neueUnsichereFelder.length > 0) {
   setKiWarnung(
     `Bitte prüfen: ${neueUnsichereFelder.join(", ")} wurde von der KI nicht eindeutig erkannt.`
@@ -207,6 +229,66 @@ setAppellation(
 setRebsorte(
   sicherheit.rebsorte >= 70 ? weinDaten.rebsorte || "" : ""
 );
+
+
+setAlkoholgehalt(
+  sicherheit.alkoholgehalt >= 70 &&
+  weinDaten.alkoholgehalt !== "" &&
+  weinDaten.alkoholgehalt != null &&
+  Number.isFinite(Number(weinDaten.alkoholgehalt))
+    ? String(weinDaten.alkoholgehalt)
+    : ""
+);
+
+
+setWeinstil(
+  sicherheit.weinstil >= 70 &&
+  typeof weinDaten.weinstil === "string"
+    ? weinDaten.weinstil
+    : ""
+);
+
+setTrinkfensterVon(
+  sicherheit.trinkfenster_von >= 70 &&
+  /^\d{4}$/.test(String(weinDaten.trinkfenster_von ?? ""))
+    ? String(weinDaten.trinkfenster_von)
+    : ""
+);
+
+setTrinkfensterBis(
+  sicherheit.trinkfenster_bis >= 70 &&
+  /^\d{4}$/.test(String(weinDaten.trinkfenster_bis ?? ""))
+    ? String(weinDaten.trinkfenster_bis)
+    : ""
+);
+
+setTrinkfensterTyp("schaetzung");
+setTrinkfensterQuelle("KI-Schätzung (WineCellar AI)");
+
+const trinkfensterGueltig =
+  sicherheit.trinkfenster_von >= 70 &&
+  sicherheit.trinkfenster_bis >= 70 &&
+  /^\d{4}$/.test(String(weinDaten.trinkfenster_von ?? "")) &&
+  /^\d{4}$/.test(String(weinDaten.trinkfenster_bis ?? "")) &&
+  Number(weinDaten.trinkfenster_von) <=
+    Number(weinDaten.trinkfenster_bis);
+
+
+setTrinkfensterVon(
+  trinkfensterGueltig ? String(weinDaten.trinkfenster_von) : ""
+);
+setTrinkfensterBis(
+  trinkfensterGueltig ? String(weinDaten.trinkfenster_bis) : ""
+);
+
+
+setTrinkfensterTyp(trinkfensterGueltig ? "schaetzung" : "");
+setTrinkfensterQuelle(
+  trinkfensterGueltig ? "KI-Schätzung (WineCellar AI)" : ""
+);
+
+
+
   } catch {
     setKiFehler("Die Verbindung zur Weinerkennung ist fehlgeschlagen.");
   } finally {
@@ -524,7 +606,12 @@ feldBestaetigen("Region");
   type="number"
   placeholder="z. B. 2024"
   value={trinkfensterVon}
-  onChange={(e) => setTrinkfensterVon(e.target.value)}
+  
+onChange={(e) => {
+  setTrinkfensterVon(e.target.value);
+  feldBestaetigen("Trinkfenster von");
+}}
+
 />
 
 <label>Trinkfenster bis</label>
@@ -532,7 +619,12 @@ feldBestaetigen("Region");
   type="number"
   placeholder="z. B. 2030"
   value={trinkfensterBis}
-  onChange={(e) => setTrinkfensterBis(e.target.value)}
+  
+onChange={(e) => {
+  setTrinkfensterBis(e.target.value);
+  feldBestaetigen("Trinkfenster bis");
+}}
+
 />
 
 <label>Quelle des Trinkfensters</label>
@@ -616,7 +708,12 @@ feldBestaetigen("Region");
   step="0.1"
   placeholder="z. B. 14.5"
   value={alkoholgehalt}
-  onChange={(e) => setAlkoholgehalt(e.target.value)}
+  
+onChange={(e) => {
+  setAlkoholgehalt(e.target.value);
+  feldBestaetigen("Alkoholgehalt");
+}}
+
 />
 
 <label>Weinstil</label>
@@ -624,7 +721,12 @@ feldBestaetigen("Region");
   type="text"
   placeholder="z. B. trocken, kräftig, fruchtig"
   value={weinstil}
-  onChange={(e) => setWeinstil(e.target.value)}
+  
+onChange={(e) => {
+  setWeinstil(e.target.value);
+  feldBestaetigen("Weinstil");
+}}
+
 />
 
 <label>Kaufdatum</label>
