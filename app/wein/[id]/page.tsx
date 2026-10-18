@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../../lib/supabase";
 
+
 type Wein = {
   id: number;
   produzent: string;
@@ -20,7 +21,23 @@ type Wein = {
   bild?: string;
   notiz?: string;
   favorit?: boolean;
+
+  trinkfenster_von?: number | null;
+  trinkfenster_bis?: number | null;
+  trinkfenster_quelle?: string | null;
+  trinkfenster_typ?: string | null;
+
+  falstaff_punkte?: number | null;
+  parker_punkte?: number | null;
+  suckling_punkte?: number | null;
+  winespectator_punkte?: number | null;
+  vivino_bewertung?: number | null;
+
+  alkoholgehalt?: number | null;
+  weinstil?: string | null;
+  kaufdatum?: string | null;
 };
+
 
 export default function WeinDetail() {
   const params = useParams();
@@ -55,6 +72,24 @@ if (data) {
     bild: data.bild || "",
     notiz: data.notiz || "",
     favorit: data.favorit || false,
+    
+trinkfenster_von: data.trinkfenster_von ?? null,
+trinkfenster_bis: data.trinkfenster_bis ?? null,
+trinkfenster_quelle: data.trinkfenster_quelle ?? null,
+trinkfenster_typ: data.trinkfenster_typ ?? null,
+
+falstaff_punkte: data.falstaff_punkte ?? null,
+parker_punkte: data.parker_punkte ?? null,
+suckling_punkte: data.suckling_punkte ?? null,
+winespectator_punkte: data.winespectator_punkte ?? null,
+vivino_bewertung: data.vivino_bewertung ?? null,
+
+alkoholgehalt: data.alkoholgehalt ?? null,
+weinstil: data.weinstil ?? null,
+kaufdatum: data.kaufdatum ?? null,
+
+
+
   });
 }
     const { data: verbrauchsDaten, error: verbrauchsFehler } =
@@ -399,6 +434,119 @@ const letzterVerbrauch =
     📅 {wein.jahrgang}
   </span>
 </div>
+
+{wein.trinkfenster_von != null &&
+  wein.trinkfenster_bis != null && (
+    <div
+      style={{
+        backgroundColor: "#f6f2ec",
+        padding: "18px",
+        borderRadius: "12px",
+        marginBottom: "20px",
+      }}
+    >
+      <h3 style={{ color: "#7b1026", marginTop: 0 }}>
+        🍷 Trinkfenster
+      </h3>
+
+      <strong>
+        {wein.trinkfenster_von} – {wein.trinkfenster_bis}
+      </strong>
+
+{wein.trinkfenster_typ && (
+  <p style={{ margin: "10px 0 0", fontSize: "14px" }}>
+    <strong>Art:</strong>{" "}
+    {wein.trinkfenster_typ === "experte"
+      ? "Expertenbewertung"
+      : wein.trinkfenster_typ === "produzent"
+      ? "Angabe des Produzenten"
+      : wein.trinkfenster_typ === "schaetzung"
+      ? "Schätzung durch WineCellar AI"
+      : wein.trinkfenster_typ}
+  </p>
+)}
+
+{wein.trinkfenster_quelle && (
+  <p style={{ margin: "6px 0 10px", fontSize: "14px" }}>
+    <strong>Quelle:</strong> {wein.trinkfenster_quelle}
+  </p>
+)}
+
+      <p style={{ marginBottom: 0 }}>
+        {new Date().getFullYear() < wein.trinkfenster_von
+          ? "🕒 Noch lagern"
+          : new Date().getFullYear() > wein.trinkfenster_bis
+          ? "⚠️ Empfohlenes Trinkfenster überschritten"
+          : "✅ Jetzt im Trinkfenster"}
+      </p>
+    </div>
+  )}
+
+{[
+  ["Falstaff", wein.falstaff_punkte, "/100"],
+  ["Robert Parker", wein.parker_punkte, "/100"],
+  ["James Suckling", wein.suckling_punkte, "/100"],
+  ["Wine Spectator", wein.winespectator_punkte, "/100"],
+  ["Vivino", wein.vivino_bewertung, "/5"],
+].some(([, punkte]) => punkte != null) && (
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "18px",
+      borderRadius: "12px",
+      marginBottom: "20px",
+    }}
+  >
+    <h3 style={{ color: "#7b1026", marginTop: 0 }}>
+      ⭐ Weinbewertungen
+    </h3>
+
+    {[
+      ["Falstaff", wein.falstaff_punkte, "/100"],
+      ["Robert Parker", wein.parker_punkte, "/100"],
+      ["James Suckling", wein.suckling_punkte, "/100"],
+      ["Wine Spectator", wein.winespectator_punkte, "/100"],
+      ["Vivino", wein.vivino_bewertung, "/5"],
+    ].filter(([, punkte]) => punkte != null)
+      .map(([name, punkte, skala]) => (
+        <p key={name} style={{ margin: "8px 0" }}>
+          <strong>{name}:</strong> {punkte}{skala}
+        </p>
+      ))}
+  </div>
+)}
+
+{(wein.alkoholgehalt != null ||
+  wein.weinstil ||
+  wein.kaufdatum) && (
+  <div
+    style={{
+      backgroundColor: "#f6f2ec",
+      padding: "18px",
+      borderRadius: "12px",
+      marginBottom: "20px",
+    }}
+  >
+    <h3 style={{ color: "#7b1026", marginTop: 0 }}>
+      🍇 Weitere Weinangaben
+    </h3>
+
+    {wein.alkoholgehalt != null && (
+      <p>🍷 Alkoholgehalt: {wein.alkoholgehalt} % vol.</p>
+    )}
+
+    {wein.weinstil && (
+      <p>🍇 Weinstil: {wein.weinstil}</p>
+    )}
+
+    {wein.kaufdatum && (
+      <p>
+        📅 Kaufdatum:{" "}
+        {new Date(wein.kaufdatum).toLocaleDateString("de-CH")}
+      </p>
+    )}
+  </div>
+)}
 
           <hr
             style={{

@@ -18,9 +18,26 @@ const [wein, setWein] = useState({
   preis: 0,
   anzahl: 1,
   bewertung: 0,
+ 
   bild: "",
   notiz: "",
+  trinkfenster_von: null as number | null,
+  trinkfenster_bis: null as number | null,
+  trinkfenster_quelle: "",
+  trinkfenster_typ: "",
+  
+falstaff_punkte: null as number | null,
+parker_punkte: null as number | null,
+suckling_punkte: null as number | null,
+winespectator_punkte: null as number | null,
+vivino_bewertung: null as number | null,
+
+alkoholgehalt: null as number | null,
+weinstil: "",
+kaufdatum: "",
+
 });
+
 useEffect(() => {
   async function weinLaden() {
     const { data, error } = await supabase
@@ -48,6 +65,24 @@ useEffect(() => {
         bewertung: Number(data.bewertung || 0),
         bild: data.bild || "",
         notiz: data.notiz || "",
+        
+trinkfenster_von: data.trinkfenster_von ?? null,
+trinkfenster_bis: data.trinkfenster_bis ?? null,
+trinkfenster_quelle: data.trinkfenster_quelle ?? "",
+trinkfenster_typ: data.trinkfenster_typ ?? "",
+
+falstaff_punkte: data.falstaff_punkte ?? null,
+parker_punkte: data.parker_punkte ?? null,
+suckling_punkte: data.suckling_punkte ?? null,
+winespectator_punkte: data.winespectator_punkte ?? null,
+vivino_bewertung: data.vivino_bewertung ?? null,
+
+alkoholgehalt: data.alkoholgehalt ?? null,
+weinstil: data.weinstil ?? "",
+kaufdatum: data.kaufdatum ?? "",
+
+
+
       });
     }
   }
@@ -70,6 +105,23 @@ async function speichern() {
       bewertung: Number(wein.bewertung || 0),
       bild: wein.bild,
       notiz: wein.notiz,
+      
+      trinkfenster_von: wein.trinkfenster_von,
+      trinkfenster_bis: wein.trinkfenster_bis,
+      trinkfenster_quelle: wein.trinkfenster_quelle,
+      trinkfenster_typ: wein.trinkfenster_typ,
+      
+falstaff_punkte: wein.falstaff_punkte,
+parker_punkte: wein.parker_punkte,
+suckling_punkte: wein.suckling_punkte,
+winespectator_punkte: wein.winespectator_punkte,
+vivino_bewertung: wein.vivino_bewertung,
+
+alkoholgehalt: wein.alkoholgehalt,
+weinstil: wein.weinstil,
+kaufdatum: wein.kaufdatum || null,
+
+
     })
     .eq("id", id);
 
@@ -326,6 +378,200 @@ async function speichern() {
     </span>
   ))}
 </div>
+
+<h3 style={{ color: "#7b1026", marginTop: "25px" }}>
+  🍷 Trinkfenster
+</h3>
+
+<label>Trinkfenster von (Jahr)</label>
+<input
+  type="number"
+  min="1900"
+  max="2200"
+  value={wein.trinkfenster_von ?? ""}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      trinkfenster_von:
+        e.target.value === "" ? null : Number(e.target.value),
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+  }}
+/>
+
+<label>Trinkfenster bis (Jahr)</label>
+<input
+  type="number"
+  min="1900"
+  max="2200"
+  value={wein.trinkfenster_bis ?? ""}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      trinkfenster_bis:
+        e.target.value === "" ? null : Number(e.target.value),
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+  }}
+/>
+
+<label>Quelle des Trinkfensters</label>
+<input
+  type="text"
+  value={wein.trinkfenster_quelle}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      trinkfenster_quelle: e.target.value,
+    })
+  }
+  placeholder="z. B. Falstaff, Produzent, Wine Advocate"
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    boxSizing: "border-box",
+  }}
+/>
+
+<label>Art des Trinkfensters</label>
+<select
+  value={wein.trinkfenster_typ}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      trinkfenster_typ: e.target.value,
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    boxSizing: "border-box",
+  }}
+>
+  <option value="">Bitte auswählen</option>
+  <option value="experte">Expertenbewertung</option>
+  <option value="produzent">Angabe des Produzenten</option>
+  <option value="schaetzung">Schätzung durch WineCellar AI</option>
+</select>
+
+<h3 style={{ color: "#7b1026", marginTop: "25px" }}>
+  ⭐ Weinbewertungen
+</h3>
+
+{([
+  ["Falstaff", "falstaff_punkte", 100],
+  ["Robert Parker", "parker_punkte", 100],
+  ["James Suckling", "suckling_punkte", 100],
+  ["Wine Spectator", "winespectator_punkte", 100],
+  ["Vivino", "vivino_bewertung", 5],
+] as const).map(([name, feld, maximum]) => (
+  <div key={feld}>
+    <label>{name} ({maximum === 5 ? "1–5" : "0–100"} Punkte)</label>
+    <input
+      type="number"
+      min="0"
+      max={maximum}
+      step={maximum === 5 ? "0.1" : "1"}
+      value={wein[feld] ?? ""}
+      onChange={(e) =>
+        setWein({
+          ...wein,
+          [feld]: e.target.value === ""
+            ? null
+            : Number(e.target.value),
+        })
+      }
+      style={{
+        width: "100%",
+        padding: "10px",
+        marginTop: "6px",
+        marginBottom: "18px",
+        boxSizing: "border-box",
+      }}
+    />
+  </div>
+))}
+
+<h3 style={{ color: "#7b1026", marginTop: "25px" }}>
+  🍇 Weitere Weinangaben
+</h3>
+
+<label>Alkoholgehalt (% vol.)</label>
+<input
+  type="number"
+  min="0"
+  max="100"
+  step="0.1"
+  value={wein.alkoholgehalt ?? ""}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      alkoholgehalt:
+        e.target.value === "" ? null : Number(e.target.value),
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    boxSizing: "border-box",
+  }}
+/>
+
+<label>Weinstil</label>
+<input
+  type="text"
+  value={wein.weinstil}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      weinstil: e.target.value,
+    })
+  }
+  placeholder="z. B. kräftig, trocken, fruchtig"
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    boxSizing: "border-box",
+  }}
+/>
+
+<label>Kaufdatum</label>
+<input
+  type="date"
+  value={wein.kaufdatum}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      kaufdatum: e.target.value,
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    boxSizing: "border-box",
+  }}
+/>
+
 <label>Notiz</label>
 
 <textarea

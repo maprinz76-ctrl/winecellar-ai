@@ -17,6 +17,21 @@ import { supabase } from "../../lib/supabase";
   const [anzahl, setAnzahl] = useState("");
   const [preis, setPreis] = useState("");
   const [bild, setBild] = useState("");
+const [trinkfensterVon, setTrinkfensterVon] = useState("");
+const [trinkfensterBis, setTrinkfensterBis] = useState("");
+const [trinkfensterQuelle, setTrinkfensterQuelle] = useState("");
+const [trinkfensterTyp, setTrinkfensterTyp] = useState("");
+
+const [falstaffPunkte, setFalstaffPunkte] = useState("");
+const [parkerPunkte, setParkerPunkte] = useState("");
+const [sucklingPunkte, setSucklingPunkte] = useState("");
+const [winespectatorPunkte, setWinespectatorPunkte] = useState("");
+const [vivinoBewertung, setVivinoBewertung] = useState("");
+
+const [alkoholgehalt, setAlkoholgehalt] = useState("");
+const [weinstil, setWeinstil] = useState("");
+const [kaufdatum, setKaufdatum] = useState("");
+
   const [kiLaedt, setKiLaedt] = useState(false);
 const [kiFehler, setKiFehler] = useState("");
 const [unsichereFelder, setUnsichereFelder] = useState<string[]>([]);
@@ -236,6 +251,22 @@ setRebsorte(
       preis: Number(preis),
       bewertung: 0,
       bild: bild || null,
+      
+trinkfenster_von: trinkfensterVon ? Number(trinkfensterVon) : null,
+trinkfenster_bis: trinkfensterBis ? Number(trinkfensterBis) : null,
+trinkfenster_quelle: trinkfensterQuelle || null,
+trinkfenster_typ: trinkfensterTyp || null,
+
+falstaff_punkte: falstaffPunkte ? Number(falstaffPunkte) : null,
+parker_punkte: parkerPunkte ? Number(parkerPunkte) : null,
+suckling_punkte: sucklingPunkte ? Number(sucklingPunkte) : null,
+winespectator_punkte: winespectatorPunkte ? Number(winespectatorPunkte) : null,
+vivino_bewertung: vivinoBewertung ? Number(vivinoBewertung) : null,
+
+alkoholgehalt: alkoholgehalt ? Number(alkoholgehalt) : null,
+weinstil: weinstil || null,
+kaufdatum: kaufdatum || null,
+
     },
   ]);
 
@@ -257,6 +288,20 @@ setRebsorte("");
 setAnzahl("");
 setPreis("");
 setBild("");
+
+setTrinkfensterVon("");
+setTrinkfensterBis("");
+setTrinkfensterQuelle("");
+setTrinkfensterTyp("");
+setFalstaffPunkte("");
+setParkerPunkte("");
+setSucklingPunkte("");
+setWinespectatorPunkte("");
+setVivinoBewertung("");
+setAlkoholgehalt("");
+setWeinstil("");
+setKaufdatum("");
+
 if (dateiInputRef.current) {
   dateiInputRef.current.value = "";
 }
@@ -468,6 +513,125 @@ feldBestaetigen("Region");
   step="0.05"
   value={preis}
   onChange={(e) => setPreis(e.target.value)}
+/>
+
+<h3 style={{ color: "#7b1026", marginTop: "20px" }}>
+  🍷 Trinkfenster
+</h3>
+
+<label>Trinkfenster von</label>
+<input
+  type="number"
+  placeholder="z. B. 2024"
+  value={trinkfensterVon}
+  onChange={(e) => setTrinkfensterVon(e.target.value)}
+/>
+
+<label>Trinkfenster bis</label>
+<input
+  type="number"
+  placeholder="z. B. 2030"
+  value={trinkfensterBis}
+  onChange={(e) => setTrinkfensterBis(e.target.value)}
+/>
+
+<label>Quelle des Trinkfensters</label>
+<input
+  type="text"
+  placeholder="z. B. Falstaff, Produzent"
+  value={trinkfensterQuelle}
+  onChange={(e) => setTrinkfensterQuelle(e.target.value)}
+/>
+
+<label>Art des Trinkfensters</label>
+<select
+  value={trinkfensterTyp}
+  onChange={(e) => setTrinkfensterTyp(e.target.value)}
+>
+  <option value="">Bitte auswählen</option>
+  <option value="experte">Expertenbewertung</option>
+  <option value="produzent">Angabe des Produzenten</option>
+  <option value="schaetzung">Schätzung durch WineCellar AI</option>
+</select>
+
+<h3 style={{ color: "#7b1026", marginTop: "20px" }}>
+  ⭐ Expertenbewertungen
+</h3>
+
+<label>Falstaff (Punkte)</label>
+<input
+  type="number"
+  min="0"
+  max="100"
+  value={falstaffPunkte}
+  onChange={(e) => setFalstaffPunkte(e.target.value)}
+/>
+
+<label>Robert Parker (Punkte)</label>
+<input
+  type="number"
+  min="0"
+  max="100"
+  value={parkerPunkte}
+  onChange={(e) => setParkerPunkte(e.target.value)}
+/>
+
+<label>James Suckling (Punkte)</label>
+<input
+  type="number"
+  min="0"
+  max="100"
+  value={sucklingPunkte}
+  onChange={(e) => setSucklingPunkte(e.target.value)}
+/>
+
+<label>Wine Spectator (Punkte)</label>
+<input
+  type="number"
+  min="0"
+  max="100"
+  value={winespectatorPunkte}
+  onChange={(e) => setWinespectatorPunkte(e.target.value)}
+/>
+
+<label>Vivino (Bewertung)</label>
+<input
+  type="number"
+  min="0"
+  max="5"
+  step="0.1"
+  value={vivinoBewertung}
+  onChange={(e) => setVivinoBewertung(e.target.value)}
+/>
+
+<h3 style={{ color: "#7b1026", marginTop: "20px" }}>
+  🍇 Weitere Weinangaben
+</h3>
+
+<label>Alkoholgehalt (% vol.)</label>
+<input
+  type="number"
+  min="0"
+  max="100"
+  step="0.1"
+  placeholder="z. B. 14.5"
+  value={alkoholgehalt}
+  onChange={(e) => setAlkoholgehalt(e.target.value)}
+/>
+
+<label>Weinstil</label>
+<input
+  type="text"
+  placeholder="z. B. trocken, kräftig, fruchtig"
+  value={weinstil}
+  onChange={(e) => setWeinstil(e.target.value)}
+/>
+
+<label>Kaufdatum</label>
+<input
+  type="date"
+  value={kaufdatum}
+  onChange={(e) => setKaufdatum(e.target.value)}
 />
 
   <label

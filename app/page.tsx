@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
 
+
 type Wein = {
   id: number;
   produzent: string;
@@ -18,8 +19,22 @@ type Wein = {
   bewertung?: number;
   bild?: string;
   favorit?: boolean;
-archiviert?: boolean;
+  archiviert?: boolean;
+
+  trinkfenster_von?: number | null;
+  trinkfenster_bis?: number | null;
+  falstaff_punkte?: number | null;
+  parker_punkte?: number | null;
+  suckling_punkte?: number | null;
+  winespectator_punkte?: number | null;
+  vivino_bewertung?: number | null;
+  trinkfenster_quelle?: string | null;
+  trinkfenster_typ?: string | null;
+  alkoholgehalt?: number | null;
+  weinstil?: string | null;
+  kaufdatum?: string | null;
 };
+
 type Verbrauch = {
   id: number;
   weinId: number;
