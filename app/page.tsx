@@ -42,6 +42,7 @@ const [fischArt, setFischArt] = useState("");
 const [pastaArt, setPastaArt] = useState("");
 const [pizzaArt, setPizzaArt] = useState("");
 const [kaeseArt, setKaeseArt] = useState("");
+const [aperoArt, setAperoArt] = useState("");
 const [passendeWeine, setPassendeWeine] = useState<Wein[]>([]);
   useEffect(() => {
   async function datenLaden() {
@@ -558,7 +559,59 @@ if (kaeseArt === "kaeseplatte") {
 function aperoPunkte(wein: Wein) {
   const text =
     `${wein.rebsorte} ${wein.weinname} ${wein.produzent}`.toLowerCase();
+    if (aperoArt === "klassisch") {
+  if (text.includes("champagne")) return 5;
+  if (text.includes("prosecco")) return 5;
+  if (text.includes("sauvignon blanc")) return 5;
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("riesling")) return 4;
+  if (text.includes("pinot grigio")) return 4;
+  if (text.includes("chardonnay")) return 3;
 
+  return 0;
+}
+if (aperoArt === "antipasti") {
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("pinot grigio")) return 5;
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("pinot noir")) return 4;
+  if (text.includes("chardonnay")) return 3;
+
+  return 0;
+}
+if (aperoArt === "riche") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("chardonnay")) return 5;
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("merlot")) return 4;
+  if (text.includes("vermentino")) return 4;
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("cabernet")) return 3;
+
+  return 0;
+}
+if (aperoArt === "fingerfood") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("chardonnay")) return 5;
+  if (text.includes("vermentino")) return 5;
+  if (text.includes("sauvignon blanc")) return 4;
+  if (text.includes("riesling")) return 4;
+  if (text.includes("sangiovese")) return 4;
+  if (text.includes("merlot")) return 3;
+
+  return 0;
+}
+if (aperoArt === "kaeseaufschnitt") {
+  if (text.includes("pinot noir")) return 5;
+  if (text.includes("sangiovese")) return 5;
+  if (text.includes("barbera")) return 5;
+  if (text.includes("chardonnay")) return 4;
+  if (text.includes("merlot")) return 4;
+  if (text.includes("vermentino")) return 3;
+
+  return 0;
+}
   if (text.includes("champagne")) return 5;
   if (text.includes("prosecco")) return 5;
   if (text.includes("sauvignon blanc")) return 5;
@@ -758,19 +811,7 @@ function aperoPunkte(wein: Wein) {
 }
 
    if (anlass === "apero") {
-  return (
-    text.includes("sauvignon blanc") ||
-    text.includes("chardonnay") ||
-    text.includes("pinot grigio") ||
-    text.includes("pinot gris") ||
-    text.includes("riesling") ||
-    text.includes("vermentino") ||
-    text.includes("grüner veltliner") ||
-    text.includes("chenin blanc") ||
-    text.includes("albariño") ||
-    text.includes("prosecco") ||
-    text.includes("champagne")
-  );
+  return aperoPunkte(wein) > 0;
 }
 
     return false;
@@ -781,7 +822,9 @@ const gefiltertePassendeWeine =
         kaesePunkte(wein) >=
         (kaeseArt === "blauschimmel" ? 4 : 3)
       )
-    : passende;
+    : anlass === "apero" && aperoArt !== ""
+  ? passende.filter((wein) => aperoPunkte(wein) > 0)
+  : passende;
  const sortiertePassendeWeine = [...gefiltertePassendeWeine].sort((a, b) => {
   if (anlass === "fisch") {
     const punkteUnterschied = fischArtPunkte(b) - fischArtPunkte(a);
@@ -853,7 +896,7 @@ useEffect(() => {
     setPassendeWeine([]);
     setWeinDesAbends(null);
   }
-}, [anlass, fleischArt, fischArt, pastaArt, pizzaArt, kaeseArt, weine]);
+}, [anlass, fleischArt, fischArt, pastaArt, pizzaArt, kaeseArt, aperoArt, weine]);
   const kennzahlen = useMemo(() => {
     const aktiveWeine = weine.filter(
   (wein) => wein.archiviert !== true
@@ -1197,6 +1240,31 @@ const lieblingswein =
     <option value="schafskaese">🐑 Schafskäse / Pecorino</option>
     <option value="fondue">🫕 Fondue / Raclette</option>
     <option value="kaeseplatte">🍷 Gemischte Käseplatte</option>
+  </select>
+)}
+{anlass === "apero" && (
+  <select
+    value={aperoArt}
+    onChange={(e) => setAperoArt(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "12px 14px",
+      border: "1px solid #ddd",
+      borderRadius: "10px",
+      backgroundColor: "white",
+      color: "#7b1026",
+      fontWeight: "600",
+      fontSize: "14px",
+      cursor: "pointer",
+      marginBottom: "12px",
+    }}
+  >
+    <option value="">Apéro-Art auswählen</option>
+    <option value="klassisch">🥂 Klassischer Apéro</option>
+    <option value="antipasti">🫒 Antipasti</option>
+    <option value="riche">🍽️ Apéro riche</option>
+    <option value="kaeseaufschnitt">🧀 Käse und Aufschnitt</option>
+    <option value="fingerfood">🍤 Fingerfood</option>
   </select>
 )}
 {anlass === "kaese" &&
