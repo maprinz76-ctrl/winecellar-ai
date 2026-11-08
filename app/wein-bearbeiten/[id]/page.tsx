@@ -32,6 +32,18 @@ suckling_punkte: null as number | null,
 winespectator_punkte: null as number | null,
 vivino_bewertung: null as number | null,
 
+falstaff_quelle: "",
+parker_quelle: "",
+suckling_quelle: "",
+winespectator_quelle: "",
+vivino_quelle: "",
+
+falstaff_quellenart: "",
+parker_quellenart: "",
+suckling_quellenart: "",
+winespectator_quellenart: "",
+vivino_quellenart: "",
+
 alkoholgehalt: null as number | null,
 weinstil: "",
 kaufdatum: "",
@@ -53,6 +65,11 @@ useEffect(() => {
 
     if (data) {
       setWein({
+        falstaff_quellenart: data.falstaff_quellenart || "",
+parker_quellenart: data.parker_quellenart || "",
+suckling_quellenart: data.suckling_quellenart || "",
+winespectator_quellenart: data.winespectator_quellenart || "",
+vivino_quellenart: data.vivino_quellenart || "",
         produzent: data.produzent || "",
         weinname: data.weinname || "",
         jahrgang: String(data.jahrgang || ""),
@@ -76,6 +93,12 @@ parker_punkte: data.parker_punkte ?? null,
 suckling_punkte: data.suckling_punkte ?? null,
 winespectator_punkte: data.winespectator_punkte ?? null,
 vivino_bewertung: data.vivino_bewertung ?? null,
+
+falstaff_quelle: data.falstaff_quelle ?? "",
+parker_quelle: data.parker_quelle ?? "",
+suckling_quelle: data.suckling_quelle ?? "",
+winespectator_quelle: data.winespectator_quelle ?? "",
+vivino_quelle: data.vivino_quelle ?? "",
 
 alkoholgehalt: data.alkoholgehalt ?? null,
 weinstil: data.weinstil ?? "",
@@ -116,6 +139,18 @@ parker_punkte: wein.parker_punkte,
 suckling_punkte: wein.suckling_punkte,
 winespectator_punkte: wein.winespectator_punkte,
 vivino_bewertung: wein.vivino_bewertung,
+
+falstaff_quelle: wein.falstaff_quelle || null,
+parker_quelle: wein.parker_quelle || null,
+suckling_quelle: wein.suckling_quelle || null,
+winespectator_quelle: wein.winespectator_quelle || null,
+vivino_quelle: wein.vivino_quelle || null,
+
+falstaff_quellenart: wein.falstaff_quellenart || null,
+parker_quellenart: wein.parker_quellenart || null,
+suckling_quellenart: wein.suckling_quellenart || null,
+winespectator_quellenart: wein.winespectator_quellenart || null,
+vivino_quellenart: wein.vivino_quellenart || null,
 
 alkoholgehalt: wein.alkoholgehalt,
 weinstil: wein.weinstil,
@@ -473,12 +508,22 @@ kaufdatum: wein.kaufdatum || null,
 </h3>
 
 {([
-  ["Falstaff", "falstaff_punkte", 100],
-  ["Robert Parker", "parker_punkte", 100],
-  ["James Suckling", "suckling_punkte", 100],
-  ["Wine Spectator", "winespectator_punkte", 100],
-  ["Vivino", "vivino_bewertung", 5],
-] as const).map(([name, feld, maximum]) => (
+
+["Falstaff", "falstaff_punkte", 100, "falstaff_quelle"],
+["Robert Parker", "parker_punkte", 100, "parker_quelle"],
+["James Suckling", "suckling_punkte", 100, "suckling_quelle"],
+["Wine Spectator", "winespectator_punkte", 100, "winespectator_quelle"],
+["Vivino", "vivino_bewertung", 5, "vivino_quelle"],
+
+
+
+
+].map(([name, feld, maximum, quelle]) => {
+  const bewertungsfeld = feld as "falstaff_punkte" | "parker_punkte" | "suckling_punkte" | "winespectator_punkte" | "vivino_bewertung";
+  return (
+
+
+
   <div key={feld}>
     <label>{name} ({maximum === 5 ? "1–5" : "0–100"} Punkte)</label>
     <input
@@ -486,7 +531,7 @@ kaufdatum: wein.kaufdatum || null,
       min="0"
       max={maximum}
       step={maximum === 5 ? "0.1" : "1"}
-      value={wein[feld] ?? ""}
+      value={wein[bewertungsfeld] ?? ""}
       onChange={(e) =>
         setWein({
           ...wein,
@@ -503,8 +548,70 @@ kaufdatum: wein.kaufdatum || null,
         boxSizing: "border-box",
       }}
     />
+    
+<label>Quelle (Internetadresse)</label>
+<input
+  type="url"
+  value={wein[quelle as "falstaff_quelle" | "parker_quelle" | "suckling_quelle" | "winespectator_quelle" | "vivino_quelle"] ?? ""}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+      [quelle]: e.target.value,
+    })
+  }
+  placeholder="https://..."
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "12px",
+    boxSizing: "border-box",
+  }}
+/>
+<label>Art der Bewertungsquelle</label>
+<select
+ value={
+  wein[
+    String(quelle).replace("_quelle", "_quellenart") as
+      | "falstaff_quellenart"
+      | "parker_quellenart"
+      | "suckling_quellenart"
+      | "winespectator_quellenart"
+      | "vivino_quellenart"
+  ] ?? ""
+}
+  onChange={(e) =>
+    setWein({
+      ...wein,
+     [String(quelle).replace("_quelle", "_quellenart")]: e.target.value,
+    })
+  }
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    marginBottom: "18px",
+    boxSizing: "border-box",
+  }}
+>
+  <option value="">Bitte auswählen</option>
+  <option value="original">Originalquelle</option>
+  <option value="sekundaer">Sekundärquelle</option>
+  <option value="ungeprueft">Ungeprüfte Quelle</option>
+</select>
   </div>
-))}
+
+  );
+
+
+
+
+}))}
+
+
+
+
+
 
 <h3 style={{ color: "#7b1026", marginTop: "25px" }}>
   🍇 Weitere Weinangaben

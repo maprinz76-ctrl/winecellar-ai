@@ -28,6 +28,18 @@ const [sucklingPunkte, setSucklingPunkte] = useState("");
 const [winespectatorPunkte, setWinespectatorPunkte] = useState("");
 const [vivinoBewertung, setVivinoBewertung] = useState("");
 
+const [falstaffQuelle, setFalstaffQuelle] = useState("");
+const [parkerQuelle, setParkerQuelle] = useState("");
+const [sucklingQuelle, setSucklingQuelle] = useState("");
+const [winespectatorQuelle, setWinespectatorQuelle] = useState("");
+const [vivinoQuelle, setVivinoQuelle] = useState("");
+
+const [falstaffQuellenart, setFalstaffQuellenart] = useState("");
+const [parkerQuellenart, setParkerQuellenart] = useState("");
+const [sucklingQuellenart, setSucklingQuellenart] = useState("");
+const [winespectatorQuellenart, setWinespectatorQuellenart] = useState("");
+const [vivinoQuellenart, setVivinoQuellenart] = useState("");
+
 const [alkoholgehalt, setAlkoholgehalt] = useState("");
 const [weinstil, setWeinstil] = useState("");
 const [kaufdatum, setKaufdatum] = useState("");
@@ -241,6 +253,149 @@ setAlkoholgehalt(
 );
 
 
+setFalstaffPunkte(
+  weinDaten.falstaff_punkte !== "" &&
+  Number.isInteger(Number(weinDaten.falstaff_punkte)) &&
+  Number(weinDaten.falstaff_punkte) >= 0 &&
+  Number(weinDaten.falstaff_punkte) <= 100 &&
+  typeof weinDaten.falstaff_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.falstaff_quelle)
+    ? String(weinDaten.falstaff_punkte)
+    : ""
+);
+
+setFalstaffQuelle(
+  weinDaten.falstaff_punkte !== "" &&
+  Number.isInteger(Number(weinDaten.falstaff_punkte)) &&
+  Number(weinDaten.falstaff_punkte) >= 0 &&
+  Number(weinDaten.falstaff_punkte) <= 100 &&
+  typeof weinDaten.falstaff_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.falstaff_quelle)
+    ? weinDaten.falstaff_quelle
+    : ""
+);
+
+setParkerPunkte(
+  weinDaten.parker_punkte !== "" &&
+  weinDaten.parker_punkte != null &&
+  Number.isInteger(Number(weinDaten.parker_punkte)) &&
+  Number(weinDaten.parker_punkte) >= 0 &&
+  Number(weinDaten.parker_punkte) <= 100 &&
+  typeof weinDaten.parker_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.parker_quelle)
+    ? String(weinDaten.parker_punkte)
+    : ""
+);
+
+setParkerQuelle(
+  weinDaten.parker_punkte !== "" &&
+  weinDaten.parker_punkte != null &&
+  Number.isInteger(Number(weinDaten.parker_punkte)) &&
+  Number(weinDaten.parker_punkte) >= 0 &&
+  Number(weinDaten.parker_punkte) <= 100 &&
+  typeof weinDaten.parker_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.parker_quelle)
+    ? weinDaten.parker_quelle
+    : ""
+);
+
+setSucklingPunkte(
+  weinDaten.suckling_punkte !== "" &&
+  weinDaten.suckling_punkte != null &&
+  Number.isInteger(Number(weinDaten.suckling_punkte)) &&
+  Number(weinDaten.suckling_punkte) >= 0 &&
+  Number(weinDaten.suckling_punkte) <= 100 &&
+  typeof weinDaten.suckling_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.suckling_quelle)
+    ? String(weinDaten.suckling_punkte)
+    : ""
+);
+
+setSucklingQuelle(
+  weinDaten.suckling_punkte !== "" &&
+  weinDaten.suckling_punkte != null &&
+  Number.isInteger(Number(weinDaten.suckling_punkte)) &&
+  Number(weinDaten.suckling_punkte) >= 0 &&
+  Number(weinDaten.suckling_punkte) <= 100 &&
+  typeof weinDaten.suckling_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.suckling_quelle)
+    ? weinDaten.suckling_quelle
+    : ""
+);
+
+setWinespectatorPunkte(
+  weinDaten.winespectator_punkte !== "" &&
+  weinDaten.winespectator_punkte != null &&
+  Number.isInteger(Number(weinDaten.winespectator_punkte)) &&
+  Number(weinDaten.winespectator_punkte) >= 0 &&
+  Number(weinDaten.winespectator_punkte) <= 100 &&
+  typeof weinDaten.winespectator_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.winespectator_quelle)
+    ? String(weinDaten.winespectator_punkte)
+    : ""
+);
+
+setWinespectatorQuelle(
+  weinDaten.winespectator_punkte !== "" &&
+  weinDaten.winespectator_punkte != null &&
+  Number.isInteger(Number(weinDaten.winespectator_punkte)) &&
+  Number(weinDaten.winespectator_punkte) >= 0 &&
+  Number(weinDaten.winespectator_punkte) <= 100 &&
+  typeof weinDaten.winespectator_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.winespectator_quelle)
+    ? weinDaten.winespectator_quelle
+    : ""
+);
+
+setVivinoBewertung(
+  weinDaten.vivino_bewertung !== "" &&
+  weinDaten.vivino_bewertung != null &&
+  Number.isFinite(Number(weinDaten.vivino_bewertung)) &&
+  Number(weinDaten.vivino_bewertung) >= 1 &&
+  Number(weinDaten.vivino_bewertung) <= 5 &&
+  Number(weinDaten.vivino_bewertung) * 10 % 1 === 0 &&
+  typeof weinDaten.vivino_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.vivino_quelle)
+    ? String(weinDaten.vivino_bewertung)
+    : ""
+);
+
+setVivinoQuelle(
+  weinDaten.vivino_bewertung !== "" &&
+  weinDaten.vivino_bewertung != null &&
+  Number.isFinite(Number(weinDaten.vivino_bewertung)) &&
+  Number(weinDaten.vivino_bewertung) >= 1 &&
+  Number(weinDaten.vivino_bewertung) <= 5 &&
+  Number(weinDaten.vivino_bewertung) * 10 % 1 === 0 &&
+  typeof weinDaten.vivino_quelle === "string" &&
+  /^https?:\/\/.+/.test(weinDaten.vivino_quelle)
+    ? weinDaten.vivino_quelle
+    : ""
+);
+
+const gueltigeQuellenarten = ["original", "sekundaer", "ungeprueft"];
+
+setFalstaffQuellenart(
+  gueltigeQuellenarten.includes(weinDaten.falstaff_quellenart)
+    ? weinDaten.falstaff_quellenart : ""
+);
+setParkerQuellenart(
+  gueltigeQuellenarten.includes(weinDaten.parker_quellenart)
+    ? weinDaten.parker_quellenart : ""
+);
+setSucklingQuellenart(
+  gueltigeQuellenarten.includes(weinDaten.suckling_quellenart)
+    ? weinDaten.suckling_quellenart : ""
+);
+setWinespectatorQuellenart(
+  gueltigeQuellenarten.includes(weinDaten.winespectator_quellenart)
+    ? weinDaten.winespectator_quellenart : ""
+);
+setVivinoQuellenart(
+  gueltigeQuellenarten.includes(weinDaten.vivino_quellenart)
+    ? weinDaten.vivino_quellenart : ""
+);
+
 setWeinstil(
   sicherheit.weinstil >= 70 &&
   typeof weinDaten.weinstil === "string"
@@ -248,19 +403,7 @@ setWeinstil(
     : ""
 );
 
-setTrinkfensterVon(
-  sicherheit.trinkfenster_von >= 70 &&
-  /^\d{4}$/.test(String(weinDaten.trinkfenster_von ?? ""))
-    ? String(weinDaten.trinkfenster_von)
-    : ""
-);
 
-setTrinkfensterBis(
-  sicherheit.trinkfenster_bis >= 70 &&
-  /^\d{4}$/.test(String(weinDaten.trinkfenster_bis ?? ""))
-    ? String(weinDaten.trinkfenster_bis)
-    : ""
-);
 
 setTrinkfensterTyp("schaetzung");
 setTrinkfensterQuelle("KI-Schätzung (WineCellar AI)");
@@ -345,6 +488,18 @@ suckling_punkte: sucklingPunkte ? Number(sucklingPunkte) : null,
 winespectator_punkte: winespectatorPunkte ? Number(winespectatorPunkte) : null,
 vivino_bewertung: vivinoBewertung ? Number(vivinoBewertung) : null,
 
+falstaff_quelle: falstaffQuelle || null,
+parker_quelle: parkerQuelle || null,
+suckling_quelle: sucklingQuelle || null,
+winespectator_quelle: winespectatorQuelle || null,
+vivino_quelle: vivinoQuelle || null,
+
+falstaff_quellenart: falstaffQuellenart || null,
+parker_quellenart: parkerQuellenart || null,
+suckling_quellenart: sucklingQuellenart || null,
+winespectator_quellenart: winespectatorQuellenart || null,
+vivino_quellenart: vivinoQuellenart || null,
+
 alkoholgehalt: alkoholgehalt ? Number(alkoholgehalt) : null,
 weinstil: weinstil || null,
 kaufdatum: kaufdatum || null,
@@ -380,6 +535,13 @@ setParkerPunkte("");
 setSucklingPunkte("");
 setWinespectatorPunkte("");
 setVivinoBewertung("");
+
+setFalstaffQuelle("");
+setParkerQuelle("");
+setSucklingQuelle("");
+setWinespectatorQuelle("");
+setVivinoQuelle("");
+
 setAlkoholgehalt("");
 setWeinstil("");
 setKaufdatum("");

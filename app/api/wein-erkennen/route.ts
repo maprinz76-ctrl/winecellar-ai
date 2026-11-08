@@ -29,6 +29,12 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: "gpt-5.6-terra",
+        
+tools: [{ type: "web_search" }],
+
+tool_choice: "required",
+
+
         input: [
           {
             role: "user",
@@ -53,6 +59,84 @@ Ermittle:
 - region: Die übergeordnete Weinregion, z. B. Loire, Burgund, Bordeaux, Toskana, Piemont, Rioja oder Mendoza.
 - appellation: Die konkrete Appellation oder offizielle Herkunftsbezeichnung.
 - rebsorte: Ausschließlich konkrete Rebsortennamen.
+
+
+Expertenbewertungen:
+Recherchiere online nach Bewertungen für den eindeutig identifizierten Wein und Jahrgang.
+
+Für Robert Parker, James Suckling und Wine Spectator:
+- Recherchiere die Bewertung für den exakt identifizierten Wein und Jahrgang.
+- Gib die Punkte als ganze Zahl auf der 100-Punkte-Skala zurück.
+- Gib für jede Bewertung die vollständige Internetadresse der Quelle an.
+- Wenn keine eindeutig zuordenbare Bewertung gefunden wird, lasse Punkte und Quelle leer.
+
+Für Vivino:
+- Recherchiere die Bewertung des exakt identifizierten Weins.
+- Verwende die Bewertungsskala von 1 bis 5 mit maximal einer Dezimalstelle.
+- Übernimm eine Bewertung nur, wenn die Quelle eindeutig zum Wein passt und der Jahrgang übereinstimmt.
+- Gib die vollständige Internetadresse der Quelle an.
+- Wenn keine verlässliche Bewertung gefunden wird, lasse Bewertung und Quelle leer.
+
+Für alle Bewertungen gilt:
+- Keine Bewertungen schätzen oder erfinden.
+- Keine Punkte anderer Jahrgänge übernehmen.
+- Keine Internetadressen erfinden.
+- Eine fehlende Bewertung ist besser als eine falsche Bewertung.
+
+Prüfung der Bewertungsquellen:
+- Bevorzuge die Originalseiten von Falstaff, Robert Parker / The Wine Advocate, James Suckling, Wine Spectator und Vivino.
+- Händlerseiten dürfen nur verwendet werden, wenn sie die konkrete Bewertung ausdrücklich dem jeweiligen Kritiker zuordnen.
+- Auf der angegebenen Internetseite müssen Produzent, Wein, Jahrgang und Bewertung eindeutig übereinstimmen.
+- Eine allgemeine Produktseite ohne nachweisbare Bewertung ist keine ausreichende Quelle.
+- Übernimm keine Bewertung, wenn die Fundstelle nur einen anderen Jahrgang oder einen ähnlichen Wein beschreibt.
+- Wenn die konkrete Bewertung auf der Fundstelle nicht überprüft werden kann, lasse Bewertung und Quelle leer.
+- Gib ausschliesslich die Internetadresse der tatsächlich verwendeten Fundstelle zurück.
+
+Kennzeichnung der Quellenart:
+- Unterscheide bei jeder gefundenen Expertenbewertung zwischen Originalquelle und Sekundärquelle.
+- original: Die Bewertung steht auf der offiziellen Internetseite des jeweiligen Weinkritikers.
+- sekundaer: Die Bewertung wird auf einer Händlerseite oder einer anderen unabhängigen Weinplattform ausdrücklich dem Kritiker zugeordnet.
+- ungeprueft: Die Herkunft oder Zuordnung der Bewertung konnte nicht ausreichend überprüft werden.
+- Beurteile die Quellenart anhand der tatsächlich verwendeten Internetadresse.
+- Eine Händlerseite darf niemals als Originalquelle bezeichnet werden.
+- Die Quellenart allein beweist nicht die Richtigkeit einer Bewertung.
+
+Gib die Quellenart für jede Bewertung im entsprechenden JSON-Feld zurück:
+- falstaff_quellenart
+- parker_quellenart
+- suckling_quellenart
+- winespectator_quellenart
+- vivino_quellenart
+
+Verwende ausschliesslich diese Werte:
+- original
+- sekundaer
+- ungeprueft
+
+Wenn keine Bewertung vorhanden ist, lasse auch die Quellenart leer.
+Wenn eine Bewertung nicht ausreichend überprüfbar ist, übernimm keine Punkte und keine Quelle.
+
+Für Falstaff gelten zusätzlich diese Regeln:
+- falstaff_punkte: Gib ausschliesslich die nachweislich veröffentlichte Bewertung für den exakt identifizierten Wein und Jahrgang zurück.
+- Verwende nur eine ganze Zahl zwischen 0 und 100.
+- falstaff_quelle: Gib die vollständige Internetadresse der Fundstelle zurück.
+- Eine Bewertung darf nur übernommen werden, wenn Produzent, Wein und Jahrgang mit der Quelle übereinstimmen.
+- Wenn die Bewertung oder ihre Zuordnung nicht eindeutig überprüfbar ist, müssen falstaff_punkte und falstaff_quelle leer bleiben.
+- Erfinde niemals Bewertungen oder Internetadressen.
+
+Berücksichtige:
+- Falstaff
+- Robert Parker / The Wine Advocate
+- James Suckling
+- Wine Spectator
+
+Übernimm ausschliesslich Bewertungen, die eindeutig zum Produzenten, Wein und Jahrgang gehören.
+
+Erfinde niemals Bewertungspunkte.
+Übernimm keine Bewertungen anderer Jahrgänge.
+Wenn keine verlässliche Bewertung gefunden wird, lasse das entsprechende Feld leer.
+
+Notiere zu jeder gefundenen Bewertung die genaue Internetadresse der Quelle.
 
 - trinkfenster_von: Schätze das erste Kalenderjahr, ab dem der konkret identifizierte Wein voraussichtlich gut trinkbar ist.
 - trinkfenster_bis: Schätze das letzte Kalenderjahr, bis zu dem der Wein bei fachgerechter Lagerung voraussichtlich gut trinkbar bleibt.
@@ -149,6 +233,30 @@ Verwende exakt dieses Format:
   "weinstil": "",
   "trinkfenster_von": "",
 "trinkfenster_bis": "",
+
+
+"falstaff_punkte": "",
+"falstaff_quelle": "",
+"falstaff_quellenart": "",
+
+"parker_punkte": "",
+"parker_quelle": "",
+"parker_quellenart": "",
+
+"suckling_punkte": "",
+"suckling_quelle": "",
+"suckling_quellenart": "",
+
+"winespectator_punkte": "",
+"winespectator_quelle": "",
+"winespectator_quellenart": "",
+
+"vivino_bewertung": "",
+"vivino_quelle": "",
+"vivino_quellenart": "",
+
+
+
   "sicherheit": {
   "produzent": 0,
   "weinname": 0,
@@ -191,6 +299,34 @@ Verwende exakt dieses Format:
     }
 
     const daten = await response.json();
+    
+const kiText = daten.output
+  ?.flatMap((eintrag: any) => eintrag.content || [])
+  ?.find((inhalt: any) => inhalt.type === "output_text")
+  ?.text;
+
+if (kiText) {
+  try {
+    const ergebnis = JSON.parse(kiText);
+    console.log("Falstaff-Test:", {
+      punkte: ergebnis.falstaff_punkte,
+      quelle: ergebnis.falstaff_quelle,
+    });
+    console.log("Quellenarten-Test:", {
+  falstaff: ergebnis.falstaff_quellenart,
+  parker: ergebnis.parker_quellenart,
+  suckling: ergebnis.suckling_quellenart,
+  winespectator: ergebnis.winespectator_quellenart,
+  vivino: ergebnis.vivino_quellenart,
+});
+  } catch {
+    console.log("Falstaff-Test: KI-Antwort nicht als JSON lesbar.");
+  }
+}
+
+    
+console.log("Verwendete KI-Werkzeuge:", daten.output?.map((eintrag: { type: string }) => eintrag.type));
+
 
     return NextResponse.json(daten);
   } catch (error) {

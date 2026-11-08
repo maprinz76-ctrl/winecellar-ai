@@ -33,6 +33,18 @@ type Wein = {
   winespectator_punkte?: number | null;
   vivino_bewertung?: number | null;
 
+falstaff_quellenart?: string | null;
+parker_quellenart?: string | null;
+suckling_quellenart?: string | null;
+winespectator_quellenart?: string | null;
+vivino_quellenart?: string | null;
+
+falstaff_quelle?: string | null;
+parker_quelle?: string | null;
+suckling_quelle?: string | null;
+winespectator_quelle?: string | null;
+vivino_quelle?: string | null;
+
   alkoholgehalt?: number | null;
   weinstil?: string | null;
   kaufdatum?: string | null;
@@ -83,6 +95,18 @@ parker_punkte: data.parker_punkte ?? null,
 suckling_punkte: data.suckling_punkte ?? null,
 winespectator_punkte: data.winespectator_punkte ?? null,
 vivino_bewertung: data.vivino_bewertung ?? null,
+
+falstaff_quellenart: data.falstaff_quellenart ?? null,
+parker_quellenart: data.parker_quellenart ?? null,
+suckling_quellenart: data.suckling_quellenart ?? null,
+winespectator_quellenart: data.winespectator_quellenart ?? null,
+vivino_quellenart: data.vivino_quellenart ?? null,
+
+falstaff_quelle: data.falstaff_quelle ?? null,
+parker_quelle: data.parker_quelle ?? null,
+suckling_quelle: data.suckling_quelle ?? null,
+winespectator_quelle: data.winespectator_quelle ?? null,
+vivino_quelle: data.vivino_quelle ?? null,
 
 alkoholgehalt: data.alkoholgehalt ?? null,
 weinstil: data.weinstil ?? null,
@@ -483,11 +507,13 @@ const letzterVerbrauch =
   )}
 
 {[
-  ["Falstaff", wein.falstaff_punkte, "/100"],
-  ["Robert Parker", wein.parker_punkte, "/100"],
-  ["James Suckling", wein.suckling_punkte, "/100"],
-  ["Wine Spectator", wein.winespectator_punkte, "/100"],
-  ["Vivino", wein.vivino_bewertung, "/5"],
+ 
+["Falstaff", wein.falstaff_punkte, "/100", wein.falstaff_quellenart],
+["Robert Parker", wein.parker_punkte, "/100", wein.parker_quellenart],
+["James Suckling", wein.suckling_punkte, "/100", wein.suckling_quellenart],
+["Wine Spectator", wein.winespectator_punkte, "/100", wein.winespectator_quellenart],
+["Vivino", wein.vivino_bewertung, "/5", wein.vivino_quellenart],
+
 ].some(([, punkte]) => punkte != null) && (
   <div
     style={{
@@ -502,15 +528,55 @@ const letzterVerbrauch =
     </h3>
 
     {[
-      ["Falstaff", wein.falstaff_punkte, "/100"],
-      ["Robert Parker", wein.parker_punkte, "/100"],
-      ["James Suckling", wein.suckling_punkte, "/100"],
-      ["Wine Spectator", wein.winespectator_punkte, "/100"],
-      ["Vivino", wein.vivino_bewertung, "/5"],
+      
+
+["Falstaff", wein.falstaff_punkte, "/100", wein.falstaff_quelle, wein.falstaff_quellenart],
+["Robert Parker", wein.parker_punkte, "/100", wein.parker_quelle, wein.parker_quellenart],
+["James Suckling", wein.suckling_punkte, "/100", wein.suckling_quelle, wein.suckling_quellenart],
+["Wine Spectator", wein.winespectator_punkte, "/100", wein.winespectator_quelle, wein.winespectator_quellenart],
+["Vivino", wein.vivino_bewertung, "/5", wein.vivino_quelle, wein.vivino_quellenart],
+
     ].filter(([, punkte]) => punkte != null)
-      .map(([name, punkte, skala]) => (
+      
+.map(([name, punkte, skala, quelle, quellenart]) => (
+
         <p key={name} style={{ margin: "8px 0" }}>
           <strong>{name}:</strong> {punkte}{skala}
+  <span style={{ color: quellenart === "original" ? "green" : quellenart === "sekundaer" ? "#b45309" : "#777", fontWeight: "bold" }}>
+  {" ["}
+</span>
+<span
+  style={{
+    color:
+      quellenart === "original"
+        ? "green"
+        : quellenart === "sekundaer"
+        ? "#b45309"
+        : "#777",
+    fontWeight: "bold",
+  }}
+>
+  {" "}
+{quellenart === "original"
+  ? "Originalquelle"
+  : quellenart === "sekundaer"
+  ? "Sekundärquelle"
+  : quellenart === "ungeprueft"
+  ? "Ungeprüfte Quelle"
+  : "Quellenart nicht angegeben"}
+  {" ]"}
+  </span>
+{quelle && (
+  <a
+    href={String(quelle)}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{ marginLeft: "10px", color: "#7b1026" }}
+  >
+    Quelle ansehen
+  </a>
+)}
+
         </p>
       ))}
   </div>
