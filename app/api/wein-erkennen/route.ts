@@ -91,6 +91,7 @@ Prüfung der Bewertungsquellen:
 - Übernimm keine Bewertung, wenn die Fundstelle nur einen anderen Jahrgang oder einen ähnlichen Wein beschreibt.
 - Wenn die konkrete Bewertung auf der Fundstelle nicht überprüft werden kann, lasse Bewertung und Quelle leer.
 - Gib ausschliesslich die Internetadresse der tatsächlich verwendeten Fundstelle zurück.
+- Eine allgemeine Übersichtsseite eines Weinguts oder Händlers ist kein gültiger Bewertungsnachweis. Die verlinkte Seite muss die konkrete Punktzahl des genannten Kritikers für den exakt identifizierten Wein und Jahrgang ausdrücklich enthalten. Andernfalls lasse Bewertung und Quelle leer.
 
 Kennzeichnung der Quellenart:
 - Unterscheide bei jeder gefundenen Expertenbewertung zwischen Originalquelle und Sekundärquelle.
